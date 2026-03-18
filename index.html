@@ -1197,26 +1197,45 @@
       body: formData
     }).catch(function(err) { console.error('FormSubmit error:', err); });
 
-    // 2. Create contact in GHL via API proxy
-    // Using a lightweight proxy approach - creates the contact in CRM
-    var ghlPayload = {
-      firstName: firstName,
-      email: email,
-      locationId: '2POUoPWRXgWKwsN61Q5g',
-      source: 'Arena VSL Page',
-      tags: ['vsl-lead'],
-      customFields: []
+    // 2. Create contact in GHL + opportunity in pipeline
+    var ghlHeaders = {
+      'Authorization': 'Bearer pit-690b376c-5ac2-48a3-b38c-b4be0ab4a42f',
+      'Version': '2021-07-28',
+      'Content-Type': 'application/json'
     };
 
     fetch('https://services.leadconnectorhq.com/contacts/upsert', {
       method: 'POST',
-      headers: {
-        'Authorization': 'Bearer pit-690b376c-5ac2-48a3-b38c-b4be0ab4a42f',
-        'Version': '2021-07-28',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(ghlPayload)
-    }).catch(function(err) { console.error('GHL error:', err); });
+      headers: ghlHeaders,
+      body: JSON.stringify({
+        firstName: firstName,
+        email: email,
+        locationId: '2POUoPWRXgWKwsN61Q5g',
+        source: 'Arena VSL Page',
+        tags: ['vsl-lead']
+      })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var contactId = data.contact ? data.contact.id : (data.contactId || null);
+      if (!contactId) return;
+
+      // Create opportunity in "Arena Lead Pipe" -> "New Lead" stage
+      fetch('https://services.leadconnectorhq.com/opportunities/', {
+        method: 'POST',
+        headers: ghlHeaders,
+        body: JSON.stringify({
+          pipelineId: 'VB9qD0EnpfiGueAJ5EEP',
+          locationId: '2POUoPWRXgWKwsN61Q5g',
+          name: firstName + ' - VSL Lead',
+          pipelineStageId: '879c42fe-8ed5-489c-b1eb-4f3e8a9cab5a',
+          contactId: contactId,
+          status: 'open',
+          source: 'Arena VSL Page'
+        })
+      }).catch(function(err) { console.error('Opportunity error:', err); });
+    })
+    .catch(function(err) { console.error('GHL error:', err); });
 
     // 3. Show success state
     setTimeout(function() {
