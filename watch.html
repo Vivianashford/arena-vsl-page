@@ -26,7 +26,7 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
 
   body {
     font-family: 'DM Sans', sans-serif;
@@ -45,7 +45,6 @@
     z-index: 9999;
   }
 
-  /* ===================== STICKY TOP BAR ===================== */
   .sticky-bar {
     position: fixed;
     top: 0;
@@ -61,9 +60,7 @@
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .sticky-bar.visible {
-    transform: translateY(0);
-  }
+  .sticky-bar.visible { transform: translateY(0); }
 
   .sticky-inner {
     max-width: 1060px;
@@ -74,11 +71,7 @@
     height: 60px;
   }
 
-  .sticky-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+  .sticky-left { display: flex; align-items: center; gap: 16px; }
 
   .sticky-logo {
     font-family: 'Playfair Display', serif;
@@ -91,11 +84,7 @@
 
   .sticky-logo span { color: var(--gold); }
 
-  .sticky-divider {
-    width: 1px;
-    height: 24px;
-    background: var(--border);
-  }
+  .sticky-divider { width: 1px; height: 24px; background: var(--border); }
 
   .sticky-text {
     font-size: 13px;
@@ -143,13 +132,8 @@
     transform: translateY(-1px);
   }
 
-  .sticky-cta svg {
-    width: 14px;
-    height: 14px;
-    fill: var(--bg-primary);
-  }
+  .sticky-cta svg { width: 14px; height: 14px; fill: var(--bg-primary); }
 
-  /* ===================== NAV ===================== */
   nav {
     display: flex;
     justify-content: center;
@@ -169,13 +153,13 @@
 
   .nav-logo span { color: var(--gold); }
 
-  /* ===================== HERO / VIDEO SECTION ===================== */
   .video-hero {
     position: relative;
     max-width: 960px;
     margin: 0 auto;
     padding: 56px 20px 40px;
     text-align: center;
+    overflow: hidden;
   }
 
   .video-hero::before {
@@ -257,7 +241,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ===================== VIDEO PLAYER ===================== */
   .video-container {
     position: relative;
     z-index: 1;
@@ -338,9 +321,7 @@
     transition: transform 0.3s ease;
   }
 
-  .video-placeholder:hover .play-ring::before {
-    transform: scale(1.05);
-  }
+  .video-placeholder:hover .play-ring::before { transform: scale(1.05); }
 
   .play-ring svg {
     position: relative;
@@ -390,7 +371,6 @@
     stroke-width: 2;
   }
 
-  /* ===================== BELOW-VIDEO CTA ===================== */
   .video-cta {
     position: relative;
     z-index: 1;
@@ -442,10 +422,7 @@
     z-index: 1;
   }
 
-  .video-cta-card h3 em {
-    font-style: italic;
-    color: var(--gold);
-  }
+  .video-cta-card h3 em { font-style: italic; color: var(--gold); }
 
   .video-cta-card .vcta-sub {
     font-size: 15px;
@@ -457,10 +434,7 @@
     z-index: 1;
   }
 
-  .video-cta-card .vcta-sub strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
+  .video-cta-card .vcta-sub strong { color: var(--text-primary); font-weight: 600; }
 
   .vcta-btn {
     display: inline-flex;
@@ -489,11 +463,7 @@
     box-shadow: 0 8px 40px rgba(201, 168, 76, 0.4);
   }
 
-  .vcta-btn svg {
-    width: 18px;
-    height: 18px;
-    fill: var(--bg-primary);
-  }
+  .vcta-btn svg { width: 18px; height: 18px; fill: var(--bg-primary); }
 
   .vcta-trust {
     margin-top: 14px;
@@ -507,13 +477,7 @@
     z-index: 1;
   }
 
-  .vcta-trust svg {
-    width: 13px;
-    height: 13px;
-    stroke: var(--text-muted);
-    fill: none;
-    stroke-width: 2;
-  }
+  .vcta-trust svg { width: 13px; height: 13px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
 
   .arrow-bridge {
     display: flex;
@@ -531,9 +495,7 @@
     background: linear-gradient(to bottom, var(--gold), rgba(201, 168, 76, 0.15));
   }
 
-  .arrow-bridge .arrow-head {
-    animation: bounce-arrow 1.8s ease-in-out infinite;
-  }
+  .arrow-bridge .arrow-head { animation: bounce-arrow 1.8s ease-in-out infinite; }
 
   .arrow-bridge .arrow-head svg {
     width: 28px;
@@ -558,7 +520,6 @@
     50% { transform: translateY(6px); }
   }
 
-  /* ===================== CHAPTER MARKERS ===================== */
   .chapters {
     max-width: 880px;
     margin: 48px auto 0;
@@ -567,20 +528,9 @@
     animation: fadeInUp 0.7s ease-out 0.5s both;
   }
 
-  .chapters-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
+  .chapters-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 
-  .chapters-header svg {
-    width: 16px;
-    height: 16px;
-    stroke: var(--gold);
-    fill: none;
-    stroke-width: 2;
-  }
+  .chapters-header svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 2; }
 
   .chapters-header span {
     font-family: 'JetBrains Mono', monospace;
@@ -625,14 +575,8 @@
     text-align: center;
   }
 
-  .chapter-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    line-height: 1.4;
-  }
+  .chapter-title { font-size: 14px; font-weight: 500; color: var(--text-secondary); line-height: 1.4; }
 
-  /* ===================== DIVIDER ===================== */
   .section-divider {
     max-width: 880px;
     margin: 64px auto;
@@ -653,7 +597,6 @@
     border-radius: 2px;
   }
 
-  /* ===================== CTA / BOOKING SECTION ===================== */
   .booking-section {
     max-width: 880px;
     margin: 0 auto;
@@ -709,10 +652,7 @@
     z-index: 1;
   }
 
-  .booking-top h2 em {
-    font-style: italic;
-    color: var(--gold);
-  }
+  .booking-top h2 em { font-style: italic; color: var(--gold); }
 
   .booking-top .booking-sub {
     font-size: 16px;
@@ -757,24 +697,11 @@
     margin-top: 1px;
   }
 
-  .benefit-check svg {
-    width: 11px;
-    height: 11px;
-    stroke: var(--accent-green);
-    fill: none;
-    stroke-width: 2.5;
-  }
+  .benefit-check svg { width: 11px; height: 11px; stroke: var(--accent-green); fill: none; stroke-width: 2.5; }
 
-  .benefit-item span {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
+  .benefit-item span { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
 
-  .benefit-item span strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
+  .benefit-item span strong { color: var(--text-primary); font-weight: 600; }
 
   .calendar-embed {
     border-top: 1px solid var(--border);
@@ -782,73 +709,7 @@
     background: var(--bg-elevated);
   }
 
-  .calendar-placeholder {
-    min-height: 520px;
-    border: 2px dashed rgba(201, 168, 76, 0.15);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    text-align: center;
-    padding: 40px;
-    background: rgba(201, 168, 76, 0.02);
-  }
-
-  .cal-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    background: rgba(201, 168, 76, 0.08);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .cal-icon svg {
-    width: 28px;
-    height: 28px;
-    stroke: var(--gold);
-    fill: none;
-    stroke-width: 1.5;
-  }
-
-  .calendar-placeholder h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .calendar-placeholder p {
-    font-size: 14px;
-    color: var(--text-muted);
-    max-width: 400px;
-    line-height: 1.6;
-  }
-
-  .calendar-placeholder code {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 10px 20px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
-    letter-spacing: 0.5px;
-    word-break: break-all;
-  }
-
-  /* ===================== GUARANTEE / TRUST ===================== */
-  .trust-section {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-  }
+  .trust-section { max-width: 880px; margin: 0 auto; padding: 0 20px 80px; }
 
   .trust-card {
     background: var(--bg-card);
@@ -873,14 +734,7 @@
     background: rgba(201, 168, 76, 0.04);
   }
 
-  .trust-badge svg {
-    width: 32px;
-    height: 32px;
-    stroke: var(--gold);
-    fill: none;
-    stroke-width: 1.5;
-    margin-bottom: 4px;
-  }
+  .trust-badge svg { width: 32px; height: 32px; stroke: var(--gold); fill: none; stroke-width: 1.5; margin-bottom: 4px; }
 
   .trust-badge span {
     font-family: 'JetBrains Mono', monospace;
@@ -897,28 +751,13 @@
     margin-bottom: 10px;
   }
 
-  .trust-content h3 em {
-    color: var(--gold);
-    font-style: italic;
-  }
+  .trust-content h3 em { color: var(--gold); font-style: italic; }
 
-  .trust-content p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
+  .trust-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
 
-  .trust-content p strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
+  .trust-content p strong { color: var(--text-primary); font-weight: 600; }
 
-  /* ===================== JEAN'S BIO STRIP ===================== */
-  .bio-section {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-  }
+  .bio-section { max-width: 880px; margin: 0 auto; padding: 0 20px 80px; }
 
   .bio-card {
     background: var(--bg-card);
@@ -956,24 +795,11 @@
     margin-bottom: 10px;
   }
 
-  .bio-text h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
+  .bio-text h3 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 12px; }
 
-  .bio-text p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.75;
-    margin-bottom: 12px;
-  }
+  .bio-text p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 12px; }
 
-  .bio-text p strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
+  .bio-text p strong { color: var(--text-primary); font-weight: 600; }
 
   .bio-stats {
     display: flex;
@@ -992,13 +818,8 @@
     margin-bottom: 4px;
   }
 
-  .bio-stat-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-  }
+  .bio-stat-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; }
 
-  /* ===================== BOTTOM FLOATING CTA ===================== */
   .floating-cta {
     position: fixed;
     bottom: 0;
@@ -1025,18 +846,9 @@
     gap: 20px;
   }
 
-  .floating-text {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.4;
-  }
+  .floating-text { font-size: 15px; color: var(--text-secondary); line-height: 1.4; }
 
-  .floating-text strong {
-    color: var(--text-primary);
-    font-weight: 600;
-    display: block;
-    margin-bottom: 2px;
-  }
+  .floating-text strong { color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 2px; }
 
   .floating-btn {
     display: inline-flex;
@@ -1064,13 +876,8 @@
     transform: translateY(-1px);
   }
 
-  .floating-btn svg {
-    width: 16px;
-    height: 16px;
-    fill: var(--bg-primary);
-  }
+  .floating-btn svg { width: 16px; height: 16px; fill: var(--bg-primary); }
 
-  /* ===================== FOOTER ===================== */
   footer {
     padding: 48px 20px 36px;
     text-align: center;
@@ -1089,19 +896,9 @@
 
   .footer-logo span { color: var(--gold); }
 
-  .footer-addr {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
+  .footer-addr { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
 
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    margin-bottom: 20px;
-  }
+  .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
 
   .footer-links a {
     font-size: 12px;
@@ -1122,31 +919,67 @@
     opacity: 0.6;
   }
 
-  /* ===================== RESPONSIVE ===================== */
   @media (max-width: 768px) {
     .video-hero { padding: 40px 16px 30px; }
-    .booking-top { padding: 36px 24px 32px; }
-    .booking-benefits { grid-template-columns: 1fr; }
-    .calendar-embed { padding: 24px; }
-    .calendar-placeholder { min-height: 400px; padding: 24px; }
-    .trust-card { flex-direction: column; text-align: center; padding: 32px 24px; }
-    .bio-card { flex-direction: column; text-align: center; padding: 32px 24px; }
-    .bio-photo { margin: 0 auto; }
-    .bio-stats { justify-content: center; }
-    .booking-section, .trust-section, .bio-section { padding: 0 16px 50px; }
-    .chapters-grid { grid-template-columns: 1fr; }
-    .video-cta-card { padding: 32px 22px; }
-    .vcta-btn { padding: 16px 32px; font-size: 14px; }
+    .video-hero h1 { font-size: 28px; }
+    .video-hero .hero-sub { font-size: 15px; margin-bottom: 28px; }
+    .hero-badge { font-size: 10px; letter-spacing: 2px; padding: 6px 14px; }
+    .video-container { margin: 0 auto; }
+    .video-meta { gap: 12px; flex-direction: column; }
+    .booking-top { padding: 32px 20px 28px; }
+    .booking-top h2 { font-size: 26px; }
+    .booking-benefits { grid-template-columns: 1fr; gap: 10px; }
+    .benefit-item { padding: 10px 12px; }
+    .calendar-embed { padding: 16px; }
+    .trust-card { flex-direction: column; text-align: center; padding: 28px 20px; }
+    .trust-badge { width: 80px; height: 80px; margin: 0 auto; }
+    .bio-card { flex-direction: column; text-align: center; padding: 28px 20px; }
+    .bio-photo { margin: 0 auto; width: 90px; height: 90px; font-size: 28px; }
+    .bio-stats { justify-content: center; flex-wrap: wrap; gap: 20px; }
+    .bio-text h3 { font-size: 22px; }
+    .bio-text p { font-size: 14px; }
+    .booking-section, .trust-section, .bio-section { padding: 0 16px 40px; }
+    .booking-card { border-radius: 12px; }
+    .chapters { margin-top: 36px; }
+    .chapters-grid { grid-template-columns: 1fr; gap: 8px; }
+    .chapter-card { padding: 12px 14px; gap: 10px; }
+    .video-cta { margin-top: 32px; }
+    .video-cta-card { padding: 28px 18px; }
+    .video-cta-card h3 { font-size: 22px; }
+    .video-cta-card .vcta-sub { font-size: 14px; }
+    .vcta-btn { padding: 16px 28px; font-size: 13px; letter-spacing: 0.5px; }
     .sticky-text { display: none; }
     .sticky-divider { display: none; }
+    .sticky-inner { padding: 0; }
+    .sticky-bar { padding: 0 16px; }
+    .sticky-cta { padding: 9px 18px; font-size: 11px; }
     .floating-text { display: none; }
     .floating-inner { justify-content: center; }
-    nav { padding: 18px 20px; }
+    .floating-cta { padding: 14px 16px; }
+    .floating-btn { padding: 12px 24px; font-size: 13px; }
+    nav { padding: 18px 16px; }
+    .section-divider { margin: 40px 16px; }
+    footer { padding: 36px 16px 28px; }
+    .footer-disc { font-size: 10px; }
   }
 
   @media (max-width: 480px) {
-    .video-hero h1 { font-size: 26px; }
-    .booking-top h2 { font-size: 24px; }
+    .video-hero { padding: 32px 12px 24px; }
+    .video-hero h1 { font-size: 24px; }
+    .booking-top h2 { font-size: 22px; }
+    .booking-top { padding: 28px 16px 24px; }
+    .video-cta-card { padding: 24px 14px; }
+    .video-cta-card h3 { font-size: 20px; }
+    .vcta-btn { padding: 14px 22px; font-size: 12px; width: 100%; justify-content: center; }
+    .floating-btn { width: 100%; justify-content: center; }
+    .bio-stats { gap: 16px; }
+    .bio-stat-num { font-size: 18px; }
+    .trust-content h3 { font-size: 18px; }
+    .trust-content p { font-size: 14px; }
+    .chapters-header span { font-size: 10px; }
+    .chapter-time { font-size: 11px; min-width: 44px; padding: 4px 8px; }
+    .chapter-title { font-size: 13px; }
+    .calendar-embed { padding: 12px; }
   }
 </style>
 </head>
@@ -1164,7 +997,7 @@
       </div>
     </div>
     <a href="#booking" class="sticky-cta">
-      Book Your Call
+      Book Call + Get Book
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </div>
@@ -1185,14 +1018,13 @@
   <h1>The <span class="gold">Transferable Exit System</span>™</h1>
 
   <p class="hero-sub">
-    The 3-phase system that turns <strong>founder-dependent</strong> service businesses into <strong>transferable, high-value assets</strong> buyers compete for.
+    The 4-phase system that turns <strong>founder-dependent</strong> trades and service businesses into <strong>transferable assets</strong> that buyers pay full price for — so you exit on your terms, not theirs.
   </p>
 
   <!-- VIDEO PLAYER -->
   <div class="video-container" id="videoSection">
     <div class="video-frame">
       <div class="video-embed">
-        <!-- REPLACE WITH ACTUAL VIDEO EMBED -->
         <div class="video-placeholder" onclick="this.style.display='none'">
           <div class="play-ring">
             <svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg>
@@ -1210,11 +1042,11 @@
       </span>
       <span class="video-meta-item">
         <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        No fluff — just the system
+        Straight talk — no hype, no pitch
       </span>
       <span class="video-meta-item">
         <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Private — for registered viewers only
+        For owners at $5M–$50M
       </span>
     </div>
   </div>
@@ -1222,16 +1054,29 @@
   <!-- BELOW-VIDEO CTA -->
   <div class="video-cta">
     <div class="video-cta-card">
-      <p class="video-cta-label">Ready After Watching?</p>
-      <h3>Get Your <em>Personalized Assessment</em></h3>
-      <p class="vcta-sub">Book a free 30-minute Exit Readiness Diagnostic. We'll analyze <strong>your specific business</strong>, identify the blind spots holding your valuation down, and map the highest-impact moves to make your company transferable.</p>
+      <p class="video-cta-label">When You Book Your Call, You Also Get This</p>
+      <h3>Get Your <em>Personalized Assessment</em><br>+ My Unpublished Book</h3>
+      <p class="vcta-sub">Book your 30-minute Exit Readiness Diagnostic below. We'll score your business across <strong>8 categories</strong>, map the gaps to a premium exit, and give you the exact build plan. Plus — I'll send you a copy of <strong>TRANSFERABLE</strong>, my 180+ page unpublished book. Everything I learned from watching businesses built by people I loved disappear overnight. You're getting it before anyone else.</p>
+
+      <div style="display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;">
+        <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:16px 20px;display:flex;align-items:center;gap:12px;">
+          <div style="width:48px;height:62px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-family:'Playfair Display',serif;font-size:10px;font-weight:800;color:var(--bg-primary);text-align:center;line-height:1.1;padding:4px;">T</span>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text-primary);">TRANSFERABLE</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">180+ pages · Unpublished · Yours free</div>
+          </div>
+        </div>
+      </div>
+
       <a href="#booking" class="vcta-btn">
-        Book Your Diagnostic Call
+        Book the Call + Get the Book
         <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
       <p class="vcta-trust">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        30 minutes · No obligation · No pitch
+        30 minutes · No pitch, just the map · Book sent immediately
       </p>
     </div>
 
@@ -1253,27 +1098,35 @@
     <div class="chapters-grid">
       <div class="chapter-card">
         <span class="chapter-time">0:00</span>
-        <span class="chapter-title">Why 83% of businesses listed never sell</span>
+        <span class="chapter-title">The two fathers who built great businesses — and lost everything</span>
       </div>
       <div class="chapter-card">
-        <span class="chapter-time">4:12</span>
-        <span class="chapter-title">The founder dependency trap explained</span>
+        <span class="chapter-time">2:00</span>
+        <span class="chapter-title">The mirror: how long can YOUR business run without you?</span>
       </div>
       <div class="chapter-card">
-        <span class="chapter-time">9:30</span>
-        <span class="chapter-title">Phase 1: Diagnose — finding the fractures</span>
+        <span class="chapter-time">5:00</span>
+        <span class="chapter-title">What owner dependency actually costs (in real dollars)</span>
       </div>
       <div class="chapter-card">
-        <span class="chapter-time">14:45</span>
-        <span class="chapter-title">Phase 2: Build — systems that transfer</span>
+        <span class="chapter-time">7:30</span>
+        <span class="chapter-title">The 5 fractures killing your transferable value</span>
       </div>
       <div class="chapter-card">
-        <span class="chapter-time">19:20</span>
-        <span class="chapter-title">Phase 3: Position — the 42-month model</span>
+        <span class="chapter-time">10:00</span>
+        <span class="chapter-title">The reframe: size vs. transferability</span>
       </div>
       <div class="chapter-card">
-        <span class="chapter-time">24:00</span>
-        <span class="chapter-title">Your next step — the diagnostic call</span>
+        <span class="chapter-time">12:00</span>
+        <span class="chapter-title">The 4-phase system: Align, Map, Automate, Transfer</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">20:00</span>
+        <span class="chapter-title">What premium exits have in common (the data)</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">25:30</span>
+        <span class="chapter-title">Your next step + get the unpublished book</span>
       </div>
     </div>
   </div>
@@ -1286,51 +1139,41 @@
   <div class="booking-card">
     <div class="booking-top">
       <p class="booking-eyebrow">Your Next Step</p>
-      <h2>Book Your Free<br><em>Exit Readiness Diagnostic</em></h2>
-      <p class="booking-sub">A 30-minute call with our advisory team to walk through your business, identify your blind spots, and map the 2–3 highest-impact moves to increase your transferable value.</p>
+      <h2>Book the Call.<br><em>Get the Book.</em></h2>
+      <p class="booking-sub">Here's exactly what happens when you book below:</p>
 
       <div class="booking-benefits">
         <div class="benefit-item">
           <div class="benefit-check">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <span><strong>Personalized</strong> analysis of your owner dependency risk</span>
+          <span><strong>Exit Risk Assessment</strong> — scored across 8 categories in ~15 min</span>
         </div>
         <div class="benefit-item">
           <div class="benefit-check">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <span><strong>Honest</strong> assessment of your current transferable value</span>
+          <span><strong>30-min Diagnostic Call</strong> — we map the gaps to a premium exit</span>
         </div>
         <div class="benefit-item">
           <div class="benefit-check">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <span><strong>Clear roadmap</strong> with prioritized next steps</span>
+          <span><strong>The Build Plan</strong> — what gets documented, automated & transferred</span>
         </div>
         <div class="benefit-item">
           <div class="benefit-check">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <span><strong>No obligation</strong> — just clarity on where you stand</span>
+          <span><strong>TRANSFERABLE (book)</strong> — 180+ pages, unpublished, sent immediately</span>
         </div>
       </div>
     </div>
 
-    <!-- CALENDAR EMBED AREA -->
+    <!-- LIVE GHL CALENDAR -->
     <div class="calendar-embed">
-      <div class="calendar-placeholder" id="calendarArea">
-        <div class="cal-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-        <h3>Your Calendar Goes Here</h3>
-        <p>Embed your GHL calendar, Calendly, or SavvyCal widget. Replace this placeholder with your scheduling embed code.</p>
-        <code>&lt;!-- Paste GHL calendar embed here --&gt;</code>
-        <p style="margin-top:12px; font-size:12px; color:var(--text-muted);">
-          GHL: Calendars → Select Calendar → Embed Code → "Iframe Embed"<br>
-          Calendly: Share → Embed → "Inline Embed"
-        </p>
-      </div>
+      <iframe src="https://link.pushfire.com/widget/booking/4MmCTkiPvQiMfGGOKBJU" style="width: 100%;border:none;overflow: hidden;min-height:700px;border-radius:12px;" scrolling="no" id="4MmCTkiPvQiMfGGOKBJU_1773868247654"></iframe>
+      <script src="https://link.pushfire.com/js/form_embed.js" type="text/javascript"></script>
     </div>
   </div>
 </section>
@@ -1356,20 +1199,20 @@
     <div class="bio-text">
       <p class="bio-label">Your Host</p>
       <h3>Jean Hardy</h3>
-      <p>Co-Founder & Operations Lead at The Arena Partners. Jean built, scaled, and lost businesses before most people had their first job — and watched two fathers build thriving companies that <strong>died the day they did</strong>, because nothing was documented and everything ran through them.</p>
-      <p>That pain became the thesis: <strong>the more valuable you are, the less valuable your business.</strong> Today, Jean and The Arena team help service-based owners at $5M–$50M diagnose founder dependency, build transferable systems, and position for exits that protect their legacy and their wealth.</p>
+      <p>Co-Founder & Operations Lead at The Arena Partners. Jean watched two fathers build thriving businesses that <strong>died the day they did</strong> — a trucking company with city government contracts and an arborist business so respected the city still talked about it years later. Neither documented a thing. Neither had a succession plan. Both were gone within six months of the founder.</p>
+      <p>That pain became the thesis behind everything The Arena builds: <strong>the more valuable you are to your business, the less valuable your business is.</strong> Jean and the Arena team now work with service-based owners at $5M–$50M to fix the structural problems that kill exits — before they sit down at the table.</p>
       <div class="bio-stats">
         <div>
           <div class="bio-stat-num">$5M–50M</div>
           <div class="bio-stat-label">Client Revenue Range</div>
         </div>
         <div>
-          <div class="bio-stat-num">42-mo</div>
-          <div class="bio-stat-label">Exit Prep System</div>
+          <div class="bio-stat-num">18–24mo</div>
+          <div class="bio-stat-label">Exit Prep Timeline</div>
         </div>
         <div>
-          <div class="bio-stat-num">3-Phase</div>
-          <div class="bio-stat-label">Transferable Method™</div>
+          <div class="bio-stat-num">4-Phase</div>
+          <div class="bio-stat-label">Transferable System™</div>
         </div>
       </div>
     </div>
@@ -1396,11 +1239,11 @@
 <div class="floating-cta" id="floatingCta">
   <div class="floating-inner">
     <div class="floating-text">
-      <strong>Ready to find out where you stand?</strong>
-      Book your free 30-minute Exit Readiness Diagnostic.
+      <strong>Book the call. Get the book.</strong>
+      Free 30-min diagnostic + TRANSFERABLE (180+ pages, unpublished).
     </div>
     <a href="#booking" class="floating-btn">
-      Book Your Call
+      Book Now + Get the Book
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </div>
