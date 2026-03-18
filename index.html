@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Arena Partners | Free Training: The Transferable Exit System™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --bg-elevated: #1a1a1a;
+    --gold: #c9a84c;
+    --gold-light: #e3c96e;
+    --gold-dark: #a8872e;
+    --gold-glow: rgba(201, 168, 76, 0.15);
+    --text-primary: #f5f0e8;
+    --text-secondary: #9a9590;
+    --text-muted: #6b6560;
+    --accent-red: #c44b3f;
+    --white: #ffffff;
+    --border: rgba(201, 168, 76, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===================== GRAIN OVERLAY ===================== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ===================== ANNOUNCEMENT BAR ===================== */
+  .announcement-bar {
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bg-primary);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .announcement-bar span {
+    animation: pulse-text 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-text {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* ===================== NAV ===================== */
+  nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .nav-logo span {
+    color: var(--gold);
+  }
+
+  /* ===================== HERO ===================== */
+  .hero {
+    position: relative;
+    padding: 80px 20px 60px;
+    text-align: center;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-eyebrow {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: rgba(201, 168, 76, 0.05);
+    animation: fadeInDown 0.8s ease-out;
+  }
+
+  .hero-eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    position: relative;
+    z-index: 1;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5.5vw, 62px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    animation: fadeInUp 0.8s ease-out 0.15s both;
+  }
+
+  .hero h1 .highlight {
+    color: var(--gold);
+    position: relative;
+  }
+
+  .hero h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+
+  .hero-sub {
+    position: relative;
+    z-index: 1;
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto 40px;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+
+  .hero-sub strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ===================== VSL VIDEO CONTAINER ===================== */
+  .vsl-container {
+    position: relative;
+    z-index: 1;
+    max-width: 840px;
+    margin: 0 auto 40px;
+    animation: fadeInUp 0.8s ease-out 0.45s both;
+  }
+
+  .vsl-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 80px rgba(201, 168, 76, 0.08), 0 20px 60px rgba(0,0,0,0.5);
+    cursor: pointer;
+  }
+
+  .vsl-wrapper .vsl-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1611 100%);
+    transition: all 0.3s ease;
+  }
+
+  .vsl-wrapper:hover .vsl-placeholder {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1d1914 100%);
+  }
+
+  .play-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.3);
+  }
+
+  .vsl-wrapper:hover .play-btn {
+    transform: scale(1.08);
+    box-shadow: 0 0 60px rgba(201, 168, 76, 0.45);
+  }
+
+  .play-btn svg {
+    width: 28px;
+    height: 28px;
+    margin-left: 4px;
+    fill: var(--bg-primary);
+  }
+
+  .vsl-placeholder .vsl-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .vsl-duration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 50px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .vsl-duration svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-muted);
+    fill: none;
+  }
+
+  /* ===================== CTA SECTION ===================== */
+  .cta-section {
+    text-align: center;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 48px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--bg-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 30px rgba(201, 168, 76, 0.25);
+  }
+
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.4);
+  }
+
+  .cta-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--bg-primary);
+    transition: transform 0.3s ease;
+  }
+
+  .cta-btn:hover svg {
+    transform: translateX(3px);
+  }
+
+  .cta-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .cta-note svg {
+    width: 13px;
+    height: 13px;
+    stroke: var(--text-muted);
+    fill: none;
+  }
+
+  /* ===================== CREDIBILITY BAR ===================== */
+  .credibility-bar {
+    padding: 50px 20px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    background: var(--bg-secondary);
+  }
+
+  .credibility-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+  }
+
+  .credibility-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .cred-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-muted);
+    opacity: 0.5;
+    letter-spacing: 1px;
+    transition: opacity 0.3s;
+  }
+
+  .cred-logo:hover { opacity: 0.8; }
+
+  /* ===================== PROBLEM SECTION ===================== */
+  .problem-section {
+    padding: 90px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .problem-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 36px;
+  }
+
+  .problem-section h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .problem-list {
+    text-align: left;
+    max-width: 620px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .problem-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+
+  .problem-item:hover {
+    border-color: rgba(201, 168, 76, 0.3);
+  }
+
+  .problem-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(196, 75, 63, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-top: 2px;
+  }
+
+  .problem-item p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .problem-item p strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ===================== TESTIMONIALS ===================== */
+  .testimonials {
+    padding: 90px 20px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .testimonials-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+  }
+
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .testimonial-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .testimonial-card:hover {
+    border-color: rgba(201, 168, 76, 0.3);
+    transform: translateY(-3px);
+  }
+
+  .testimonial-card::before {
+    content: '\201C';
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 60px;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 1;
+  }
+
+  .testimonial-stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 16px;
+  }
+
+  .testimonial-stars svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--gold);
+  }
+
+  .testimonial-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--bg-primary);
+    flex-shrink: 0;
+  }
+
+  .testimonial-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  .testimonial-role {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .testimonial-revenue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===================== STATS BAR ===================== */
+  .stats-bar {
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ===================== BOTTOM CTA ===================== */
+  .bottom-cta {
+    padding: 90px 20px;
+    text-align: center;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bottom-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .bottom-cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bottom-cta p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 540px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bottom-cta .cta-btn {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===================== MODAL ===================== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 40px;
+    max-width: 460px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+    animation: slideUp 0.4s ease;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text-primary); }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .modal .modal-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: var(--gold);
+  }
+
+  .form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6560' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    cursor: pointer;
+  }
+
+  .form-group select option {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .modal .cta-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 16px;
+  }
+
+  .modal-trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .modal-trust svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--text-muted);
+    fill: none;
+  }
+
+  /* ===================== FOOTER ===================== */
+  footer {
+    padding: 50px 20px 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-address {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-disclaimer {
+    font-size: 11px;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0.7;
+  }
+
+  /* ===================== ANIMATIONS ===================== */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    .hero { padding: 50px 16px 40px; }
+    .stats-bar { gap: 40px; }
+    .stat-number { font-size: 36px; }
+    .credibility-logos { gap: 30px; }
+    .cred-logo { font-size: 15px; }
+    .testimonial-grid { grid-template-columns: 1fr; }
+    .modal { padding: 36px 24px; }
+    nav { padding: 18px 20px; }
+    .problem-section, .testimonials, .bottom-cta { padding: 60px 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .cta-btn { padding: 16px 32px; font-size: 14px; }
+    .hero-sub { font-size: 16px; }
+    .stats-bar { gap: 30px; }
+    .stat-number { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement-bar">
+  <span>🔴 Free training — limited spots available</span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">The <span>Arena</span> Partners</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    Free Training for Business Owners
+  </div>
+
+  <h1>
+    The Exit System That Makes Your Business<br>
+    <span class="highlight">Worth More Without You</span>
+  </h1>
+
+  <p class="hero-sub">
+    Discover how service-based business owners at <strong>$5M–$50M in revenue</strong> are using the Transferable Exit System™ to stop being the bottleneck — and start building a business that buyers compete for.
+  </p>
+
+  <!-- VSL VIDEO -->
+  <div class="vsl-container">
+    <div class="vsl-wrapper" onclick="openModal()">
+      <div class="vsl-placeholder">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg>
+        </div>
+        <span class="vsl-text">Watch the Free Training</span>
+      </div>
+    </div>
+    <div class="vsl-duration">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      <span>27 min training — no fluff, just the system</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <button class="cta-btn" onclick="openModal()">
+      Get Instant Access
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <p class="cta-note">
+      <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Your info is safe. We never spam.
+    </p>
+  </div>
+</section>
+
+<!-- CREDIBILITY BAR -->
+<section class="credibility-bar">
+  <p class="credibility-label">Trusted by owners in</p>
+  <div class="credibility-logos">
+    <span class="cred-logo">Plumbing & HVAC</span>
+    <span class="cred-logo">Commercial Services</span>
+    <span class="cred-logo">Specialty Lending</span>
+    <span class="cred-logo">Property Services</span>
+    <span class="cred-logo">Logistics & Fleet</span>
+  </div>
+</section>
+
+<!-- PROBLEM SECTION -->
+<section class="problem-section">
+  <p class="section-eyebrow">The Hard Truth</p>
+  <h2>The More Valuable <em>You</em> Are,<br>The Less Valuable Your Business</h2>
+
+  <div class="problem-list">
+    <div class="problem-item">
+      <div class="problem-icon">⚠️</div>
+      <p><strong>You ARE the business.</strong> Every key client, vendor relationship, and operational decision flows through you. Buyers see that — and they discount accordingly.</p>
+    </div>
+    <div class="problem-item">
+      <div class="problem-icon">⚠️</div>
+      <p><strong>Nothing is documented.</strong> Your systems live in your head. If you got hit by a bus tomorrow, your team couldn't run the company for 30 days.</p>
+    </div>
+    <div class="problem-item">
+      <div class="problem-icon">⚠️</div>
+      <p><strong>Your exit window is closing.</strong> Market conditions, your age, industry consolidation — the best time to prepare was 3 years ago. The second best time is today.</p>
+    </div>
+    <div class="problem-item">
+      <div class="problem-icon">⚠️</div>
+      <p><strong>You've built a job, not an asset.</strong> You're generating revenue, but you haven't built transferable value. There's a difference — and buyers know it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="stats-bar">
+  <div class="stat">
+    <div class="stat-number">83%</div>
+    <div class="stat-label">of businesses listed<br>never sell</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">42</div>
+    <div class="stat-label">months — optimal<br>exit prep timeline</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">2–4×</div>
+    <div class="stat-label">valuation lift with<br>documented systems</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-header">
+    <p class="section-eyebrow">Owner Results</p>
+    <h2>What Owners Are Saying</h2>
+  </div>
+
+  <div class="testimonial-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      </div>
+      <p class="testimonial-text">"I thought my business was ready to sell. Jean showed me it was worth 40% less than I assumed — because everything depended on me. We fixed that in 10 months."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">MR</div>
+        <div>
+          <div class="testimonial-name">Service Company Owner</div>
+          <div class="testimonial-role">Commercial HVAC — Houston, TX</div>
+          <div class="testimonial-revenue">$12M annual revenue</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      </div>
+      <p class="testimonial-text">"The diagnostic call alone was worth more than two years of advice from my accountant. Jean sees the blind spots you don't even know you have."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">DH</div>
+        <div>
+          <div class="testimonial-name">Specialty Lending CEO</div>
+          <div class="testimonial-role">Financial Services — Texas</div>
+          <div class="testimonial-revenue">$28M loan portfolio</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      </div>
+      <p class="testimonial-text">"I built this company from nothing. I just never realized that without documentation, I was the single point of failure. The Arena showed me how to change that — systematically."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">TS</div>
+        <div>
+          <div class="testimonial-name">Fleet Operations Owner</div>
+          <div class="testimonial-role">Logistics — Gulf Coast</div>
+          <div class="testimonial-revenue">$8M annual revenue</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <p class="section-eyebrow">Your Next Step</p>
+  <h2>Stop Building a Business<br>That Dies With You</h2>
+  <p>Watch the free training to learn the 3-phase system that turns founder-dependent businesses into transferable, high-value assets buyers compete for.</p>
+  <button class="cta-btn" onclick="openModal()">
+    Watch the Free Training Now
+    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+  <p class="cta-note" style="margin-top: 14px;">
+    <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    Instant access — no credit card required
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The <span>Arena</span> Partners</div>
+  <p class="footer-address">
+    3555 Timmons Lane, Suite 1140<br>
+    Houston, TX 77027
+  </p>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact</a>
+  </div>
+  <p class="footer-disclaimer">
+    &copy; 2026 The Arena Partners / Arena Business Advisors, LLC. All rights reserved. The Arena Partners is an exit advisory firm. We do not sell a business opportunity, "get rich quick" program or money-making system. Results vary based on individual effort, business conditions, and market factors. The Transferable Exit System&trade; and Arena Alignment Guarantee&trade; are trademarks of Arena Business Advisors, LLC. This site is not part of Facebook, Google, or YouTube. FACEBOOK is a trademark of META PLATFORMS, Inc. YOUTUBE is a trademark of GOOGLE LLC.
+  </p>
+</footer>
+
+<!-- OPT-IN MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    <h3>Get Instant Access</h3>
+    <p class="modal-sub">Enter your details below to watch the free Transferable Exit System&trade; training.</p>
+
+    <div class="form-group">
+      <label>First Name</label>
+      <input type="text" id="firstName" placeholder="Jean" />
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="you@company.com" />
+    </div>
+    <div class="form-group">
+      <label>Annual Revenue</label>
+      <select id="revenue">
+        <option value="" disabled selected>Select your range...</option>
+        <option value="under5">Under $5M</option>
+        <option value="5to10">$5M – $10M</option>
+        <option value="10to25">$10M – $25M</option>
+        <option value="25to50">$25M – $50M</option>
+        <option value="over50">$50M+</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Primary Goal</label>
+      <select id="goal">
+        <option value="" disabled selected>What are you preparing for?</option>
+        <option value="exit">Exit / Sell the Business</option>
+        <option value="scale">Scale & Reduce Owner Dependency</option>
+        <option value="succession">Succession / Transition</option>
+        <option value="explore">Just Exploring Options</option>
+      </select>
+    </div>
+
+    <button class="cta-btn" onclick="submitForm()">
+      Watch the Training Now
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+
+    <p class="modal-trust">
+      <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      We never spam or share your information.
+    </p>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function submitForm() {
+    // TODO: Replace with GHL webhook URL
+    // Example: POST to https://services.leadconnectorhq.com/hooks/YOUR_WEBHOOK_ID
+    var firstName = document.getElementById('firstName').value;
+    var email = document.getElementById('email').value;
+    var revenue = document.getElementById('revenue').value;
+    var goal = document.getElementById('goal').value;
+
+    if (!firstName || !email) {
+      alert('Please fill in your name and email.');
+      return;
+    }
+
+    // Placeholder - swap with GHL webhook
+    alert('In production, this submits to GoHighLevel and redirects to the VSL video page.\n\nReplace submitForm() with your GHL webhook URL.');
+    closeModal();
+  }
+
+  // Close modal on overlay click
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>
