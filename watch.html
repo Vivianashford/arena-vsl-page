@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Arena Partners | Free Training: The Transferable Exit System™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --bg-elevated: #1a1a1a;
+    --gold: #c9a84c;
+    --gold-light: #e3c96e;
+    --gold-dark: #a8872e;
+    --gold-glow: rgba(201, 168, 76, 0.15);
+    --gold-subtle: rgba(201, 168, 76, 0.06);
+    --text-primary: #f5f0e8;
+    --text-secondary: #9a9590;
+    --text-muted: #6b6560;
+    --accent-green: #4a9e6e;
+    --white: #ffffff;
+    --border: rgba(201, 168, 76, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ===================== STICKY TOP BAR ===================== */
+  .sticky-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sticky-bar.visible {
+    transform: translateY(0);
+  }
+
+  .sticky-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .sticky-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sticky-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .sticky-logo span { color: var(--gold); }
+
+  .sticky-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+  }
+
+  .sticky-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sticky-text .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74, 158, 110, 0.4); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(74, 158, 110, 0); }
+  }
+
+  .sticky-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--bg-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 16px rgba(201, 168, 76, 0.2);
+  }
+
+  .sticky-cta:hover {
+    box-shadow: 0 4px 24px rgba(201, 168, 76, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .sticky-cta svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--bg-primary);
+  }
+
+  /* ===================== NAV ===================== */
+  nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  /* ===================== HERO / VIDEO SECTION ===================== */
+  .video-hero {
+    position: relative;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 20px 40px;
+    text-align: center;
+  }
+
+  .video-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 500px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-badge {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-green);
+    margin-bottom: 24px;
+    padding: 7px 18px;
+    border: 1px solid rgba(74, 158, 110, 0.25);
+    border-radius: 100px;
+    background: rgba(74, 158, 110, 0.06);
+    animation: fadeInDown 0.6s ease-out;
+  }
+
+  .hero-badge .dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .video-hero h1 {
+    position: relative;
+    z-index: 1;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4.5vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.7s ease-out 0.1s both;
+  }
+
+  .video-hero h1 .gold { color: var(--gold); }
+
+  .video-hero .hero-sub {
+    position: relative;
+    z-index: 1;
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    animation: fadeInUp 0.7s ease-out 0.2s both;
+  }
+
+  .video-hero .hero-sub strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===================== VIDEO PLAYER ===================== */
+  .video-container {
+    position: relative;
+    z-index: 1;
+    max-width: 880px;
+    margin: 0 auto;
+    animation: fadeInUp 0.7s ease-out 0.35s both;
+  }
+
+  .video-frame {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow:
+      0 0 100px rgba(201, 168, 76, 0.06),
+      0 30px 80px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(201, 168, 76, 0.05);
+    background: #000;
+  }
+
+  .video-frame .video-embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .video-frame .video-embed iframe,
+  .video-frame .video-embed video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #0c0c0c 0%, #181410 50%, #0c0c0c 100%);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .video-placeholder:hover {
+    background: linear-gradient(145deg, #0e0e0e 0%, #1c1714 50%, #0e0e0e 100%);
+  }
+
+  .play-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid rgba(201, 168, 76, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .video-placeholder:hover .play-ring {
+    border-color: rgba(201, 168, 76, 0.6);
+    box-shadow: 0 0 50px rgba(201, 168, 76, 0.15);
+  }
+
+  .play-ring::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    transition: transform 0.3s ease;
+  }
+
+  .video-placeholder:hover .play-ring::before {
+    transform: scale(1.05);
+  }
+
+  .play-ring svg {
+    position: relative;
+    z-index: 1;
+    width: 28px;
+    height: 28px;
+    margin-left: 4px;
+    fill: var(--bg-primary);
+  }
+
+  .video-placeholder .vp-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .video-placeholder .vp-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .video-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .video-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .video-meta-item svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-muted);
+    fill: none;
+    stroke-width: 2;
+  }
+
+  /* ===================== BELOW-VIDEO CTA ===================== */
+  .video-cta {
+    position: relative;
+    z-index: 1;
+    max-width: 880px;
+    margin: 44px auto 0;
+    text-align: center;
+    animation: fadeInUp 0.7s ease-out 0.55s both;
+  }
+
+  .video-cta-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .video-cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    height: 250px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .video-cta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .video-cta-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .video-cta-card h3 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .video-cta-card .vcta-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .video-cta-card .vcta-sub strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .vcta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 48px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--bg-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 30px rgba(201, 168, 76, 0.25);
+    position: relative;
+    z-index: 1;
+  }
+
+  .vcta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.4);
+  }
+
+  .vcta-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--bg-primary);
+  }
+
+  .vcta-trust {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .vcta-trust svg {
+    width: 13px;
+    height: 13px;
+    stroke: var(--text-muted);
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .arrow-bridge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 36px auto 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .arrow-bridge .arrow-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--gold), rgba(201, 168, 76, 0.15));
+  }
+
+  .arrow-bridge .arrow-head {
+    animation: bounce-arrow 1.8s ease-in-out infinite;
+  }
+
+  .arrow-bridge .arrow-head svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.3));
+  }
+
+  .arrow-bridge .arrow-label {
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  @keyframes bounce-arrow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ===================== CHAPTER MARKERS ===================== */
+  .chapters {
+    max-width: 880px;
+    margin: 48px auto 0;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 0.7s ease-out 0.5s both;
+  }
+
+  .chapters-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .chapters-header svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .chapters-header span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .chapter-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .chapter-card:hover {
+    border-color: rgba(201, 168, 76, 0.3);
+    background: rgba(201, 168, 76, 0.03);
+  }
+
+  .chapter-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.08);
+    padding: 5px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    min-width: 52px;
+    text-align: center;
+  }
+
+  .chapter-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* ===================== DIVIDER ===================== */
+  .section-divider {
+    max-width: 880px;
+    margin: 64px auto;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .section-divider::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+
+  /* ===================== CTA / BOOKING SECTION ===================== */
+  .booking-section {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .booking-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(201, 168, 76, 0.04), 0 20px 50px rgba(0,0,0,0.3);
+  }
+
+  .booking-top {
+    padding: 48px 48px 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .booking-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 300px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .booking-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .booking-top h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .booking-top h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .booking-top .booking-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .booking-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 560px;
+    margin: 36px auto 0;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(201, 168, 76, 0.03);
+    border: 1px solid rgba(201, 168, 76, 0.08);
+    border-radius: 8px;
+  }
+
+  .benefit-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(74, 158, 110, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .benefit-check svg {
+    width: 11px;
+    height: 11px;
+    stroke: var(--accent-green);
+    fill: none;
+    stroke-width: 2.5;
+  }
+
+  .benefit-item span {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .benefit-item span strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .calendar-embed {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    background: var(--bg-elevated);
+  }
+
+  .calendar-placeholder {
+    min-height: 520px;
+    border: 2px dashed rgba(201, 168, 76, 0.15);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 40px;
+    background: rgba(201, 168, 76, 0.02);
+  }
+
+  .cal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(201, 168, 76, 0.08);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cal-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .calendar-placeholder h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .calendar-placeholder p {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  .calendar-placeholder code {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 10px 20px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+    word-break: break-all;
+  }
+
+  /* ===================== GUARANTEE / TRUST ===================== */
+  .trust-section {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .trust-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .trust-badge {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(201, 168, 76, 0.04);
+  }
+
+  .trust-badge svg {
+    width: 32px;
+    height: 32px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 1.5;
+    margin-bottom: 4px;
+  }
+
+  .trust-badge span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .trust-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .trust-content h3 em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .trust-content p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .trust-content p strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ===================== JEAN'S BIO STRIP ===================== */
+  .bio-section {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .bio-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 44px;
+    display: flex;
+    gap: 36px;
+    align-items: flex-start;
+  }
+
+  .bio-photo {
+    flex-shrink: 0;
+    width: 110px;
+    height: 110px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--bg-primary);
+  }
+
+  .bio-text { flex: 1; }
+
+  .bio-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .bio-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .bio-text p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 12px;
+  }
+
+  .bio-text p strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .bio-stats {
+    display: flex;
+    gap: 28px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .bio-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .bio-stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* ===================== BOTTOM FLOATING CTA ===================== */
+  .floating-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .floating-cta.visible { transform: translateY(0); }
+
+  .floating-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .floating-text {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .floating-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .floating-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--bg-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.25);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .floating-btn:hover {
+    box-shadow: 0 6px 30px rgba(201, 168, 76, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .floating-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--bg-primary);
+  }
+
+  /* ===================== FOOTER ===================== */
+  footer {
+    padding: 48px 20px 36px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-addr {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-disc {
+    font-size: 11px;
+    color: var(--text-muted);
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0.6;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    .video-hero { padding: 40px 16px 30px; }
+    .booking-top { padding: 36px 24px 32px; }
+    .booking-benefits { grid-template-columns: 1fr; }
+    .calendar-embed { padding: 24px; }
+    .calendar-placeholder { min-height: 400px; padding: 24px; }
+    .trust-card { flex-direction: column; text-align: center; padding: 32px 24px; }
+    .bio-card { flex-direction: column; text-align: center; padding: 32px 24px; }
+    .bio-photo { margin: 0 auto; }
+    .bio-stats { justify-content: center; }
+    .booking-section, .trust-section, .bio-section { padding: 0 16px 50px; }
+    .chapters-grid { grid-template-columns: 1fr; }
+    .video-cta-card { padding: 32px 22px; }
+    .vcta-btn { padding: 16px 32px; font-size: 14px; }
+    .sticky-text { display: none; }
+    .sticky-divider { display: none; }
+    .floating-text { display: none; }
+    .floating-inner { justify-content: center; }
+    nav { padding: 18px 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .video-hero h1 { font-size: 26px; }
+    .booking-top h2 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-inner">
+    <div class="sticky-left">
+      <div class="sticky-logo">The <span>Arena</span></div>
+      <div class="sticky-divider"></div>
+      <div class="sticky-text">
+        <span class="live-dot"></span>
+        Free Training
+      </div>
+    </div>
+    <a href="#booking" class="sticky-cta">
+      Book Your Call
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">The <span>Arena</span> Partners</div>
+</nav>
+
+<!-- HERO + VIDEO -->
+<section class="video-hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    You're In — Watch Your Free Training
+  </div>
+
+  <h1>The <span class="gold">Transferable Exit System</span>™</h1>
+
+  <p class="hero-sub">
+    The 3-phase system that turns <strong>founder-dependent</strong> service businesses into <strong>transferable, high-value assets</strong> buyers compete for.
+  </p>
+
+  <!-- VIDEO PLAYER -->
+  <div class="video-container" id="videoSection">
+    <div class="video-frame">
+      <div class="video-embed">
+        <!-- REPLACE WITH ACTUAL VIDEO EMBED -->
+        <div class="video-placeholder" onclick="this.style.display='none'">
+          <div class="play-ring">
+            <svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg>
+          </div>
+          <p class="vp-title">The Transferable Exit System™</p>
+          <p class="vp-sub">Click to play — 27 min training</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-meta">
+      <span class="video-meta-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        27 minutes
+      </span>
+      <span class="video-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        No fluff — just the system
+      </span>
+      <span class="video-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Private — for registered viewers only
+      </span>
+    </div>
+  </div>
+
+  <!-- BELOW-VIDEO CTA -->
+  <div class="video-cta">
+    <div class="video-cta-card">
+      <p class="video-cta-label">Ready After Watching?</p>
+      <h3>Get Your <em>Personalized Assessment</em></h3>
+      <p class="vcta-sub">Book a free 30-minute Exit Readiness Diagnostic. We'll analyze <strong>your specific business</strong>, identify the blind spots holding your valuation down, and map the highest-impact moves to make your company transferable.</p>
+      <a href="#booking" class="vcta-btn">
+        Book Your Diagnostic Call
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <p class="vcta-trust">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        30 minutes · No obligation · No pitch
+      </p>
+    </div>
+
+    <div class="arrow-bridge">
+      <div class="arrow-line"></div>
+      <div class="arrow-head">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </div>
+      <span class="arrow-label">Book below</span>
+    </div>
+  </div>
+
+  <!-- CHAPTER MARKERS -->
+  <div class="chapters">
+    <div class="chapters-header">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Chapter Markers</span>
+    </div>
+    <div class="chapters-grid">
+      <div class="chapter-card">
+        <span class="chapter-time">0:00</span>
+        <span class="chapter-title">Why 83% of businesses listed never sell</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">4:12</span>
+        <span class="chapter-title">The founder dependency trap explained</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">9:30</span>
+        <span class="chapter-title">Phase 1: Diagnose — finding the fractures</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">14:45</span>
+        <span class="chapter-title">Phase 2: Build — systems that transfer</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">19:20</span>
+        <span class="chapter-title">Phase 3: Position — the 42-month model</span>
+      </div>
+      <div class="chapter-card">
+        <span class="chapter-time">24:00</span>
+        <span class="chapter-title">Your next step — the diagnostic call</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- BOOKING SECTION -->
+<section class="booking-section" id="booking">
+  <div class="booking-card">
+    <div class="booking-top">
+      <p class="booking-eyebrow">Your Next Step</p>
+      <h2>Book Your Free<br><em>Exit Readiness Diagnostic</em></h2>
+      <p class="booking-sub">A 30-minute call with our advisory team to walk through your business, identify your blind spots, and map the 2–3 highest-impact moves to increase your transferable value.</p>
+
+      <div class="booking-benefits">
+        <div class="benefit-item">
+          <div class="benefit-check">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span><strong>Personalized</strong> analysis of your owner dependency risk</span>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-check">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span><strong>Honest</strong> assessment of your current transferable value</span>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-check">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span><strong>Clear roadmap</strong> with prioritized next steps</span>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-check">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span><strong>No obligation</strong> — just clarity on where you stand</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR EMBED AREA -->
+    <div class="calendar-embed">
+      <div class="calendar-placeholder" id="calendarArea">
+        <div class="cal-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3>Your Calendar Goes Here</h3>
+        <p>Embed your GHL calendar, Calendly, or SavvyCal widget. Replace this placeholder with your scheduling embed code.</p>
+        <code>&lt;!-- Paste GHL calendar embed here --&gt;</code>
+        <p style="margin-top:12px; font-size:12px; color:var(--text-muted);">
+          GHL: Calendars → Select Calendar → Embed Code → "Iframe Embed"<br>
+          Calendly: Share → Embed → "Inline Embed"
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section class="trust-section">
+  <div class="trust-card">
+    <div class="trust-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Guarantee</span>
+    </div>
+    <div class="trust-content">
+      <h3>The Arena <em>Alignment Guarantee</em>™</h3>
+      <p>If we can't show you at least <strong>2 specific, actionable ways</strong> to increase the transferable value of your business within the first 30 minutes — we'll tell you. No pitch. No pressure. If we're not the right fit, we'll point you to someone who is. Your time is worth more than a sales call disguised as a consultation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BIO -->
+<section class="bio-section">
+  <div class="bio-card">
+    <div class="bio-photo">JH</div>
+    <div class="bio-text">
+      <p class="bio-label">Your Host</p>
+      <h3>Jean Hardy</h3>
+      <p>Co-Founder & Operations Lead at The Arena Partners. Jean built, scaled, and lost businesses before most people had their first job — and watched two fathers build thriving companies that <strong>died the day they did</strong>, because nothing was documented and everything ran through them.</p>
+      <p>That pain became the thesis: <strong>the more valuable you are, the less valuable your business.</strong> Today, Jean and The Arena team help service-based owners at $5M–$50M diagnose founder dependency, build transferable systems, and position for exits that protect their legacy and their wealth.</p>
+      <div class="bio-stats">
+        <div>
+          <div class="bio-stat-num">$5M–50M</div>
+          <div class="bio-stat-label">Client Revenue Range</div>
+        </div>
+        <div>
+          <div class="bio-stat-num">42-mo</div>
+          <div class="bio-stat-label">Exit Prep System</div>
+        </div>
+        <div>
+          <div class="bio-stat-num">3-Phase</div>
+          <div class="bio-stat-label">Transferable Method™</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The <span>Arena</span> Partners</div>
+  <p class="footer-addr">3555 Timmons Lane, Suite 1140 · Houston, TX 77027</p>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact</a>
+  </div>
+  <p class="footer-disc">
+    © 2026 The Arena Partners / Arena Business Advisors, LLC. All rights reserved.
+    The Transferable Exit System™ and Arena Alignment Guarantee™ are trademarks of Arena Business Advisors, LLC.
+    This site is not part of Facebook, Google, or YouTube. Results vary based on individual effort, business conditions, and market factors.
+  </p>
+</footer>
+
+<!-- FLOATING BOTTOM CTA -->
+<div class="floating-cta" id="floatingCta">
+  <div class="floating-inner">
+    <div class="floating-text">
+      <strong>Ready to find out where you stand?</strong>
+      Book your free 30-minute Exit Readiness Diagnostic.
+    </div>
+    <a href="#booking" class="floating-btn">
+      Book Your Call
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<script>
+  const stickyBar = document.getElementById('stickyBar');
+  const floatingCta = document.getElementById('floatingCta');
+  const mainNav = document.getElementById('mainNav');
+  const bookingSection = document.getElementById('booking');
+  let lastScroll = 0;
+
+  function handleScroll() {
+    const scrollY = window.scrollY;
+    const navBottom = mainNav.offsetTop + mainNav.offsetHeight;
+    const bookingTop = bookingSection.offsetTop;
+    const viewportBottom = scrollY + window.innerHeight;
+
+    if (scrollY > navBottom + 100) {
+      stickyBar.classList.add('visible');
+    } else {
+      stickyBar.classList.remove('visible');
+    }
+
+    const videoSection = document.getElementById('videoSection');
+    const videoBottom = videoSection.offsetTop + videoSection.offsetHeight;
+
+    if (scrollY > videoBottom - 200 && viewportBottom < bookingTop + 400) {
+      floatingCta.classList.add('visible');
+    } else {
+      floatingCta.classList.remove('visible');
+    }
+
+    lastScroll = scrollY;
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        const offset = 80;
+        const y = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
