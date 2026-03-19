@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Arena Partners - One Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --gold: #c9a84c;
+    --gold-dim: rgba(201, 168, 76, 0.25);
+    --text: #f5f0e8;
+    --text-dim: rgba(245, 240, 232, 0.6);
+    --text-mid: rgba(245, 240, 232, 0.8);
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10.5px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    max-height: 11in;
+    margin: 0 auto;
+    padding: 0.45in 0.55in 0.35in;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding-bottom: 0.2in;
+    border-bottom: 1.5px solid var(--gold);
+    margin-bottom: 0.18in;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .header .tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* ── SECTIONS ── */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin-bottom: 5px;
+    margin-top: 0.14in;
+  }
+
+  .opportunity {
+    margin-bottom: 0.1in;
+  }
+  .opportunity p {
+    color: var(--text-mid);
+    font-size: 10px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .opportunity .highlight {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── PHASES GRID ── */
+  .phases {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 0.12in;
+  }
+  .phase {
+    border: 1px solid var(--gold-dim);
+    border-top: 2.5px solid var(--gold);
+    padding: 8px 9px 7px;
+    background: rgba(201, 168, 76, 0.04);
+  }
+  .phase-num {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .phase-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .phase-timeline {
+    font-size: 8px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+  .phase ul {
+    list-style: none;
+    padding: 0;
+  }
+  .phase li {
+    font-size: 9px;
+    color: var(--text-mid);
+    line-height: 1.45;
+    padding-left: 8px;
+    position: relative;
+    margin-bottom: 2px;
+  }
+  .phase li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 8px;
+  }
+  .phase .outcome {
+    font-size: 8.5px;
+    color: var(--gold);
+    font-weight: 500;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid var(--gold-dim);
+  }
+
+  /* ── TWO-COLUMN BOTTOM ── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.2in;
+    flex: 1;
+  }
+
+  .col-left, .col-right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── NUMBERS ── */
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 0.12in;
+  }
+  .number-card {
+    text-align: center;
+    padding: 7px 4px;
+    border: 1px solid var(--gold-dim);
+  }
+  .number-card .value {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .number-card .label {
+    font-size: 7.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+
+  /* ── FEES ── */
+  .fee-list {
+    list-style: none;
+    margin-bottom: 0.1in;
+  }
+  .fee-list li {
+    font-size: 9.5px;
+    color: var(--text-mid);
+    padding: 3px 0;
+    padding-left: 10px;
+    position: relative;
+  }
+  .fee-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 8px;
+  }
+  .fee-cta {
+    font-size: 9.5px;
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ── WHO FOR / NOT FOR ── */
+  .who-section { margin-bottom: 0.08in; }
+  .who-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  .who-section li {
+    font-size: 9.5px;
+    color: var(--text-mid);
+    padding: 2px 0 2px 12px;
+    position: relative;
+  }
+  .who-for li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .who-not li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-size: 9px;
+  }
+  .who-not li {
+    color: var(--text-dim);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1.5px solid var(--gold);
+    padding-top: 0.1in;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .footer-left .name {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .footer-left .title {
+    font-size: 8.5px;
+    color: var(--text-dim);
+  }
+  .footer-right {
+    text-align: right;
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .footer-right a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    @page {
+      size: letter;
+      margin: 0;
+    }
+    html, body {
+      width: 8.5in;
+      height: 11in;
+      background: var(--bg) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    .page {
+      page-break-after: avoid;
+      page-break-inside: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>The Arena Partners</h1>
+    <div class="tagline">"You Built Something Great. Now Get What It's Worth."</div>
+  </div>
+
+  <!-- OPPORTUNITY -->
+  <div class="opportunity">
+    <h2>The Opportunity</h2>
+    <p>You've spent 10, 20, 30 years building a business that works. Revenue is strong. Margins are healthy. But the business still runs through you.</p>
+    <p><span class="highlight">That's not a problem - it's the gap between what your business earns and what it's worth.</span></p>
+    <p>The top 20% of exits command 2-3x higher multiples. They all did one thing: they made the business transferable before going to market.</p>
+  </div>
+
+  <!-- TRANSFERABLE EXIT SYSTEM -->
+  <h2>The Transferable Exit System™</h2>
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-num">Phase 1</div>
+      <div class="phase-name">Align</div>
+      <div class="phase-timeline">Weeks 1–4</div>
+      <ul>
+        <li>Vision Traction Workshop (3-day intensive)</li>
+        <li>Founder alignment, VTO, 1/5/90-day plan</li>
+      </ul>
+      <div class="outcome">→ Everyone agrees on where we're going</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">Phase 2</div>
+      <div class="phase-name">Map</div>
+      <div class="phase-timeline">Months 2–4</div>
+      <ul>
+        <li>Process documentation, 7-Element SOPs</li>
+        <li>Revenue concentration analysis</li>
+      </ul>
+      <div class="outcome">→ Buyer sees a system, not a person</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">Phase 3</div>
+      <div class="phase-name">Automate</div>
+      <div class="phase-timeline">Months 4–12</div>
+      <ul>
+        <li>AI deployment: admin, sales, ops</li>
+        <li>Back-office savings up to 50%</li>
+      </ul>
+      <div class="outcome">→ Business runs without the founder</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">Phase 4</div>
+      <div class="phase-name">Transfer</div>
+      <div class="phase-timeline">Months 12–18+</div>
+      <ul>
+        <li>Leadership team takes over</li>
+        <li>6-month founder-free proof period</li>
+      </ul>
+      <div class="outcome">→ Premium multiple, clean exit</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM TWO-COLUMN -->
+  <div class="bottom-grid">
+    <div class="col-left">
+      <!-- THE NUMBERS -->
+      <h2>The Numbers</h2>
+      <div class="numbers-grid">
+        <div class="number-card">
+          <div class="value">1.5–3x</div>
+          <div class="label">Multiple<br>Increase</div>
+        </div>
+        <div class="number-card">
+          <div class="value">15–30%</div>
+          <div class="label">EBITDA Lift via<br>Automation</div>
+        </div>
+        <div class="number-card">
+          <div class="value">18–24mo</div>
+          <div class="label">Start to<br>Market-Ready</div>
+        </div>
+      </div>
+
+      <!-- FEE STRUCTURE -->
+      <h2>Fee Structure</h2>
+      <ul class="fee-list">
+        <li>Monthly retainer (added back to EBITDA at exit)</li>
+        <li>Performance fee on documented EBITDA lift</li>
+        <li>Exit success fee: 3–5% of cash at close</li>
+      </ul>
+      <div class="fee-cta">"We only win when you win."</div>
+    </div>
+
+    <div class="col-right">
+      <!-- WHO THIS IS FOR -->
+      <div class="who-section who-for">
+        <h2>Who This Is For</h2>
+        <ul>
+          <li>Business owners 45+ with $5M–$50M in revenue</li>
+          <li>Service-based, trades, or professional businesses</li>
+          <li>Thinking about exit in 1–5 years</li>
+          <li>Business can't run without them (yet)</li>
+        </ul>
+      </div>
+
+      <!-- WHO THIS IS NOT FOR -->
+      <div class="who-section who-not">
+        <h2>Who This Is Not For</h2>
+        <ul>
+          <li>Owners unwilling to change how they operate</li>
+          <li>Businesses under $3M revenue</li>
+          <li>Anyone looking for a quick flip</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="name">Jean Louis Hardy</div>
+      <div class="title">Managing Partner · The Arena Partners</div>
+      <div class="title">Arena Business Advisors, LLC</div>
+    </div>
+    <div class="footer-right">
+      <a href="https://thearenapartners.com">thearenapartners.com</a><br>
+      support@thearenapartners.com<br>
+      3555 Timmons Lane, Suite 1140, Houston, TX 77027
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
