@@ -1301,7 +1301,7 @@
       }
 
       // Send notification to Jean via GHL note + email with LinkedIn outreach info
-      var leadNote = 'NEW VSL LEAD\nName: ' + firstName + ' ' + lastName + '\nPhone: ' + phone + '\nEmail: ' + email + '\nRevenue: ' + (revenueLabels[revenue] || 'N/A') + '\nGoal: ' + (goalLabels[goal] || 'N/A') + '\nSource: Arena VSL Page\nTime: ' + new Date().toLocaleString('en-US', {timeZone: 'America/Chicago'}) + '\n\nLINKEDIN OUTREACH:\nSearch: ' + firstName + ' ' + lastName + '\nMessage: "Hi ' + firstName + ', I saw you checked out our training on exit strategy. Looking forward to connecting. — Jean"';
+      var leadNote = 'NEW VSL LEAD\nName: ' + firstName + ' ' + lastName + '\nPhone: ' + phone + '\nEmail: ' + email + '\nRevenue: ' + (revenueLabels[revenue] || 'N/A') + '\nGoal: ' + (goalLabels[goal] || 'N/A') + '\nSource: Arena VSL Page\nTime: ' + new Date().toLocaleString('en-US', {timeZone: 'America/Chicago'}) + '\n\nLINKEDIN OUTREACH:\nSearch: ' + firstName + ' ' + lastName + '\nMessage: Hi ' + firstName + ', I saw you checked out our training on exit strategy. Looking forward to connecting. - Jean';
 
       fetch('https://services.leadconnectorhq.com/contacts/' + contactId + '/notes', {
         method: 'POST',
@@ -1322,7 +1322,7 @@
         '<div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:16px;margin:16px 0;">' +
         '<p style="color:#c9a84c;font-weight:700;margin-top:0;">LinkedIn Outreach (copy-paste):</p>' +
         '<p style="color:#9a9590;">Search: <strong style="color:#f5f0e8;">' + firstName + ' ' + lastName + '</strong></p>' +
-        '<p style="color:#9a9590;margin:0;">"Hi ' + firstName + ', I saw you checked out our training on exit strategy. Looking forward to connecting. \u2014 Jean"</p>' +
+        '<p style="color:#9a9590;margin:0;">Hi ' + firstName + ', I saw you checked out our training on exit strategy. Looking forward to connecting. - Jean</p>' +
         '</div>' +
         '<p style="color:#6b6560;font-size:11px;margin-top:20px;">Arena Follow-Up System</p></div>';
 
