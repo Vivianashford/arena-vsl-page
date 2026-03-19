@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service | The Arena Partners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --gold: #c9a84c;
+    --gold-light: #e3c96e;
+    --text-primary: #f5f0e8;
+    --text-secondary: #9a9590;
+    --text-muted: #6b6560;
+    --border: rgba(201, 168, 76, 0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.7;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-back {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--gold); }
+  .content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 20px 80px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .last-updated {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 40px 0 14px;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 24px 0 10px;
+  }
+  p { margin-bottom: 14px; font-size: 15px; }
+  ul, ol { margin: 0 0 14px 20px; font-size: 15px; }
+  li { margin-bottom: 6px; }
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--text-primary); font-weight: 600; }
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+  .highlight-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  footer {
+    padding: 48px 20px 36px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-addr { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+  .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-disc {
+    font-size: 11px;
+    color: var(--text-muted);
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0.6;
+  }
+  @media (max-width: 768px) {
+    nav { padding: 18px 16px; }
+    .content { padding: 40px 16px 60px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">The <span>Arena</span> Partners</a>
+  <a href="index.html" class="nav-back">&larr; Back to Home</a>
+</nav>
+
+<div class="content">
+  <h1>Terms of Service</h1>
+  <p class="last-updated">Last Updated: March 19, 2026</p>
+
+  <p>These Terms of Service ("Terms") govern your use of the website, services, and materials provided by Arena Business Advisors, LLC (dba "The Arena Partners," "we," "us," or "our"). By accessing our website or engaging our services, you agree to be bound by these Terms.</p>
+
+  <h2>1. Services Description</h2>
+  <p>The Arena Partners provides exit advisory and management consulting services for business owners, including but not limited to:</p>
+  <ul>
+    <li>Exit readiness assessments and diagnostic consultations</li>
+    <li>Business systems documentation and process optimization</li>
+    <li>Owner dependency reduction strategies</li>
+    <li>Transferable value development</li>
+    <li>Exit planning and preparation advisory</li>
+    <li>Educational content, trainings, and workshops</li>
+  </ul>
+
+  <div class="highlight-box">
+    <p style="margin-bottom:0;"><strong>Important:</strong> Our services constitute business advisory and management consulting only. We do <strong>not</strong> provide financial advice, legal advice, tax advice, accounting services, or licensed brokerage services. We are not a registered investment advisor, broker-dealer, or law firm. You should consult qualified professionals for financial, legal, and tax matters related to your business exit.</p>
+  </div>
+
+  <h2>2. No Guarantee of Results</h2>
+  <p>While we provide strategic advisory based on proven frameworks and methodologies, <strong>we make no guarantees regarding specific business outcomes, valuations, sale prices, or financial results.</strong></p>
+  <p>Results vary based on individual effort, business conditions, market factors, industry dynamics, and countless variables outside our control. Any testimonials, case studies, or examples on our website represent individual results and should not be interpreted as typical or guaranteed outcomes.</p>
+
+  <div class="highlight-box">
+    <p style="margin-bottom:0;"><strong>Earnings Disclaimer:</strong> The Arena Partners does not sell a business opportunity, "get rich quick" program, or money-making system. We provide advisory services to help business owners prepare for and maximize their exits. Your results depend on your business, your market, your effort, and your execution. Past client results are not a guarantee of your future performance.</p>
+  </div>
+
+  <h2>3. Intellectual Property</h2>
+  <p>All content, methodologies, frameworks, training materials, assessments, and deliverables provided by The Arena Partners are protected by intellectual property laws.</p>
+  <ul>
+    <li><strong>Transferable Exit System™</strong> is a trademark of Arena Business Advisors, LLC.</li>
+    <li><strong>Arena Alignment Guarantee™</strong> is a trademark of Arena Business Advisors, LLC.</li>
+    <li>All written materials, presentations, assessments, reports, and training content are copyrighted works of Arena Business Advisors, LLC.</li>
+  </ul>
+  <p>You may not reproduce, distribute, modify, create derivative works from, publicly display, or commercially exploit any of our proprietary content without prior written consent.</p>
+  <p>Client-specific deliverables (e.g., your personalized assessment report) are provided for your internal business use only and may not be shared publicly or used by competing advisory firms.</p>
+
+  <h2>4. Payment Terms</h2>
+
+  <h3>Engagement Fees</h3>
+  <p>Fees for our advisory services are outlined in your individual engagement agreement. All fees are quoted in US Dollars and are due according to the payment schedule specified in your agreement.</p>
+
+  <h3>Success Fees</h3>
+  <p>Certain engagements may include success-based fees tied to specific outcomes (e.g., completed exit transaction). Success fee terms, percentages, and conditions are defined in your individual engagement agreement.</p>
+
+  <h3>Payment Processing</h3>
+  <p>Payments are processed securely through Stripe. By providing payment information, you authorize us to charge the agreed-upon amounts according to the terms of your engagement agreement.</p>
+
+  <h3>Refunds</h3>
+  <p>Refund policies are specified in individual engagement agreements. Free consultations and diagnostic calls carry no financial obligation.</p>
+
+  <h2>5. Client Responsibilities</h2>
+  <p>As a client, you agree to:</p>
+  <ul>
+    <li>Provide accurate and complete business information for assessments and advisory work.</li>
+    <li>Maintain confidentiality of proprietary frameworks and materials shared during the engagement.</li>
+    <li>Make timely decisions and provide feedback as requested to maintain engagement momentum.</li>
+    <li>Understand that our recommendations are advisory in nature and that all business decisions remain your responsibility.</li>
+  </ul>
+
+  <h2>6. Confidentiality</h2>
+  <p>We treat all client business information as confidential. We will not disclose your business details, financial information, or engagement specifics to third parties without your consent, except as required by law.</p>
+  <p>Similarly, you agree to maintain confidentiality regarding our proprietary methodologies, internal processes, and engagement terms.</p>
+
+  <h2>7. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by applicable law:</p>
+  <ul>
+    <li>The Arena Partners' total liability for any claims arising from our services shall not exceed the total fees paid by you in the 12 months preceding the claim.</li>
+    <li>We shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, business opportunities, or data.</li>
+    <li>We are not liable for decisions you make based on our advisory recommendations, market conditions, buyer behavior, or any factors outside our direct control.</li>
+  </ul>
+  <p>Our advisory services are provided "as is" and we disclaim all warranties, express or implied, including warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+
+  <h2>8. Indemnification</h2>
+  <p>You agree to indemnify and hold harmless Arena Business Advisors, LLC, its officers, directors, employees, and agents from any claims, damages, losses, or expenses (including reasonable attorney fees) arising from your use of our services, your breach of these Terms, or your violation of any third-party rights.</p>
+
+  <h2>9. Dispute Resolution &amp; Arbitration</h2>
+  <p>Any dispute, controversy, or claim arising out of or relating to these Terms, our services, or the relationship between you and The Arena Partners shall be resolved through the following process:</p>
+  <ol>
+    <li><strong>Informal Resolution:</strong> The parties shall first attempt to resolve disputes informally by contacting each other directly. You agree to contact us at <a href="mailto:support@thearenapartners.com">support@thearenapartners.com</a> before initiating any formal proceeding.</li>
+    <li><strong>Binding Arbitration:</strong> If informal resolution fails within 30 days, disputes shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules. Arbitration shall be conducted in Houston, Texas by a single arbitrator.</li>
+    <li><strong>Class Action Waiver:</strong> You agree that any dispute resolution will be conducted on an individual basis and not as a class action, collective action, or representative proceeding.</li>
+  </ol>
+
+  <h2>10. Governing Law</h2>
+  <p>These Terms shall be governed by and construed in accordance with the laws of the <strong>State of Texas</strong>, without regard to its conflict of law provisions. Any proceedings not subject to arbitration shall be brought exclusively in the state or federal courts located in Harris County, Texas.</p>
+
+  <h2>11. Termination</h2>
+  <p>Either party may terminate an engagement as specified in the individual engagement agreement. We reserve the right to terminate or suspend access to our website or services at any time for violations of these Terms.</p>
+  <p>Sections relating to intellectual property, limitation of liability, indemnification, arbitration, and governing law shall survive termination.</p>
+
+  <h2>12. Modifications</h2>
+  <p>We may update these Terms from time to time. Changes will be posted on this page with an updated "Last Updated" date. Your continued use of our website or services after changes constitutes acceptance of the updated Terms.</p>
+
+  <h2>13. Severability</h2>
+  <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
+
+  <h2>14. Contact</h2>
+  <p>For questions about these Terms, contact us at:</p>
+  <p>
+    <strong>Arena Business Advisors, LLC</strong><br>
+    dba The Arena Partners<br>
+    3555 Timmons Lane, Suite 1140<br>
+    Houston, TX 77027<br>
+    Email: <a href="mailto:support@thearenapartners.com">support@thearenapartners.com</a><br>
+    Phone: <a href="tel:7133447420">713-344-7420</a>
+  </p>
+</div>
+
+<footer>
+  <div class="footer-logo">The <span>Arena</span> Partners</div>
+  <p class="footer-addr">3555 Timmons Lane, Suite 1140 · Houston, TX 77027</p>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <p class="footer-disc">
+    © 2026 The Arena Partners / Arena Business Advisors, LLC. All rights reserved.
+    The Transferable Exit System™ and Arena Alignment Guarantee™ are trademarks of Arena Business Advisors, LLC.
+  </p>
+  <p class="footer-disc" style="margin-top:12px;">
+    This site is not a part of the Facebook™ website or Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of META PLATFORMS, Inc.
+  </p>
+  <p class="footer-disc" style="margin-top:8px;">
+    This site is not a part of the Google™/YouTube™ website or Google LLC. Additionally, this site is NOT endorsed by Google in any way. GOOGLE and YOUTUBE are trademarks of GOOGLE, LLC.
+  </p>
+  <p class="footer-disc" style="margin-top:8px;">
+    IMPORTANT: Earnings and income representations made by The Arena Partners and their advertisers/sponsors are aspirational statements only of your earnings potential. These results are not typical and results will vary. The results on this page are OUR results and from years of testing. We can in NO way guarantee you will get similar results.
+  </p>
+</footer>
+
+</body>
+</html>

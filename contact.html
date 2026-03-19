@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us | The Arena Partners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --bg-elevated: #1a1a1a;
+    --gold: #c9a84c;
+    --gold-light: #e3c96e;
+    --gold-dark: #a8872e;
+    --gold-glow: rgba(201, 168, 76, 0.15);
+    --text-primary: #f5f0e8;
+    --text-secondary: #9a9590;
+    --text-muted: #6b6560;
+    --accent-green: #4a9e6e;
+    --border: rgba(201, 168, 76, 0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.7;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-back {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--gold); }
+  .hero {
+    text-align: center;
+    padding: 60px 20px 0;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 400px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    line-height: 1.2;
+    position: relative;
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 50px 20px 80px;
+  }
+  .info-section { display: flex; flex-direction: column; gap: 24px; }
+  .info-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+  .info-card:hover { border-color: rgba(201, 168, 76, 0.3); }
+  .info-card .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(201, 168, 76, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .info-card .icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 2;
+  }
+  .info-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .info-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .info-card a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .info-card a:hover { text-decoration: underline; }
+  .form-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px;
+  }
+  .form-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .form-section .form-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: var(--text-muted);
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-group textarea {
+    min-height: 120px;
+  }
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--bg-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 24px rgba(201, 168, 76, 0.2);
+    width: 100%;
+    justify-content: center;
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(201, 168, 76, 0.35);
+  }
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .submit-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--bg-primary);
+  }
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .form-success .check-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(74, 158, 110, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .form-success .check-circle svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--accent-green);
+    fill: none;
+    stroke-width: 2;
+  }
+  .form-success h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .form-success p {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  footer {
+    padding: 48px 20px 36px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-addr { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+  .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-disc {
+    font-size: 11px;
+    color: var(--text-muted);
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0.6;
+  }
+  @media (max-width: 768px) {
+    nav { padding: 18px 16px; }
+    .hero { padding: 40px 16px 0; }
+    h1 { font-size: 28px; }
+    .hero-sub { font-size: 15px; }
+    .contact-grid {
+      grid-template-columns: 1fr;
+      padding: 36px 16px 60px;
+      gap: 24px;
+    }
+    .form-section { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">The <span>Arena</span> Partners</a>
+  <a href="index.html" class="nav-back">&larr; Back to Home</a>
+</nav>
+
+<div class="hero">
+  <h1>Get in Touch</h1>
+  <p class="hero-sub">Have a question about your exit strategy, our services, or just want to connect? We'd love to hear from you.</p>
+</div>
+
+<div class="contact-grid">
+  <div class="info-section">
+    <div class="info-card">
+      <div class="icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <h3>Email</h3>
+      <p><a href="mailto:support@thearenapartners.com">support@thearenapartners.com</a></p>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:6px;">We respond within 1 business day.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="icon">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <h3>Phone</h3>
+      <p><a href="tel:7133447420">713-344-7420</a></p>
+    </div>
+
+    <div class="info-card">
+      <div class="icon">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <h3>Office</h3>
+      <p>3555 Timmons Lane, Suite 1140<br>Houston, TX 77027</p>
+    </div>
+
+    <div class="info-card">
+      <div class="icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>Business Hours</h3>
+      <p>Monday – Friday: 9:00 AM – 5:00 PM CT<br>
+      Saturday – Sunday: Closed</p>
+    </div>
+  </div>
+
+  <div class="form-section" id="contactFormSection">
+    <h2>Send Us a Message</h2>
+    <p class="form-sub">We'll get back to you within one business day.</p>
+
+    <form id="contactForm" onsubmit="submitContactForm(event)">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="contactName" placeholder="Full name" required />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="contactEmail" placeholder="you@company.com" required />
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="contactMessage" placeholder="How can we help?" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Send Message
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+
+    <div class="form-success" id="formSuccess">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3>Message Sent</h3>
+      <p>Thanks for reaching out. We'll get back to you within one business day.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">The <span>Arena</span> Partners</div>
+  <p class="footer-addr">3555 Timmons Lane, Suite 1140 · Houston, TX 77027</p>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <p class="footer-disc">
+    © 2026 The Arena Partners / Arena Business Advisors, LLC. All rights reserved.
+    The Transferable Exit System™ and Arena Alignment Guarantee™ are trademarks of Arena Business Advisors, LLC.
+  </p>
+  <p class="footer-disc" style="margin-top:12px;">
+    This site is not a part of the Facebook™ website or Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of META PLATFORMS, Inc.
+  </p>
+  <p class="footer-disc" style="margin-top:8px;">
+    This site is not a part of the Google™/YouTube™ website or Google LLC. Additionally, this site is NOT endorsed by Google in any way. GOOGLE and YOUTUBE are trademarks of GOOGLE, LLC.
+  </p>
+  <p class="footer-disc" style="margin-top:8px;">
+    IMPORTANT: Earnings and income representations made by The Arena Partners and their advertisers/sponsors are aspirational statements only of your earnings potential. These results are not typical and results will vary. The results on this page are OUR results and from years of testing. We can in NO way guarantee you will get similar results.
+  </p>
+</footer>
+
+<script>
+function submitContactForm(e) {
+  e.preventDefault();
+
+  var name = document.getElementById('contactName').value;
+  var email = document.getElementById('contactEmail').value;
+  var message = document.getElementById('contactMessage').value;
+  var btn = document.getElementById('submitBtn');
+
+  if (!name || !email || !message) return;
+
+  btn.innerHTML = 'Sending...';
+  btn.disabled = true;
+
+  var ghlHeaders = {
+    'Authorization': 'Bearer pit-dae24b14-bb90-43ab-bfaf-3f227b47be50',
+    'Version': '2021-07-28',
+    'Content-Type': 'application/json'
+  };
+
+  // Create/upsert contact in GHL
+  fetch('https://services.leadconnectorhq.com/contacts/upsert', {
+    method: 'POST',
+    headers: ghlHeaders,
+    body: JSON.stringify({
+      firstName: name.split(' ')[0],
+      lastName: name.split(' ').slice(1).join(' ') || '',
+      email: email,
+      locationId: 'LSvdgiiT7ManCRx9CCwE',
+      source: 'Contact Page',
+      tags: ['contact-form']
+    })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    var contactId = data.contact ? data.contact.id : (data.contactId || null);
+    if (contactId) {
+      // Add note with the message
+      fetch('https://services.leadconnectorhq.com/contacts/' + contactId + '/notes', {
+        method: 'POST',
+        headers: ghlHeaders,
+        body: JSON.stringify({
+          body: 'CONTACT FORM MESSAGE\n\nFrom: ' + name + ' (' + email + ')\nTime: ' + new Date().toLocaleString('en-US', {timeZone: 'America/Chicago'}) + '\n\nMessage:\n' + message
+        })
+      });
+    }
+  })
+  .catch(function(err) { console.error('GHL error:', err); });
+
+  // Show success state
+  setTimeout(function() {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
