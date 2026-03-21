@@ -3,8 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>TRANSFERABLE - Jean Louis Hardy</title>
+<title>TRANSFERABLE - Jean Louis Hardy | The Arena Partners</title>
+
+<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23C9A84C'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='18' font-family='Georgia' fill='%230A0A0A' font-weight='bold'%3ET%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='20' fill='%23C9A84C'/%3E%3Ctext x='90' y='125' text-anchor='middle' font-size='100' font-family='Georgia' fill='%230A0A0A' font-weight='bold'%3ET%3C/text%3E%3C/svg%3E">
+
+<!-- SEO + Open Graph -->
+<meta name="description" content="TRANSFERABLE by Jean Louis Hardy. The playbook behind every premium business exit. Why the best operators own the least valuable businesses.">
+<meta name="author" content="Jean Louis Hardy">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="TRANSFERABLE - Read the Book">
+<meta property="og:description" content="Why the best operators own the least valuable businesses. The playbook behind every premium exit. By Jean Louis Hardy, Founder of The Arena Partners.">
+<meta property="og:image" content="https://thearenapartners.com/book-cover.png">
+<meta property="og:url" content="https://thearenapartners.com/book.html">
+<meta property="og:type" content="book">
+<meta property="og:site_name" content="The Arena Partners">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TRANSFERABLE - Read the Book">
+<meta name="twitter:description" content="Why the best operators own the least valuable businesses. By Jean Louis Hardy.">
+<meta name="twitter:image" content="https://thearenapartners.com/book-cover.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -20,244 +39,163 @@ body{
   background:#E8E4DE;color:var(--ink);
   -webkit-font-smoothing:antialiased;
   overflow:hidden;height:100vh;
-  user-select:none;-webkit-user-select:none;
 }
 
-/* ── Book Shell ── */
-.book-shell{
-  display:flex;flex-direction:column;
-  height:100vh;background:#E8E4DE;
-}
+/* -- Book Shell -- */
+.book-shell{display:flex;flex-direction:column;height:100vh;background:#E8E4DE}
 
-/* ── Top Bar ── */
+/* -- Top Bar -- */
 .top-bar{
   display:flex;align-items:center;justify-content:space-between;
   padding:12px 24px;background:var(--spine);
-  border-bottom:2px solid var(--gold-dark);
-  flex-shrink:0;z-index:100;
+  border-bottom:2px solid var(--gold-dark);flex-shrink:0;z-index:100;
 }
-.top-bar .book-title{
-  font-family:'Playfair Display',serif;font-size:14px;
-  color:var(--gold);letter-spacing:2px;text-transform:uppercase;
-  font-weight:600;
-}
-.top-bar .author{
-  font-family:'DM Sans',sans-serif;font-size:12px;
-  color:#8a8078;letter-spacing:0.5px;
-}
-.top-bar .progress-wrap{
-  display:flex;align-items:center;gap:10px;
-}
-.progress-bar{
-  width:120px;height:3px;background:rgba(255,255,255,0.1);
-  border-radius:2px;overflow:hidden;
-}
-.progress-fill{
-  height:100%;background:var(--gold);border-radius:2px;
-  transition:width 0.4s ease;
-}
-.progress-pct{
-  font-family:'DM Sans',sans-serif;font-size:11px;color:#6a6560;
-}
+.top-bar .book-title{font-family:'Playfair Display',serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.top-bar .author{font-family:'DM Sans',sans-serif;font-size:12px;color:#8a8078;letter-spacing:0.5px}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{width:120px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 0.4s ease}
+.progress-pct{font-family:'DM Sans',sans-serif;font-size:11px;color:#6a6560}
+.font-controls{display:flex;align-items:center;gap:8px}
+.font-btn{width:28px;height:28px;border-radius:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:#8a8078;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-weight:600}
+.font-btn:hover{background:rgba(255,255,255,0.15);color:var(--gold)}
 
-/* ── Page Area ── */
-.page-area{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  padding:20px;overflow:hidden;position:relative;
-}
+/* -- Page Area -- */
+.page-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;position:relative}
 
-/* ── The Book ── */
-.book{
-  width:100%;max-width:var(--reading-width);
-  height:100%;max-height:880px;
-  position:relative;perspective:1800px;
-}
+/* -- The Book -- */
+.book{width:100%;max-width:var(--reading-width);height:100%;max-height:880px;position:relative;perspective:2500px}
 
+/* -- Page -- */
 .page{
-  position:absolute;inset:0;
-  background:var(--paper);
+  position:absolute;inset:0;background:var(--paper);
   border-radius:2px 8px 8px 2px;
-  box-shadow:
-    4px 4px 20px var(--page-shadow),
-    1px 0 0 rgba(0,0,0,0.05),
-    inset -2px 0 8px rgba(0,0,0,0.02);
   padding:48px 56px 60px 56px;
   overflow-y:auto;overflow-x:hidden;
-  transition:transform 0.5s ease, opacity 0.3s ease;
   -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(184,148,62,0.2) transparent;
+  scrollbar-width:thin;scrollbar-color:rgba(184,148,62,0.2) transparent;
 }
 .page::-webkit-scrollbar{width:4px}
 .page::-webkit-scrollbar-track{background:transparent}
 .page::-webkit-scrollbar-thumb{background:rgba(184,148,62,0.25);border-radius:2px}
 
-/* Spine edge */
-.page::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;
-  width:3px;background:linear-gradient(to right,rgba(0,0,0,0.06),transparent);
-}
+/* Spine shadow */
+.page::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to right,rgba(0,0,0,0.06),transparent);z-index:2}
 
-/* Page texture */
+/* Paper texture */
 .page::after{
   content:'';position:absolute;inset:0;pointer-events:none;
   background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
-  border-radius:inherit;
+  border-radius:inherit;z-index:1;
 }
 
-/* Page turn animations - realistic book flip */
-.page{
-  transform-origin:left center;
-  transition:transform 0.7s cubic-bezier(0.645,0.045,0.355,1.000), opacity 0.5s ease, box-shadow 0.7s ease;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-}
-
-/* Forward: page lifts from right edge and folds over to the left like turning a real page */
-.page.flip-out-forward{
-  transform-origin:left center;
-  transform:perspective(2000px) rotateY(-120deg) scale(0.95);
-  opacity:0;
-  box-shadow:-20px 0 40px rgba(0,0,0,0.15), -5px 0 15px rgba(0,0,0,0.08);
-}
-
-/* Backward: page lifts from left edge and folds back to the right */
-.page.flip-out-backward{
-  transform-origin:right center;
-  transform:perspective(2000px) rotateY(120deg) scale(0.95);
-  opacity:0;
-  box-shadow:20px 0 40px rgba(0,0,0,0.15), 5px 0 15px rgba(0,0,0,0.08);
-}
-
-/* New page coming in from the right (forward navigation) */
-.page.flip-in-forward{
-  transform-origin:right center;
-  transform:perspective(2000px) rotateY(90deg) scale(0.95);
-  opacity:0;
-}
-
-/* New page coming in from the left (backward navigation) */
-.page.flip-in-backward{
-  transform-origin:left center;
-  transform:perspective(2000px) rotateY(-90deg) scale(0.95);
-  opacity:0;
-}
-
-/* Settled state */
-.page.enter{
-  transform:perspective(2000px) rotateY(0deg) scale(1);
-  opacity:1;
+/* Page shadow when settled */
+.page.settled{
   box-shadow:4px 4px 20px var(--page-shadow),1px 0 0 rgba(0,0,0,0.05),inset -2px 0 8px rgba(0,0,0,0.02);
 }
 
-/* Page fold shadow overlay during flip */
-.page-shadow-overlay{
-  position:absolute;inset:0;pointer-events:none;z-index:10;
-  background:linear-gradient(to right,rgba(0,0,0,0.08) 0%,transparent 15%,transparent 85%,rgba(0,0,0,0.03) 100%);
-  opacity:0;transition:opacity 0.5s;border-radius:inherit;
+/* -- Page Flip Keyframes -- */
+@keyframes flipForwardOut {
+  0%   { transform:rotateY(0deg);    box-shadow:4px 4px 20px rgba(0,0,0,0.08); }
+  30%  { transform:rotateY(-40deg);  box-shadow:-10px 4px 30px rgba(0,0,0,0.15); }
+  100% { transform:rotateY(-110deg); box-shadow:-2px 0 8px rgba(0,0,0,0.05); opacity:0; }
 }
-.page.flip-out-forward .page-shadow-overlay,
-.page.flip-out-backward .page-shadow-overlay{opacity:1}
-
-/* Subtle page curl hint on hover */
-.page.enter:hover{
-  box-shadow:4px 4px 20px var(--page-shadow),1px 0 0 rgba(0,0,0,0.05),inset -2px 0 8px rgba(0,0,0,0.02),-2px 2px 8px rgba(0,0,0,0.04);
+@keyframes flipForwardIn {
+  0%   { transform:rotateY(110deg);  opacity:0; }
+  50%  { transform:rotateY(30deg);   opacity:1; box-shadow:10px 4px 25px rgba(0,0,0,0.12); }
+  100% { transform:rotateY(0deg);    box-shadow:4px 4px 20px rgba(0,0,0,0.08); }
+}
+@keyframes flipBackwardOut {
+  0%   { transform:rotateY(0deg);    box-shadow:4px 4px 20px rgba(0,0,0,0.08); }
+  30%  { transform:rotateY(40deg);   box-shadow:10px 4px 30px rgba(0,0,0,0.15); }
+  100% { transform:rotateY(110deg);  box-shadow:2px 0 8px rgba(0,0,0,0.05); opacity:0; }
+}
+@keyframes flipBackwardIn {
+  0%   { transform:rotateY(-110deg); opacity:0; }
+  50%  { transform:rotateY(-30deg);  opacity:1; box-shadow:-10px 4px 25px rgba(0,0,0,0.12); }
+  100% { transform:rotateY(0deg);    box-shadow:4px 4px 20px rgba(0,0,0,0.08); }
 }
 
-/* ── Typography ── */
-.page-content{position:relative;z-index:1;user-select:text;-webkit-user-select:text;}
+.page.flip-fwd-out{
+  transform-origin:left center;
+  animation:flipForwardOut 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+.page.flip-fwd-in{
+  transform-origin:right center;
+  animation:flipForwardIn 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+.page.flip-bwd-out{
+  transform-origin:right center;
+  animation:flipBackwardOut 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+.page.flip-bwd-in{
+  transform-origin:left center;
+  animation:flipBackwardIn 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+}
 
-.chapter-label{
+/* -- Typography -- */
+.page-content{position:relative;z-index:3;user-select:text;-webkit-user-select:text}
+.chapter-label{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600}
+.chapter-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,36px);font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:32px}
+.chapter-divider{width:60px;height:2px;background:var(--gold);margin:0 0 32px;border-radius:1px}
+.book-paragraph{font-size:17px;line-height:1.85;color:var(--ink-light);margin-bottom:18px;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.book-paragraph:first-of-type::first-letter{font-family:'Playfair Display',serif;font-size:3.2em;float:left;line-height:0.8;margin:4px 10px 0 0;color:var(--gold-dark);font-weight:700}
+
+/* -- Welcome + TOC Page -- */
+.welcome-page{height:100%;display:flex;flex-direction:column}
+.welcome-header{text-align:center;padding-bottom:24px;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:20px}
+.welcome-header .ded-to{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:600}
+.welcome-header .ded-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--ink);margin-bottom:12px}
+.welcome-header .ded-message{font-family:'Source Serif 4',serif;font-size:15px;line-height:1.7;color:var(--ink-light);font-style:italic;max-width:400px;margin:0 auto 12px}
+.welcome-header .ded-sig{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--ink);margin-bottom:2px}
+.welcome-header .ded-role{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink-light)}
+
+/* TOC in welcome page */
+.toc-inline{flex:1;overflow-y:auto}
+.toc-inline h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);margin-bottom:14px;font-weight:700}
+.toc-list{list-style:none;padding:0}
+.toc-list li{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.04);cursor:pointer;transition:color 0.15s}
+.toc-list li:hover{color:var(--gold-dark)}
+.toc-list li:last-child{border-bottom:none}
+.toc-list .toc-num{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--gold);min-width:24px;font-weight:600}
+.toc-list .toc-label{font-size:14px;color:var(--ink-light);line-height:1.4;flex:1}
+.toc-list .toc-dots{flex:1;border-bottom:1px dotted rgba(0,0,0,0.1);min-width:20px;margin:0 8px;align-self:center}
+.toc-list .toc-pg{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--gold);font-weight:500}
+.toc-list li.part-entry{margin-top:12px}
+.toc-list li.part-entry .toc-label{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--ink)}
+
+/* Cover pages */
+.cover-page{position:absolute;inset:0;overflow:hidden}
+.cover-page img{width:100%;height:100%;object-fit:cover}
+
+/* Part divider */
+.part-page{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%}
+.part-page .part-label{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:600}
+.part-page h2{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,40px);font-weight:700;color:var(--ink);line-height:1.2}
+
+/* -- Chapter Nav Bar (top of reader) -- */
+.chapter-bar{
+  display:flex;gap:4px;overflow-x:auto;padding:2px 0 8px;margin-bottom:4px;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.chapter-bar::-webkit-scrollbar{display:none}
+.chapter-bar .cb-item{
+  flex-shrink:0;padding:4px 10px;border-radius:4px;
   font-family:'DM Sans',sans-serif;font-size:11px;
-  letter-spacing:3px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:8px;font-weight:600;
+  color:var(--ink-light);cursor:pointer;transition:all 0.15s;
+  white-space:nowrap;background:rgba(0,0,0,0.03);border:1px solid transparent;
 }
-.chapter-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(26px,4vw,36px);font-weight:700;
-  color:var(--ink);line-height:1.2;margin-bottom:32px;
-}
-.chapter-title em{font-style:italic;color:var(--gold-dark)}
+.chapter-bar .cb-item:hover{background:rgba(184,148,62,0.08);color:var(--gold-dark)}
+.chapter-bar .cb-item.active{background:rgba(184,148,62,0.12);color:var(--gold-dark);border-color:rgba(184,148,62,0.2);font-weight:600}
+.chapter-bar .cb-item.part{font-weight:600;color:var(--ink)}
 
-.chapter-divider{
-  width:60px;height:2px;background:var(--gold);
-  margin:0 0 32px;border-radius:1px;
-}
-
-.book-paragraph{
-  font-size:17px;line-height:1.85;color:var(--ink-light);
-  margin-bottom:18px;text-align:justify;
-  hyphens:auto;-webkit-hyphens:auto;
-}
-.book-paragraph:first-of-type::first-letter{
-  font-family:'Playfair Display',serif;
-  font-size:3.2em;float:left;line-height:0.8;
-  margin:4px 10px 0 0;color:var(--gold-dark);
-  font-weight:700;
-}
-
-/* Title page */
-.title-page{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;height:100%;
-}
-.title-page .tp-label{
-  font-family:'DM Sans',sans-serif;font-size:11px;
-  letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:24px;
-}
-.title-page h1{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(36px,6vw,52px);font-weight:700;
-  color:var(--ink);line-height:1.1;margin-bottom:12px;
-  letter-spacing:-0.5px;
-}
-.title-page .tp-sub{
-  font-family:'Playfair Display',serif;
-  font-size:16px;font-style:italic;color:var(--ink-light);
-  margin-bottom:40px;max-width:380px;line-height:1.5;
-}
-.title-page .tp-rule{
-  width:60px;height:2px;background:var(--gold);
-  margin:0 auto 24px;
-}
-.title-page .tp-author{
-  font-family:'DM Sans',sans-serif;font-size:14px;
-  letter-spacing:2px;text-transform:uppercase;
-  color:var(--ink);font-weight:600;margin-bottom:6px;
-}
-.title-page .tp-role{
-  font-family:'Source Serif 4',serif;font-size:14px;
-  color:var(--ink-light);font-style:italic;
-}
-
-/* Part page */
-.part-page{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;height:100%;
-}
-.part-page .part-label{
-  font-family:'DM Sans',sans-serif;font-size:11px;
-  letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:16px;
-}
-.part-page h2{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(28px,5vw,40px);font-weight:700;
-  color:var(--ink);line-height:1.2;
-}
-
-/* ── Nav Buttons ── */
+/* -- Nav Buttons -- */
 .nav-btn{
   position:absolute;top:50%;transform:translateY(-50%);
-  width:48px;height:80px;
-  background:rgba(42,36,32,0.06);
+  width:48px;height:80px;background:rgba(42,36,32,0.06);
   border:none;border-radius:8px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all 0.3s;z-index:50;
-  opacity:1;
+  transition:all 0.3s;z-index:50;opacity:1;
 }
 .nav-btn.hidden{opacity:0;pointer-events:none}
 .nav-btn:hover{background:rgba(42,36,32,0.12)}
@@ -266,126 +204,26 @@ body{
 .nav-next{right:8px}
 .nav-btn:disabled{opacity:0.2;cursor:default}
 
-/* ── Bottom Bar ── */
+/* -- Bottom Bar -- */
 .bottom-bar{
   display:flex;align-items:center;justify-content:space-between;
   padding:10px 24px;background:var(--spine);
-  border-top:1px solid rgba(184,148,62,0.15);
-  flex-shrink:0;
+  border-top:1px solid rgba(184,148,62,0.15);flex-shrink:0;
 }
-.page-num{
-  font-family:'DM Sans',sans-serif;font-size:12px;color:#6a6560;
-}
-.chapter-nav{
-  font-family:'DM Sans',sans-serif;font-size:12px;color:#8a8078;
-  cursor:pointer;display:flex;align-items:center;gap:6px;
-  transition:color 0.2s;
-}
+.page-num{font-family:'DM Sans',sans-serif;font-size:12px;color:#6a6560}
+.chapter-nav{font-family:'DM Sans',sans-serif;font-size:12px;color:#8a8078;cursor:pointer;display:flex;align-items:center;gap:6px;transition:color 0.2s}
 .chapter-nav:hover{color:var(--gold)}
 .chapter-nav svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
 
-/* ── Table of Contents Overlay ── */
-.toc-overlay{
-  position:fixed;inset:0;background:rgba(26,22,18,0.92);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  z-index:200;display:none;align-items:center;justify-content:center;
-  opacity:0;transition:opacity 0.3s;
-}
-.toc-overlay.active{display:flex;opacity:1}
-.toc-panel{
-  background:var(--paper);border-radius:12px;
-  max-width:480px;width:90%;max-height:80vh;
-  overflow-y:auto;padding:40px 32px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.4);
-}
-.toc-panel h3{
-  font-family:'Playfair Display',serif;font-size:22px;
-  color:var(--ink);margin-bottom:24px;font-weight:700;
-}
-.toc-item{
-  display:flex;align-items:baseline;gap:12px;
-  padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06);
-  cursor:pointer;transition:color 0.2s;
-}
-.toc-item:hover{color:var(--gold-dark)}
-.toc-item:last-child{border-bottom:none}
-.toc-num{
-  font-family:'DM Sans',sans-serif;font-size:11px;
-  color:var(--gold);min-width:28px;font-weight:600;
-}
-.toc-label{
-  font-size:15px;color:var(--ink-light);line-height:1.4;flex:1;
-}
-.toc-item.active .toc-label{color:var(--gold-dark);font-weight:600}
-.toc-close{
-  position:absolute;top:20px;right:20px;
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(0,0,0,0.1);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-}
-.toc-close svg{width:16px;height:16px;stroke:var(--cream);fill:none;stroke-width:2}
-
-/* ── Font Size Controls ── */
-.font-controls{
-  display:flex;align-items:center;gap:8px;
-}
-.font-btn{
-  width:28px;height:28px;border-radius:4px;
-  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);
-  color:#8a8078;font-family:'DM Sans',sans-serif;font-size:13px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all 0.2s;font-weight:600;
-}
-.font-btn:hover{background:rgba(255,255,255,0.15);color:var(--gold)}
-
-/* ── Dedication Page ── */
-.dedication-page{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;height:100%;
-  padding:40px 20px;
-}
-.dedication-page .ded-to{
-  font-family:'DM Sans',sans-serif;font-size:11px;
-  letter-spacing:3px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:20px;font-weight:600;
-}
-.dedication-page .ded-name{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(28px,5vw,42px);font-weight:700;
-  color:var(--ink);line-height:1.2;margin-bottom:28px;
-}
-.dedication-page .ded-rule{
-  width:60px;height:2px;background:var(--gold);
-  margin:0 auto 28px;border-radius:1px;
-}
-.dedication-page .ded-message{
-  font-family:'Source Serif 4',serif;
-  font-size:17px;line-height:1.8;color:var(--ink-light);
-  max-width:400px;font-style:italic;margin-bottom:36px;
-}
-.dedication-page .ded-signature{
-  font-family:'Playfair Display',serif;
-  font-size:24px;font-style:italic;color:var(--ink);
-  margin-bottom:4px;
-}
-.dedication-page .ded-title{
-  font-family:'DM Sans',sans-serif;font-size:12px;
-  color:var(--ink-light);letter-spacing:0.5px;
-}
-
-/* ── Responsive ── */
+/* -- Responsive -- */
 @media(max-width:768px){
   .page{padding:32px 28px 48px 28px;border-radius:0}
   .book-paragraph{font-size:16px;line-height:1.8;text-align:left}
-  .nav-btn{width:36px;height:60px}
-  .nav-prev{left:4px}
-  .nav-next{right:4px}
+  .nav-btn{width:36px;height:60px}.nav-prev{left:4px}.nav-next{right:4px}
   .page-area{padding:8px}
-  .title-page h1{font-size:32px}
-  .top-bar{padding:10px 16px}
-  .bottom-bar{padding:8px 16px}
+  .top-bar{padding:10px 16px}.bottom-bar{padding:8px 16px}
   .progress-bar{width:80px}
+  .welcome-header .ded-name{font-size:22px}
 }
 @media(max-width:480px){
   .page{padding:24px 20px 40px 20px}
@@ -397,7 +235,6 @@ body{
 <body>
 
 <div class="book-shell">
-  <!-- Top Bar -->
   <div class="top-bar">
     <div>
       <div class="book-title">Transferable</div>
@@ -415,42 +252,23 @@ body{
     </div>
   </div>
 
-  <!-- Page Area -->
   <div class="page-area">
     <button class="nav-btn nav-prev" id="prevBtn" onclick="prevPage()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-
     <div class="book">
-      <div class="page enter" id="pageEl">
-        <div class="page-shadow-overlay"></div>
+      <div class="page settled" id="pageEl">
         <div class="page-content" id="pageContent"></div>
       </div>
     </div>
-
     <button class="nav-btn nav-next" id="nextBtn" onclick="nextPage()">
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
   </div>
 
-  <!-- Bottom Bar -->
   <div class="bottom-bar">
     <span class="page-num" id="pageNum">Page 1</span>
-    <div class="chapter-nav" onclick="toggleTOC()">
-      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      <span id="chapterLabel">Contents</span>
-    </div>
-  </div>
-</div>
-
-<!-- TOC Overlay -->
-<div class="toc-overlay" id="tocOverlay" onclick="if(event.target===this)toggleTOC()">
-  <button class="toc-close" onclick="toggleTOC()">
-    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
-  <div class="toc-panel">
-    <h3>Contents</h3>
-    <div id="tocList"></div>
+    <div class="chapter-nav" id="chapterLabel">Contents</div>
   </div>
 </div>
 
@@ -458,158 +276,166 @@ body{
 let chapters = [];
 let currentPage = 0;
 let fontSize = 17;
+let isFlipping = false;
 let readerName = '';
 const STORAGE_KEY = 'transferable-bookmark';
 
-// Pull reader's name from URL params (?name=Rick or ?firstName=Rick)
+// Pull reader name from URL
 const urlParams = new URLSearchParams(window.location.search);
 readerName = urlParams.get('name') || urlParams.get('firstName') || urlParams.get('first') || '';
 readerName = decodeURIComponent(readerName).trim();
-// Capitalize first letter
 if (readerName) readerName = readerName.charAt(0).toUpperCase() + readerName.slice(1).toLowerCase();
-
-// Use name-specific bookmark so multiple readers don't overwrite each other
 const bookmarkKey = readerName ? STORAGE_KEY + '-' + readerName.toLowerCase() : STORAGE_KEY;
 
-// Load book content
 fetch('book-content.json')
   .then(r => r.json())
   .then(data => {
-    // Filter out stub chapters (< 50 words) except title/part pages
+    // Filter stubs but keep parts
     let filtered = data.filter((ch, i) => {
-      if (i === 0) return true; // title
+      if (i === 0) return true;
       const words = ch.content.reduce((a, p) => a + p.split(' ').length, 0);
+      return words > 30 || ch.title.toLowerCase().startsWith('part ');
+    });
+
+    // Build pages: [cover, welcome+toc, ...chapters, backcover]
+    let pages = [];
+
+    // Page 0: Front cover
+    pages.push({ type: 'cover', src: 'book-cover.png' });
+
+    // Page 1: Welcome (dedication) + TOC
+    pages.push({ type: 'welcome-toc', chapters: filtered.slice(1) }); // skip title entry
+
+    // Pages 2+: All chapters
+    filtered.slice(1).forEach(ch => {
       const isPart = ch.title.toLowerCase().startsWith('part ');
-      return words > 30 || isPart;
+      const words = ch.content.reduce((a, p) => a + p.split(' ').length, 0);
+      if (isPart && words < 50) {
+        pages.push({ type: 'part', title: ch.title });
+      } else {
+        pages.push({ type: 'chapter', title: ch.title, content: ch.content });
+      }
     });
-    
-    // Insert dedication page at the start if we have a name
-    if (readerName) {
-      filtered.unshift({
-        title: '__dedication__',
-        content: [],
-        _dedication: true
-      });
-    }
-    
-    // Add back cover as last page
-    filtered.push({
-      title: '__backcover__',
-      content: [],
-      _backcover: true
-    });
-    
-    chapters = filtered;
-    
-    // Load saved position
+
+    // Last page: Back cover
+    pages.push({ type: 'cover', src: 'book-back-cover.png' });
+
+    chapters = pages;
+
     const saved = localStorage.getItem(bookmarkKey);
     if (saved) currentPage = Math.min(parseInt(saved), chapters.length - 1);
-    
-    buildTOC();
+
     renderPage();
   });
 
-function buildTOC() {
-  const list = document.getElementById('tocList');
-  list.innerHTML = '';
-  chapters.forEach((ch, i) => {
-    const item = document.createElement('div');
-    item.className = 'toc-item' + (i === currentPage ? ' active' : '');
-    
-    let num = '';
-    const t = ch.title;
-    if (t.match(/^(CHAPTER|Chapter)\s+\d/i)) {
-      num = t.match(/\d+/)[0];
-    } else if (t.match(/^Part /i)) {
-      num = '\u2022';
-    } else if (i === 0) {
-      num = '\u2022';
-    } else {
-      num = '\u2022';
-    }
-    
-    item.innerHTML = `<span class="toc-num">${num}</span><span class="toc-label">${ch.title}</span>`;
-    item.onclick = () => { goToPage(i); toggleTOC(); };
-    list.appendChild(item);
-  });
-}
-
 function renderPage() {
-  const page = document.getElementById('pageContent');
-  const ch = chapters[currentPage];
-  if (!ch) return;
-  
+  const el = document.getElementById('pageContent');
+  const pg = chapters[currentPage];
+  if (!pg) return;
+
   let html = '';
-  const title = ch.title;
-  const isPart = title.toLowerCase().startsWith('part ');
-  const isDedication = ch._dedication;
-  const isBackCover = ch._backcover;
-  const isTitle = !isDedication && !isBackCover && (currentPage === 0 || (readerName && currentPage === 1));
-  
-  if (isBackCover) {
-    html = `<div style="position:absolute;inset:0;overflow:hidden;">
-      <img src="book-back-cover.png" alt="TRANSFERABLE - Back Cover" style="width:100%;height:100%;object-fit:cover;">
-    </div>`;
-  } else if (isDedication) {
-    // Personalized dedication page
-    html = `<div class="dedication-page">
-      <p class="ded-to">For You</p>
-      <p class="ded-name">${readerName},</p>
-      <div class="ded-rule"></div>
-      <p class="ded-message">I wrote this book because I watched too many great builders lose what they earned. I hope it helps you protect yours.</p>
-      <p class="ded-signature">Jean Louis Hardy</p>
-      <p class="ded-title">Founder, The Arena Partners</p>
-    </div>`;
-  } else if (isTitle) {
-    // Title page - show the actual book cover
-    html = `<div style="position:absolute;inset:0;overflow:hidden;">
-      <img src="book-cover.png" alt="TRANSFERABLE by Jean Louis Hardy" style="width:100%;height:100%;object-fit:cover;">
-    </div>`;
-  } else if (isPart) {
-    // Part divider page
-    const parts = title.split(':');
-    html = `<div class="part-page">
-      <p class="part-label">${parts[0].trim()}</p>
-      <h2>${parts.slice(1).join(':').trim() || ''}</h2>
-    </div>`;
+
+  if (pg.type === 'cover') {
+    html = `<div class="cover-page"><img src="${pg.src}" alt="Book Cover"></div>`;
+    el.parentElement.style.padding = '0';
   } else {
-    // Regular chapter
-    let label = '';
-    let heading = title;
-    
-    const chMatch = title.match(/^(CHAPTER|Chapter)\s+(\d+)\s*:\s*(.*)/i);
-    if (chMatch) {
-      label = `Chapter ${chMatch[2]}`;
-      heading = chMatch[3];
-    } else if (title.match(/^INTRODUCTION/i)) {
-      label = 'Introduction';
-      heading = title.replace(/^INTRODUCTION:\s*/i, '');
-    } else if (title.match(/^Author/i)) {
-      label = '';
-      heading = title;
+    el.parentElement.style.padding = '';
+
+    if (pg.type === 'welcome-toc') {
+      // Build chapter nav bar
+      let barHtml = '<div class="chapter-bar" id="chapterBar">';
+      let pageIdx = 2; // chapters start at page 2
+      pg.chapters.forEach(ch => {
+        const t = ch.title;
+        const isPart = t.toLowerCase().startsWith('part ');
+        const chMatch = t.match(/^(CHAPTER|Chapter)\s+(\d+)/i);
+        let label = isPart ? t.split(':')[0].trim() : (chMatch ? 'Ch.' + chMatch[2] : t.substring(0,15));
+        let cls = isPart ? 'cb-item part' : 'cb-item';
+        barHtml += `<span class="${cls}" data-page="${pageIdx}" onclick="goToPage(${pageIdx})">${label}</span>`;
+        pageIdx++;
+      });
+      barHtml += '</div>';
+
+      // Welcome section
+      let welcomeHtml = '';
+      if (readerName) {
+        welcomeHtml = `<div class="welcome-header">
+          <p class="ded-to">For You</p>
+          <p class="ded-name">${readerName},</p>
+          <p class="ded-message">I wrote this book because I watched too many great builders lose what they earned. I hope it helps you protect yours.</p>
+          <p class="ded-sig">Jean Louis Hardy</p>
+          <p class="ded-role">Founder, The Arena Partners</p>
+        </div>`;
+      } else {
+        welcomeHtml = `<div class="welcome-header">
+          <p class="ded-to">Welcome</p>
+          <p class="ded-name" style="font-size:22px;">TRANSFERABLE</p>
+          <p class="ded-message">Why the best operators own the least valuable businesses.</p>
+          <p class="ded-sig">Jean Louis Hardy</p>
+          <p class="ded-role">Founder, The Arena Partners</p>
+        </div>`;
+      }
+
+      // TOC
+      let tocHtml = '<div class="toc-inline"><h3>Contents</h3><ul class="toc-list">';
+      pageIdx = 2;
+      pg.chapters.forEach(ch => {
+        const t = ch.title;
+        const isPart = t.toLowerCase().startsWith('part ');
+        const chMatch = t.match(/^(CHAPTER|Chapter)\s+(\d+)\s*:\s*(.*)/i);
+        let num = '', label = t;
+        if (chMatch) { num = chMatch[2]; label = chMatch[3]; }
+        else if (t.match(/^INTRODUCTION/i)) { num = ''; label = t.replace(/^INTRODUCTION:\s*/i, 'Introduction: '); }
+        else if (t.match(/^Author/i)) { num = ''; label = t; }
+
+        if (isPart) {
+          tocHtml += `<li class="part-entry" onclick="goToPage(${pageIdx})"><span class="toc-label">${t}</span></li>`;
+        } else {
+          tocHtml += `<li onclick="goToPage(${pageIdx})"><span class="toc-num">${num}</span><span class="toc-label">${label}</span><span class="toc-dots"></span><span class="toc-pg">${pageIdx}</span></li>`;
+        }
+        pageIdx++;
+      });
+      tocHtml += '</ul></div>';
+
+      html = barHtml + welcomeHtml + tocHtml;
+
+    } else if (pg.type === 'part') {
+      const parts = pg.title.split(':');
+      html = `<div class="part-page"><p class="part-label">${parts[0].trim()}</p><h2>${parts.slice(1).join(':').trim() || ''}</h2></div>`;
+
+    } else if (pg.type === 'chapter') {
+      let label = '', heading = pg.title;
+      const chMatch = pg.title.match(/^(CHAPTER|Chapter)\s+(\d+)\s*:\s*(.*)/i);
+      if (chMatch) { label = `Chapter ${chMatch[2]}`; heading = chMatch[3]; }
+      else if (pg.title.match(/^INTRODUCTION/i)) { label = 'Introduction'; heading = pg.title.replace(/^INTRODUCTION:\s*/i, ''); }
+      else if (pg.title.match(/^Author/i)) { label = ''; heading = pg.title; }
+
+      // Chapter bar at top
+      let barHtml = '<div class="chapter-bar" id="chapterBar">';
+      let ci = 2;
+      chapters.forEach((c, idx) => {
+        if (idx < 2 || idx >= chapters.length - 1) return;
+        const ct = c.title || '';
+        const ip = ct.toLowerCase().startsWith('part ');
+        const cm = ct.match(/^(CHAPTER|Chapter)\s+(\d+)/i);
+        let lb = ip ? ct.split(':')[0].trim() : (cm ? 'Ch.' + cm[2] : ct.substring(0,15));
+        let cls = 'cb-item' + (ip ? ' part' : '') + (idx === currentPage ? ' active' : '');
+        barHtml += `<span class="${cls}" onclick="goToPage(${idx})">${lb}</span>`;
+      });
+      barHtml += '</div>';
+
+      html = barHtml;
+      html += `${label ? `<p class="chapter-label">${label}</p>` : ''}<h1 class="chapter-title">${heading}</h1><div class="chapter-divider"></div>`;
+      pg.content.forEach(p => {
+        if (p.startsWith('---') || p.startsWith('Word Count:') || p.startsWith('[End Of') || p.startsWith('End Of Part')) return;
+        html += `<p class="book-paragraph">${p}</p>`;
+      });
     }
-    
-    html = `${label ? `<p class="chapter-label">${label}</p>` : ''}
-      <h1 class="chapter-title">${heading}</h1>
-      <div class="chapter-divider"></div>`;
-    
-    ch.content.forEach(p => {
-      // Skip metadata lines
-      if (p.startsWith('---') || p.startsWith('Word Count:') || p.startsWith('[End Of')) return;
-      if (p.startsWith('End Of Part')) return;
-      html += `<p class="book-paragraph">${p}</p>`;
-    });
   }
-  
-  page.innerHTML = html;
-  
-  // Scroll to top
+
+  el.innerHTML = html;
   document.getElementById('pageEl').scrollTop = 0;
-  
-  // Update UI
   updateUI();
-  
-  // Save position
   localStorage.setItem(bookmarkKey, currentPage);
 }
 
@@ -620,100 +446,62 @@ function updateUI() {
   document.getElementById('pageNum').textContent = `Page ${currentPage + 1} of ${chapters.length}`;
   document.getElementById('prevBtn').disabled = currentPage === 0;
   document.getElementById('nextBtn').disabled = currentPage === chapters.length - 1;
-  
-  // Update chapter label
-  const ch = chapters[currentPage];
-  const chMatch = ch.title.match(/^(CHAPTER|Chapter)\s+(\d+)/i);
-  document.getElementById('chapterLabel').textContent = chMatch ? `Ch. ${chMatch[2]}` : 'Contents';
-  
-  // Update TOC active state
-  document.querySelectorAll('.toc-item').forEach((el, i) => {
-    el.classList.toggle('active', i === currentPage);
-  });
+
+  const pg = chapters[currentPage];
+  if (pg && pg.title) {
+    const cm = pg.title.match(/^(CHAPTER|Chapter)\s+(\d+)/i);
+    document.getElementById('chapterLabel').textContent = cm ? `Ch. ${cm[2]}` : (pg.type === 'cover' ? 'Cover' : 'Contents');
+  }
 }
 
-function clearFlipClasses(el) {
-  el.classList.remove('enter','flip-out-forward','flip-out-backward','flip-in-forward','flip-in-backward');
-}
-
-function nextPage() {
-  if (currentPage >= chapters.length - 1 || isFlipping) return;
+function flipPage(direction) {
+  if (isFlipping) return;
+  if (direction === 'forward' && currentPage >= chapters.length - 1) return;
+  if (direction === 'backward' && currentPage <= 0) return;
   isFlipping = true;
+
   const page = document.getElementById('pageEl');
-  
-  // Current page flips away to the left (like turning a real page)
-  clearFlipClasses(page);
-  page.classList.add('flip-out-forward');
-  
+  const outClass = direction === 'forward' ? 'flip-fwd-out' : 'flip-bwd-out';
+  const inClass = direction === 'forward' ? 'flip-fwd-in' : 'flip-bwd-in';
+
+  page.classList.remove('settled');
+  page.classList.add(outClass);
+
   setTimeout(() => {
-    currentPage++;
+    currentPage += direction === 'forward' ? 1 : -1;
     renderPage();
-    
-    // New page swings in from the right
-    clearFlipClasses(page);
-    page.classList.add('flip-in-forward');
-    
-    // Force reflow then settle
-    void page.offsetWidth;
-    requestAnimationFrame(() => {
-      clearFlipClasses(page);
-      page.classList.add('enter');
-      setTimeout(() => { isFlipping = false; }, 400);
+    page.classList.remove(outClass);
+    page.classList.add(inClass);
+
+    page.addEventListener('animationend', function handler() {
+      page.removeEventListener('animationend', handler);
+      page.classList.remove(inClass);
+      page.classList.add('settled');
+      isFlipping = false;
     });
-  }, 400);
+  }, 320);
 }
 
-function prevPage() {
-  if (currentPage <= 0 || isFlipping) return;
-  isFlipping = true;
-  const page = document.getElementById('pageEl');
-  
-  // Current page flips away to the right
-  clearFlipClasses(page);
-  page.classList.add('flip-out-backward');
-  
-  setTimeout(() => {
-    currentPage--;
-    renderPage();
-    
-    // New page swings in from the left
-    clearFlipClasses(page);
-    page.classList.add('flip-in-backward');
-    
-    void page.offsetWidth;
-    requestAnimationFrame(() => {
-      clearFlipClasses(page);
-      page.classList.add('enter');
-      setTimeout(() => { isFlipping = false; }, 400);
-    });
-  }, 400);
-}
+function nextPage() { flipPage('forward'); }
+function prevPage() { flipPage('backward'); }
 
 function goToPage(i) {
+  if (isFlipping) return;
   currentPage = i;
   const page = document.getElementById('pageEl');
-  page.classList.remove('enter', 'exit-left', 'exit-right');
-  page.classList.add('enter');
+  page.classList.remove('flip-fwd-out','flip-fwd-in','flip-bwd-out','flip-bwd-in');
+  page.classList.add('settled');
   renderPage();
 }
 
 function adjustFont(delta) {
   fontSize = Math.max(14, Math.min(22, fontSize + delta));
-  document.querySelectorAll('.book-paragraph').forEach(p => {
-    p.style.fontSize = fontSize + 'px';
-  });
+  document.querySelectorAll('.book-paragraph').forEach(p => p.style.fontSize = fontSize + 'px');
 }
 
-function toggleTOC() {
-  document.getElementById('tocOverlay').classList.toggle('active');
-}
-
-let isFlipping = false;
-
-// Hide arrows when scrolling the page content
+// Hide arrows on scroll
 let scrollTimer;
-const pageEl = document.getElementById('pageEl');
-pageEl.addEventListener('scroll', () => {
+document.getElementById('pageEl').addEventListener('scroll', () => {
   document.getElementById('prevBtn').classList.add('hidden');
   document.getElementById('nextBtn').classList.add('hidden');
   clearTimeout(scrollTimer);
@@ -721,13 +509,12 @@ pageEl.addEventListener('scroll', () => {
     document.getElementById('prevBtn').classList.remove('hidden');
     document.getElementById('nextBtn').classList.remove('hidden');
   }, 1200);
-}, {passive: true});
+}, {passive:true});
 
-// Keyboard navigation
+// Keyboard
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextPage(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prevPage(); }
-  if (e.key === 'Escape') { document.getElementById('tocOverlay').classList.remove('active'); }
 });
 
 // Touch swipe
@@ -735,12 +522,8 @@ let touchStartX = 0;
 document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
 document.addEventListener('touchend', e => {
   const diff = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(diff) > 60) {
-    if (diff < 0) nextPage();
-    else prevPage();
-  }
+  if (Math.abs(diff) > 60) { diff < 0 ? nextPage() : prevPage(); }
 }, {passive:true});
 </script>
-
 </body>
 </html>
