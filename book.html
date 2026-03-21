@@ -123,6 +123,14 @@ body{
 .toc-list li.part-entry .toc-label{font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--ink)}
 .toc-section-title{font-family:'Playfair Display',serif;font-size:14px;color:var(--ink);margin-bottom:8px;font-weight:700}
 
+/* Block StPageFlip drag on page content - only allow at edges */
+.book-page .page-scroll-area{
+  position:relative;z-index:10;
+  pointer-events:auto;touch-action:pan-y;
+  overflow-y:auto;height:100%;
+  -webkit-overflow-scrolling:touch;
+}
+
 /* Chapter pages */
 .chapter-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:600}
 .part-header{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;opacity:0.7}
@@ -343,7 +351,7 @@ fetch('book-content.json?v=' + Date.now())
         div.innerHTML = h;
 
       } else if (pg.type === 'chapter') {
-        let h = '';
+        let h = '<div class="page-scroll-area">';
         if (pg.partHeader) {
           h += `<p class="part-header">${pg.partHeader}</p>`;
         }
@@ -359,6 +367,7 @@ fetch('book-content.json?v=' + Date.now())
           if (p.startsWith('---') || p.startsWith('Word Count:') || p.startsWith('[End Of') || p.startsWith('End Of Part')) return;
           h += `<p class="book-paragraph">${p}</p>`;
         });
+        h += '</div>';
         div.innerHTML = h;
       }
 
@@ -444,7 +453,23 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { document.getElementById('tocOverlay').classList.remove('active'); }
 });
 
-// Custom touch handler: only flip on deliberate HORIZONTAL swipes (not vertical scroll)
+// Block StPageFlip's drag on scroll areas - stop event propagation
+// This prevents scrolling from triggering page flips
+document.addEventListener('touchstart', e => {
+  const scrollArea = e.target.closest('.page-scroll-area');
+  if (scrollArea) {
+    e.stopPropagation(); // Prevent StPageFlip from seeing this touch
+  }
+}, {capture: true}); // capture phase = runs BEFORE StPageFlip's listener
+
+document.addEventListener('mousedown', e => {
+  const scrollArea = e.target.closest('.page-scroll-area');
+  if (scrollArea) {
+    e.stopPropagation();
+  }
+}, {capture: true});
+
+// Custom swipe on book area (outside scroll areas) for deliberate horizontal swipes
 let touchStartX = 0, touchStartY = 0;
 document.querySelector('.book-area').addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
@@ -453,7 +478,6 @@ document.querySelector('.book-area').addEventListener('touchstart', e => {
 document.querySelector('.book-area').addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
-  // Only trigger if horizontal movement > 100px AND mostly horizontal (ratio > 2:1)
   if (Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy) * 2) {
     if (dx < 0) flipNext();
     else flipPrev();
