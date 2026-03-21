@@ -281,6 +281,42 @@ body{
 }
 .font-btn:hover{background:rgba(255,255,255,0.15);color:var(--gold)}
 
+/* ── Dedication Page ── */
+.dedication-page{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;height:100%;
+  padding:40px 20px;
+}
+.dedication-page .ded-to{
+  font-family:'DM Sans',sans-serif;font-size:11px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;font-weight:600;
+}
+.dedication-page .ded-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,5vw,42px);font-weight:700;
+  color:var(--ink);line-height:1.2;margin-bottom:28px;
+}
+.dedication-page .ded-rule{
+  width:60px;height:2px;background:var(--gold);
+  margin:0 auto 28px;border-radius:1px;
+}
+.dedication-page .ded-message{
+  font-family:'Source Serif 4',serif;
+  font-size:17px;line-height:1.8;color:var(--ink-light);
+  max-width:400px;font-style:italic;margin-bottom:36px;
+}
+.dedication-page .ded-signature{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-style:italic;color:var(--ink);
+  margin-bottom:4px;
+}
+.dedication-page .ded-title{
+  font-family:'DM Sans',sans-serif;font-size:12px;
+  color:var(--ink-light);letter-spacing:0.5px;
+}
+
 /* ── Responsive ── */
 @media(max-width:768px){
   .page{padding:32px 28px 48px 28px;border-radius:0}
@@ -364,22 +400,44 @@ body{
 let chapters = [];
 let currentPage = 0;
 let fontSize = 17;
+let readerName = '';
 const STORAGE_KEY = 'transferable-bookmark';
+
+// Pull reader's name from URL params (?name=Rick or ?firstName=Rick)
+const urlParams = new URLSearchParams(window.location.search);
+readerName = urlParams.get('name') || urlParams.get('firstName') || urlParams.get('first') || '';
+readerName = decodeURIComponent(readerName).trim();
+// Capitalize first letter
+if (readerName) readerName = readerName.charAt(0).toUpperCase() + readerName.slice(1).toLowerCase();
+
+// Use name-specific bookmark so multiple readers don't overwrite each other
+const bookmarkKey = readerName ? STORAGE_KEY + '-' + readerName.toLowerCase() : STORAGE_KEY;
 
 // Load book content
 fetch('book-content.json')
   .then(r => r.json())
   .then(data => {
     // Filter out stub chapters (< 50 words) except title/part pages
-    chapters = data.filter((ch, i) => {
+    let filtered = data.filter((ch, i) => {
       if (i === 0) return true; // title
       const words = ch.content.reduce((a, p) => a + p.split(' ').length, 0);
       const isPart = ch.title.toLowerCase().startsWith('part ');
       return words > 30 || isPart;
     });
     
+    // Insert dedication page at the start if we have a name
+    if (readerName) {
+      filtered.unshift({
+        title: '__dedication__',
+        content: [],
+        _dedication: true
+      });
+    }
+    
+    chapters = filtered;
+    
     // Load saved position
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(bookmarkKey);
     if (saved) currentPage = Math.min(parseInt(saved), chapters.length - 1);
     
     buildTOC();
@@ -419,9 +477,20 @@ function renderPage() {
   let html = '';
   const title = ch.title;
   const isPart = title.toLowerCase().startsWith('part ');
-  const isTitle = currentPage === 0;
+  const isDedication = ch._dedication;
+  const isTitle = !isDedication && (currentPage === 0 || (readerName && currentPage === 1));
   
-  if (isTitle) {
+  if (isDedication) {
+    // Personalized dedication page
+    html = `<div class="dedication-page">
+      <p class="ded-to">For You</p>
+      <p class="ded-name">${readerName},</p>
+      <div class="ded-rule"></div>
+      <p class="ded-message">I wrote this book because I watched too many great builders lose what they earned. I hope it helps you protect yours.</p>
+      <p class="ded-signature">Jean Louis Hardy</p>
+      <p class="ded-title">Founder, The Arena Partners</p>
+    </div>`;
+  } else if (isTitle) {
     // Title page
     html = `<div class="title-page">
       <div class="tp-label">The Arena Press</div>
@@ -476,7 +545,7 @@ function renderPage() {
   updateUI();
   
   // Save position
-  localStorage.setItem(STORAGE_KEY, currentPage);
+  localStorage.setItem(bookmarkKey, currentPage);
 }
 
 function updateUI() {
