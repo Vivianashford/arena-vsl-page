@@ -82,6 +82,28 @@ body{
 }
 .cover-page img{width:100%;height:100%;object-fit:cover}
 
+/* Title page */
+.title-page-inner{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;text-align:center;padding:48px 32px;
+  background:var(--paper);position:relative;
+}
+.title-page-inner::before{
+  content:'';position:absolute;top:40px;left:50%;transform:translateX(-50%);
+  width:60px;height:2px;background:var(--gold);
+}
+.title-page-inner::after{
+  content:'';position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  width:60px;height:2px;background:var(--gold);
+}
+.tp-author-top{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:40px;font-weight:600}
+.tp-big-t{font-family:'Playfair Display',serif;font-size:140px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:8px;opacity:0.9}
+.tp-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--ink);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.tp-subtitle{font-family:'Source Serif 4',serif;font-size:15px;line-height:1.7;color:var(--ink-light);font-style:italic;max-width:320px;margin:0 auto 32px}
+.tp-rule{width:40px;height:1px;background:var(--gold);margin:0 auto 24px}
+.tp-author{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);font-weight:600;margin-bottom:4px}
+.tp-imprint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:32px}
+
 /* Welcome + TOC page */
 .welcome-toc{padding:32px 36px!important}
 .welcome-header{text-align:center;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:14px}
@@ -229,8 +251,11 @@ fetch('book-content.json?v=' + Date.now())
     let pageData = [];
     let pendingPart = null;
 
-    // Front cover
+    // Front cover (image)
     pageData.push({ type: 'cover', src: 'book-cover.png', hard: true });
+
+    // Title page (premium interior)
+    pageData.push({ type: 'title-page', hard: false });
 
     // Welcome + TOC
     pageData.push({ type: 'welcome-toc' });
@@ -269,6 +294,17 @@ fetch('book-content.json?v=' + Date.now())
       if (pg.type === 'cover') {
         div.classList.add('cover-page');
         div.innerHTML = `<img src="${pg.src}" alt="Cover">`;
+
+      } else if (pg.type === 'title-page') {
+        div.innerHTML = `<div class="title-page-inner">
+          <p class="tp-author-top">Jean Louis Hardy</p>
+          <div class="tp-big-t">T</div>
+          <h1 class="tp-title">Transferable</h1>
+          <p class="tp-subtitle">Why the best operators own the least valuable businesses - and how to make sure you're not one of them.</p>
+          <div class="tp-rule"></div>
+          <p class="tp-author">Jean Louis Hardy</p>
+          <p class="tp-imprint">The Arena Partners</p>
+        </div>`;
 
       } else if (pg.type === 'welcome-toc') {
         div.classList.add('welcome-toc');
