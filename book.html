@@ -70,7 +70,7 @@ body{
 .book-page{
   background:var(--paper);
   padding:40px 48px;
-  overflow-y:auto;
+  overflow:hidden;
   font-family:'Source Serif 4',Georgia,serif;
 }
 .book-page.hard{background:#c4a85a}
@@ -105,7 +105,8 @@ body{
 .tp-imprint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:32px}
 
 /* Welcome + TOC page */
-.welcome-toc{padding:32px 36px!important}
+.welcome-toc{padding:0!important}
+.welcome-toc .page-scroll-area{padding:32px 36px}
 .welcome-header{text-align:center;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:14px}
 .welcome-header .ded-to{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:600}
 .welcome-header .ded-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px}
@@ -127,9 +128,13 @@ body{
 .book-page .page-scroll-area{
   position:relative;z-index:10;
   pointer-events:auto;touch-action:pan-y;
-  overflow-y:auto;height:100%;
+  overflow-y:auto;height:100%;width:100%;
   -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:rgba(184,148,62,0.2) transparent;
 }
+.book-page .page-scroll-area::-webkit-scrollbar{width:3px}
+.book-page .page-scroll-area::-webkit-scrollbar-thumb{background:rgba(184,148,62,0.25);border-radius:2px}
+.book-page .page-scroll-area::-webkit-scrollbar-track{background:transparent}
 
 /* Chapter pages */
 .chapter-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:600}
@@ -181,7 +186,7 @@ body{
 
 @media(max-width:768px){
   .book-page{padding:28px 24px}
-  .welcome-toc{padding:20px 20px!important}
+  .welcome-toc .page-scroll-area{padding:20px 20px}
   .book-paragraph{font-size:14px;text-align:left}
   .chapter-title{font-size:20px}
   .top-bar{padding:8px 12px}
@@ -304,7 +309,7 @@ fetch('book-content.json?v=' + Date.now())
         div.innerHTML = `<img src="${pg.src}" alt="Cover">`;
 
       } else if (pg.type === 'title-page') {
-        div.innerHTML = `<div class="title-page-inner">
+        div.innerHTML = `<div class="page-scroll-area"><div class="title-page-inner">
           <p class="tp-author-top">Jean Louis Hardy</p>
           <div class="tp-big-t">T</div>
           <h1 class="tp-title">Transferable</h1>
@@ -312,11 +317,11 @@ fetch('book-content.json?v=' + Date.now())
           <div class="tp-rule"></div>
           <p class="tp-author">Jean Louis Hardy</p>
           <p class="tp-imprint">The Arena Partners</p>
-        </div>`;
+        </div></div>`;
 
       } else if (pg.type === 'welcome-toc') {
         div.classList.add('welcome-toc');
-        let h = '';
+        let h = '<div class="page-scroll-area">';
         if (readerName) {
           h += `<div class="welcome-header">
             <p class="ded-to">For You</p>
@@ -347,7 +352,7 @@ fetch('book-content.json?v=' + Date.now())
           }
           h += `<li onclick="goTo(${entry.pageIdx})"><span class="toc-num">${num}</span><span class="toc-label">${label}</span><span class="toc-dots"></span></li>`;
         });
-        h += '</ul>';
+        h += '</ul></div>';
         div.innerHTML = h;
 
       } else if (pg.type === 'chapter') {
