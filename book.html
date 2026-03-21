@@ -134,11 +134,58 @@ body{
   text-transform:uppercase;color:rgba(10,10,10,0.4);font-weight:500;
 }
 
+/* Back cover */
+.back-cover{
+  background:linear-gradient(160deg,#8B6D1F 0%,#A07E2E 30%,#B8943E 60%,#C9A84C 100%)!important;
+}
+.bc-inner{
+  justify-content:flex-start!important;
+  padding:36px 32px!important;text-align:left!important;
+}
+.bc-quote{
+  font-family:'Playfair Display',serif;font-size:16px;font-style:italic;
+  color:#0A0A0A;line-height:1.5;margin-bottom:16px;font-weight:600;
+}
+.bc-rule{width:40px;height:1px;background:rgba(10,10,10,0.25);margin:12px 0}
+.bc-body{
+  font-family:'Source Serif 4',serif;font-size:12px;line-height:1.7;
+  color:rgba(10,10,10,0.7);margin-bottom:10px;
+}
+.bc-bold{font-weight:600;color:#0A0A0A;font-style:italic}
+.bc-features{margin:8px 0;padding-left:0}
+.bc-feature{
+  font-family:'DM Sans',sans-serif;font-size:11px;
+  color:rgba(10,10,10,0.65);padding:4px 0 4px 16px;
+  position:relative;line-height:1.4;
+}
+.bc-feature::before{
+  content:'';position:absolute;left:0;top:10px;
+  width:6px;height:6px;background:#0A0A0A;border-radius:1px;
+  transform:rotate(45deg);
+}
+.bc-bottom{margin-top:auto;padding-top:12px}
+.bc-author{
+  font-family:'Playfair Display',serif;font-size:14px;font-weight:700;
+  color:#0A0A0A;margin-bottom:2px;
+}
+.bc-author-sub{
+  font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(10,10,10,0.5);margin-bottom:8px;
+}
+.bc-imprint{
+  font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;
+  color:rgba(10,10,10,0.4);
+}
+
 @media(max-width:768px){
   .fc-big-t{font-size:120px}
   .fc-title{font-size:22px;letter-spacing:2px}
   .fc-tagline{font-size:11px}
   .fc-inner{padding:32px 24px}
+  .bc-inner{padding:24px 20px!important}
+  .bc-quote{font-size:14px}
+  .bc-body{font-size:11px}
+  .bc-feature{font-size:10px}
 }
 
 /* Title page */
@@ -402,8 +449,26 @@ fetch('book-content.json?v=' + Date.now())
         </div>`;
 
       } else if (pg.type === 'cover') {
-        div.classList.add('cover-page');
-        div.innerHTML = `<img src="${pg.src}" alt="Cover">`;
+        div.classList.add('front-cover','back-cover');
+        div.innerHTML = `<div class="fc-inner bc-inner">
+          <p class="bc-quote">"If you disappeared tomorrow, what would happen to your business by Friday?"</p>
+          <div class="bc-rule"></div>
+          <p class="bc-body">You built this company from nothing. Every client relationship, every late night, every risk you took with your own name on the line. But here's the truth most founders don't want to hear:</p>
+          <p class="bc-body bc-bold">The more valuable you are to your business, the less valuable your business is.</p>
+          <p class="bc-body">TRANSFERABLE is the playbook for owners who want to protect what they've built - and exit at the premium they've earned. Inside, you'll discover the exact system used by founders who turned owner-dependent operations into businesses that buyers compete for.</p>
+          <div class="bc-features">
+            <p class="bc-feature">The 6 Deal-Killers that destroy valuations</p>
+            <p class="bc-feature">The Transferable Method (4 phases, 27 deliverables)</p>
+            <p class="bc-feature">How to increase your multiple by 2-4x</p>
+            <p class="bc-feature">Real case studies from $5M-$50M exits</p>
+          </div>
+          <div class="bc-rule"></div>
+          <div class="bc-bottom">
+            <p class="bc-author">Jean Louis Hardy</p>
+            <p class="bc-author-sub">Founder, The Arena Partners</p>
+            <p class="bc-imprint">thearenapartners.com</p>
+          </div>
+        </div>`;
 
       } else if (pg.type === 'title-page') {
         div.innerHTML = `<div class="page-scroll-area"><div class="title-page-inner">
