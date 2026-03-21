@@ -566,6 +566,57 @@ async function submitForm() {
       });
     }
 
+    // Send confirmation email to submitter
+    if (contactId) {
+      const firstName = name.split(' ')[0];
+      const confirmHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px;background:#0a0a0a;color:#f5f0e8;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <p style="font-family:Georgia,serif;font-size:22px;color:#c9a84c;margin:0;">The Arena Partners</p>
+        </div>
+        <div style="background:#141414;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:28px;">
+          <p style="font-size:15px;line-height:1.7;color:#f5f0e8;margin:0 0 16px;">Hi ${firstName},</p>
+          <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0 0 16px;">We've received your company overview for <strong style="color:#f5f0e8;">${company}</strong>. Thank you for putting this together.</p>
+          <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0 0 16px;">I'll be reviewing everything over the next few days and building your custom exit roadmap. I'll reach out to schedule our next conversation once the plan is ready.</p>
+          <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0;">Talk soon.</p>
+          <p style="font-size:15px;color:#f5f0e8;margin:16px 0 0;">Jean Hardy<br><span style="font-size:13px;color:#9a9590;">Co-Founder & Operations Lead<br>The Arena Partners</span></p>
+        </div>
+        <p style="font-size:11px;color:#6a6560;text-align:center;margin-top:20px;">Arena Business Advisors, LLC | 3555 Timmons Lane, Suite 1140, Houston, TX 77027</p>
+      </div>`;
+
+      await fetch(`${GHL_BASE}/conversations/messages`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Version': '2021-07-28', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'Email',
+          contactId: contactId,
+          subject: 'Company Overview Received - The Arena Partners',
+          html: confirmHtml,
+          emailFrom: 'The Arena Partners <support@thearenapartners.com>'
+        })
+      });
+
+      // Notify Jean
+      const JEAN_ID = 'ZoSzNQkcfgjYjc37tPs4';
+      const notifyHtml = `<div style="font-family:Arial,sans-serif;padding:20px;">
+        <p style="font-size:16px;font-weight:bold;color:#c9a84c;">Company Info Submitted</p>
+        <p><strong>${name}</strong> (${company}) just submitted their company overview.</p>
+        <p>Employees: ${document.getElementById('numEmployees').value}<br>Years: ${document.getElementById('yearsInBusiness').value}<br>Revenue: ${revSummary}<br>SOPs: ${sopVal}<br>Succession: ${succVal}<br>Timeline: ${document.getElementById('exitTimeline').value}</p>
+        <p style="margin-top:16px;"><a href="https://app.gohighlevel.com/v2/location/LSvdgiiT7ManCRx9CCwE/contacts/detail/${contactId}" style="color:#c9a84c;">View in GHL</a></p>
+      </div>`;
+
+      await fetch(`${GHL_BASE}/conversations/messages`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Version': '2021-07-28', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'Email',
+          contactId: JEAN_ID,
+          subject: `Company Info Submitted: ${name} (${company})`,
+          html: notifyHtml,
+          emailFrom: 'The Arena Partners <support@thearenapartners.com>'
+        })
+      });
+    }
+
     document.getElementById('successMsg').style.display = 'block';
     document.getElementById('errorMsg').style.display   = 'none';
     submitBtn.textContent = '✓ Submitted';

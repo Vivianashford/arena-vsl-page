@@ -795,6 +795,67 @@ async function submitNDA() {
           body: `NDA Signed electronically\nSigned by: ${name}\nCompany: ${company}\nTitle: ${title}\nEmail: ${email}\nTimestamp: ${signedAt}\nIP captured via browser`
         })
       });
+
+      // Step 4: Send confirmation email to signer
+      const firstName = name.split(' ')[0];
+      const signerEmailHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px;background:#0a0a0a;color:#f5f0e8;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <p style="font-family:Georgia,serif;font-size:22px;color:#c9a84c;margin:0;">The Arena Partners</p>
+        </div>
+        <div style="background:#141414;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:28px;">
+          <p style="font-size:15px;line-height:1.7;color:#f5f0e8;margin:0 0 16px;">Hi ${firstName},</p>
+          <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0 0 16px;">This confirms that the Mutual Non-Disclosure Agreement between <strong style="color:#f5f0e8;">${company}</strong> and Arena Business Advisors, LLC has been signed and recorded.</p>
+          <div style="background:rgba(201,168,76,0.08);border-left:3px solid #c9a84c;padding:14px 18px;margin:20px 0;border-radius:0 6px 6px 0;">
+            <p style="font-size:13px;color:#c9a84c;margin:0 0 4px;font-weight:bold;">Agreement Details</p>
+            <p style="font-size:13px;color:#d5d0c8;margin:0;">Signed by: ${name}<br>Date: ${new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})}<br>Term: 2 years from date of execution</p>
+          </div>
+          <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0 0 16px;">You should also have received (or will shortly receive) a Company Information Request. The sooner we have that, the sooner we can start building your custom exit plan.</p>
+          <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0;">Looking forward to working with you.</p>
+          <p style="font-size:15px;color:#f5f0e8;margin:16px 0 0;">Jean Hardy<br><span style="font-size:13px;color:#9a9590;">Co-Founder & Operations Lead<br>The Arena Partners</span></p>
+        </div>
+        <p style="font-size:11px;color:#6a6560;text-align:center;margin-top:20px;">Arena Business Advisors, LLC | 3555 Timmons Lane, Suite 1140, Houston, TX 77027</p>
+      </div>`;
+
+      await fetch(`${GHL_BASE}/conversations/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Version': '2021-07-28',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type: 'Email',
+          contactId: resolvedContactId,
+          subject: 'NDA Confirmed - The Arena Partners',
+          html: signerEmailHtml,
+          emailFrom: 'The Arena Partners <support@thearenapartners.com>'
+        })
+      });
+
+      // Step 5: Notify Jean
+      const JEAN_CONTACT_ID = 'ZoSzNQkcfgjYjc37tPs4';
+      const notifyHtml = `<div style="font-family:Arial,sans-serif;padding:20px;">
+        <p style="font-size:16px;font-weight:bold;color:#c9a84c;">NDA Signed</p>
+        <p><strong>${name}</strong> (${company}) just signed the NDA.</p>
+        <p>Email: ${email}<br>Title: ${title || 'Not provided'}<br>Signed: ${new Date().toLocaleString('en-US', {timeZone:'America/Chicago'})}</p>
+        <p style="margin-top:16px;"><a href="https://app.gohighlevel.com/v2/location/LSvdgiiT7ManCRx9CCwE/contacts/detail/${resolvedContactId}" style="color:#c9a84c;">View in GHL</a></p>
+      </div>`;
+
+      await fetch(`${GHL_BASE}/conversations/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Version': '2021-07-28',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type: 'Email',
+          contactId: JEAN_CONTACT_ID,
+          subject: `NDA Signed: ${name} (${company})`,
+          html: notifyHtml,
+          emailFrom: 'The Arena Partners <support@thearenapartners.com>'
+        })
+      });
     }
 
     // Show success
