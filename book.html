@@ -105,9 +105,36 @@ body{
   border-radius:inherit;
 }
 
-.page.exit-left{transform:translateX(-110%) rotateY(15deg);opacity:0}
-.page.exit-right{transform:translateX(110%) rotateY(-15deg);opacity:0}
-.page.enter{transform:translateX(0) rotateY(0);opacity:1}
+/* Page turn animations */
+.page{transform-origin:left center;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1),opacity 0.4s ease,box-shadow 0.6s ease}
+.page.exit-left{
+  transform:perspective(1800px) rotateY(-90deg);
+  opacity:0;
+  box-shadow:-8px 4px 30px rgba(0,0,0,0.2);
+}
+.page.exit-right{
+  transform:perspective(1800px) rotateY(45deg);
+  opacity:0;
+  box-shadow:8px 4px 30px rgba(0,0,0,0.15);
+  transform-origin:right center;
+}
+.page.enter{
+  transform:perspective(1800px) rotateY(0deg);
+  opacity:1;
+  box-shadow:4px 4px 20px var(--page-shadow),1px 0 0 rgba(0,0,0,0.05),inset -2px 0 8px rgba(0,0,0,0.02);
+}
+/* Entering from the left (going back) */
+.page.enter-from-left{
+  transform:perspective(1800px) rotateY(-45deg);
+  opacity:0;
+  transform-origin:left center;
+}
+/* Entering from the right (going forward) */
+.page.enter-from-right{
+  transform:perspective(1800px) rotateY(45deg);
+  opacity:0;
+  transform-origin:right center;
+}
 
 /* ── Typography ── */
 .page-content{position:relative;z-index:1;user-select:text;-webkit-user-select:text;}
@@ -201,8 +228,10 @@ body{
   background:rgba(42,36,32,0.06);
   border:none;border-radius:8px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all 0.2s;z-index:50;
+  transition:all 0.3s;z-index:50;
+  opacity:1;
 }
+.nav-btn.hidden{opacity:0;pointer-events:none}
 .nav-btn:hover{background:rgba(42,36,32,0.12)}
 .nav-btn svg{width:20px;height:20px;stroke:var(--ink-light);fill:none;stroke-width:2}
 .nav-prev{left:8px}
@@ -568,41 +597,49 @@ function updateUI() {
 }
 
 function nextPage() {
-  if (currentPage >= chapters.length - 1) return;
+  if (currentPage >= chapters.length - 1 || isFlipping) return;
+  isFlipping = true;
   const page = document.getElementById('pageEl');
+  page.style.transformOrigin = 'left center';
   page.classList.remove('enter');
   page.classList.add('exit-left');
   setTimeout(() => {
     currentPage++;
     renderPage();
     page.classList.remove('exit-left');
-    page.classList.add('exit-right');
+    page.style.transformOrigin = 'right center';
+    page.classList.add('enter-from-right');
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        page.classList.remove('exit-right');
+        page.classList.remove('enter-from-right');
         page.classList.add('enter');
+        setTimeout(() => { isFlipping = false; }, 300);
       });
     });
-  }, 250);
+  }, 350);
 }
 
 function prevPage() {
-  if (currentPage <= 0) return;
+  if (currentPage <= 0 || isFlipping) return;
+  isFlipping = true;
   const page = document.getElementById('pageEl');
+  page.style.transformOrigin = 'right center';
   page.classList.remove('enter');
   page.classList.add('exit-right');
   setTimeout(() => {
     currentPage--;
     renderPage();
     page.classList.remove('exit-right');
-    page.classList.add('exit-left');
+    page.style.transformOrigin = 'left center';
+    page.classList.add('enter-from-left');
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        page.classList.remove('exit-left');
+        page.classList.remove('enter-from-left');
         page.classList.add('enter');
+        setTimeout(() => { isFlipping = false; }, 300);
       });
     });
-  }, 250);
+  }, 350);
 }
 
 function goToPage(i) {
@@ -623,6 +660,21 @@ function adjustFont(delta) {
 function toggleTOC() {
   document.getElementById('tocOverlay').classList.toggle('active');
 }
+
+let isFlipping = false;
+
+// Hide arrows when scrolling the page content
+let scrollTimer;
+const pageEl = document.getElementById('pageEl');
+pageEl.addEventListener('scroll', () => {
+  document.getElementById('prevBtn').classList.add('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => {
+    document.getElementById('prevBtn').classList.remove('hidden');
+    document.getElementById('nextBtn').classList.remove('hidden');
+  }, 1200);
+}, {passive: true});
 
 // Keyboard navigation
 document.addEventListener('keydown', e => {
