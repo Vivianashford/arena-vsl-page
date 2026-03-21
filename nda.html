@@ -851,7 +851,8 @@ async function generateNDAPdf(name, company, title, email, sigDataUrl, signedAt)
   y += fl1.length * 3 + 3;
   doc.text(footer2, W / 2, y, { align: 'center' });
 
-  return doc.output('blob');
+  // Return both the doc instance and a blob
+  return { doc, blob: doc.output('blob') };
 }
 
 // ── Submit NDA ──────────────────────────────────────────────────────────────
@@ -948,9 +949,10 @@ async function submitNDA() {
 
       // Upload PDF to GHL media storage
       try {
-        const pdfBlob2 = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
+        const result2 = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
+        const pdfBlob2 = result2.blob;
         const formData = new FormData();
-        formData.append('file', pdfBlob2, `NDA - The Arena Partners x ${company}.pdf`);
+        formData.append('file', new Blob([pdfBlob2], {type:'application/pdf'}), `NDA - The Arena Partners x ${company}.pdf`);
         formData.append('locationId', LOCATION);
         const uploadResp = await fetch(`${GHL_BASE}/medias/upload-file`, {
           method: 'POST',
@@ -1031,17 +1033,9 @@ async function submitNDA() {
     // Step 6: Generate PDF and trigger download
     submitBtn.textContent = 'Generating PDF...';
     try {
-      const pdfBlob = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
-      
-      // Auto-download the PDF
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = pdfUrl;
-      downloadLink.download = `NDA - The Arena Partners x ${company}.pdf`;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      URL.revokeObjectURL(pdfUrl);
+      const result = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
+      // Use jsPDF's native save which handles mobile better
+      result.doc.save(`NDA - The Arena Partners x ${company}.pdf`);
     } catch(pdfErr) {
       console.error('PDF generation error:', pdfErr);
       // Non-blocking - NDA is still signed even if PDF fails
