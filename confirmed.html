@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're Confirmed | The Arena Partners</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23C9A84C'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='18' font-family='Georgia' fill='%230A0A0A' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0A0A0A;
+    color: #F5F0E8;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    padding: 60px 0 40px;
+    text-align: center;
+  }
+
+  .confirmed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201, 168, 76, 0.12);
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    border-radius: 100px;
+    padding: 8px 20px;
+    margin-bottom: 24px;
+  }
+
+  .confirmed-badge .check {
+    width: 20px;
+    height: 20px;
+    background: #C9A84C;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #0A0A0A;
+    font-weight: bold;
+  }
+
+  .confirmed-badge span {
+    font-size: 13px;
+    color: #C9A84C;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .hero h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 400;
+    color: #F5F0E8;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: #9A9590;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* ─── Video ─── */
+  .video-section {
+    margin: 0 0 40px;
+  }
+
+  .video-wrapper {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid #222;
+    aspect-ratio: 16/9;
+  }
+
+  .video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .video-label {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .video-label strong {
+    color: #9A9590;
+  }
+
+  /* ─── Meeting Details Card ─── */
+  .meeting-card {
+    background: #111;
+    border: 1px solid #1A1A1A;
+    border-left: 3px solid #C9A84C;
+    border-radius: 0 12px 12px 0;
+    padding: 28px 32px;
+    margin: 0 0 40px;
+  }
+
+  .meeting-card h3 {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    color: #C9A84C;
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+
+  .meeting-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #1A1A1A;
+  }
+
+  .meeting-row:last-child {
+    border-bottom: none;
+  }
+
+  .meeting-row .label {
+    width: 80px;
+    font-size: 13px;
+    color: #666;
+    flex-shrink: 0;
+  }
+
+  .meeting-row .value {
+    font-size: 16px;
+    color: #F5F0E8;
+    font-weight: 600;
+  }
+
+  .meeting-row a {
+    color: #C9A84C;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .meeting-row a:hover {
+    text-decoration: underline;
+  }
+
+  /* ─── Assessment CTA ─── */
+  .assessment-section {
+    background: linear-gradient(135deg, rgba(201, 168, 76, 0.08), rgba(201, 168, 76, 0.02));
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    margin: 0 0 40px;
+  }
+
+  .assessment-section .step-label {
+    font-size: 12px;
+    color: #C9A84C;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .assessment-section h2 {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    color: #F5F0E8;
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  .assessment-section p {
+    font-size: 16px;
+    color: #9A9590;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 18px 50px;
+    background: linear-gradient(135deg, #C9A84C, #E3C96E);
+    color: #0A0A0A;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
+  }
+
+  .assessment-time {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  /* ─── What to Expect ─── */
+  .expect-section {
+    margin: 0 0 40px;
+  }
+
+  .expect-section h3 {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: #C9A84C;
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  .expect-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #1A1A1A;
+  }
+
+  .expect-item:last-child {
+    border-bottom: none;
+  }
+
+  .expect-num {
+    width: 32px;
+    height: 32px;
+    background: rgba(201, 168, 76, 0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: #C9A84C;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .expect-text {
+    font-size: 15px;
+    color: #D4CFC7;
+    padding-top: 4px;
+  }
+
+  /* ─── Quote ─── */
+  .quote-section {
+    border-left: 3px solid #C9A84C;
+    padding: 24px 28px;
+    margin: 0 0 40px;
+  }
+
+  .quote-section p {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    color: #C9A84C;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ─── Footer ─── */
+  .footer {
+    text-align: center;
+    padding: 40px 0 60px;
+    border-top: 1px solid #1A1A1A;
+  }
+
+  .footer-logo {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    color: #C9A84C;
+    margin-bottom: 8px;
+  }
+
+  .footer p {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .footer a {
+    color: #9A9590;
+    text-decoration: none;
+  }
+
+  /* ─── Calendar Add ─── */
+  .cal-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 6px;
+    color: #9A9590;
+    text-decoration: none;
+    font-size: 13px;
+    transition: border-color 0.2s;
+  }
+
+  .cal-link:hover {
+    border-color: #C9A84C;
+    color: #C9A84C;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 16px; }
+    .assessment-section { padding: 28px 20px; }
+    .meeting-card { padding: 20px 24px; }
+    .hero { padding: 40px 0 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="confirmed-badge">
+      <div class="check">✓</div>
+      <span>Confirmed</span>
+    </div>
+    <h1>You're In. Here's How to<br>Make the Most of Our Call.</h1>
+    <p>Watch this 90-second message from Jean, then complete the assessment below so we can make every minute count.</p>
+  </div>
+
+  <!-- Video -->
+  <div class="video-section">
+    <div class="video-wrapper">
+      <video controls playsinline preload="metadata" poster="">
+        <source src="advisor-intro.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <p class="video-label">A personal message from <strong>Jean Hardy</strong>, Co-Founder</p>
+  </div>
+
+  <!-- Meeting Details -->
+  <div class="meeting-card">
+    <h3>Your Session Details</h3>
+    <div class="meeting-row">
+      <span class="label">What</span>
+      <span class="value">Exit Strategy Session</span>
+    </div>
+    <div class="meeting-row">
+      <span class="label">Duration</span>
+      <span class="value">45 minutes</span>
+    </div>
+    <div class="meeting-row">
+      <span class="label">Where</span>
+      <span class="value"><a href="#">Check your email for the meeting link</a></span>
+    </div>
+    <div class="meeting-row">
+      <span class="label">With</span>
+      <span class="value">Jean Hardy, Co-Founder & Operations Lead</span>
+    </div>
+  </div>
+
+  <!-- Assessment CTA -->
+  <div class="assessment-section">
+    <div class="step-label">Your One Homework Assignment</div>
+    <h2>Complete the Business Readiness Assessment</h2>
+    <p>This scores your business across the 8 areas buyers evaluate before writing a check. I'll review your results before our call so we can skip the surface-level questions.</p>
+    <a href="https://vivianashford.github.io/exit-assessment/" class="btn-primary">Take the Assessment</a>
+    <span class="assessment-time">13 minutes. The foundation of a great conversation.</span>
+  </div>
+
+  <!-- What to Expect -->
+  <div class="expect-section">
+    <h3>What We'll Cover on the Call</h3>
+    <div class="expect-item">
+      <div class="expect-num">1</div>
+      <div class="expect-text">Walk through your assessment results and what they reveal about your business's transferable value</div>
+    </div>
+    <div class="expect-item">
+      <div class="expect-num">2</div>
+      <div class="expect-text">Identify where the premium value already exists - and the 2-3 areas that could unlock a higher multiple</div>
+    </div>
+    <div class="expect-item">
+      <div class="expect-num">3</div>
+      <div class="expect-text">Map the path from where you are today to the exit you've earned</div>
+    </div>
+    <div class="expect-item">
+      <div class="expect-num">4</div>
+      <div class="expect-text">If it makes sense for both of us, outline the specific steps to get there</div>
+    </div>
+  </div>
+
+  <!-- Quote -->
+  <div class="quote-section">
+    <p>"You'll walk away with a clear picture of your business's transferable value and the specific areas that would most increase it - regardless of whether we work together."</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-logo">The Arena Partners</div>
+    <p>3555 Timmons Ln, Ste 1140, Houston, TX 77027</p>
+    <p style="margin-top: 4px;"><a href="https://thearenapartners.com">thearenapartners.com</a></p>
+  </div>
+
+</div>
+
+</body>
+</html>
