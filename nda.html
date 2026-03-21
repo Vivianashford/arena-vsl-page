@@ -402,6 +402,7 @@
     /* Highlight spans inside legal text */
     em.defined { color: #c9a84c; font-style: normal; }
   </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -708,6 +709,99 @@ canvas.addEventListener('touchend',   () => { drawing = false; });
 
 function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; }
 
+// ── Generate NDA PDF ────────────────────────────────────────────────────────
+async function generateNDAPdf(name, company, title, email, sigDataUrl, signedAt) {
+  const signDate = new Date(signedAt).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  
+  const pdfHtml = `
+  <div style="font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;padding:40px 50px;max-width:700px;margin:0 auto;font-size:12px;line-height:1.7;">
+    <div style="text-align:center;margin-bottom:30px;">
+      <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#96782E;margin:0 0 8px;">The Arena Partners</p>
+      <h1 style="font-size:22px;font-weight:700;margin:0 0 4px;color:#1a1a1a;">MUTUAL NON-DISCLOSURE AGREEMENT</h1>
+      <p style="font-size:11px;color:#666;margin:0;">Arena Business Advisors, LLC | Houston, Texas</p>
+    </div>
+
+    <hr style="border:none;border-top:2px solid #B8943E;margin:20px 0;">
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">Parties to this Agreement</p>
+    
+    <p><strong>Party A:</strong> Arena Business Advisors, LLC, d/b/a The Arena Partners, 3555 Timmons Ln, Suite 1140, Houston, TX 77027</p>
+    <p><strong>Party B:</strong> ${company} (represented by ${name}${title ? ', ' + title : ''})</p>
+
+    <hr style="border:none;border-top:1px solid #ddd;margin:20px 0;">
+
+    <p>This Mutual Non-Disclosure Agreement (this "Agreement") is entered into as of <strong>${signDate}</strong>, between Arena Business Advisors, LLC, a Texas limited liability company doing business as The Arena Partners ("Arena"), and the undersigned individual or entity ("Client") (each a "Party" and together the "Parties").</p>
+
+    <p>The Parties desire to explore a potential business advisory, acquisition, or exit-planning relationship (the "Potential Transaction"). In connection with that exploration, each Party may disclose to the other certain non-public, confidential, and proprietary information.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">1. Definition of Confidential Information</p>
+    <p>"Confidential Information" means any and all non-public information disclosed by one Party to the other, whether in written, oral, electronic, visual, or other form, including but not limited to: (a) financial records, projections, and tax documents; (b) business plans, strategies, and operational methods; (c) customer and client lists, contracts, and pricing data; (d) employee information, compensation, and organizational charts; (e) proprietary processes, systems, and intellectual property; (f) trade secrets and know-how; (g) any analysis, compilations, notes, or other materials prepared by the Receiving Party that contain or reflect Confidential Information.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">2. Obligations of the Receiving Party</p>
+    <p>The Receiving Party shall: (a) hold all Confidential Information in strict confidence; (b) not disclose any Confidential Information to any third party without the prior written consent of the Disclosing Party; (c) use the Confidential Information solely for the purpose of evaluating or engaging in the Potential Transaction; (d) limit access to Confidential Information to those employees, advisors, or agents who have a need to know and who are bound by confidentiality obligations no less restrictive than those contained herein.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">3. Exclusions</p>
+    <p>Confidential Information does not include information that: (a) is or becomes publicly available through no fault of the Receiving Party; (b) was already in the Receiving Party's possession without restriction before disclosure; (c) is independently developed by the Receiving Party without use of or reference to the Confidential Information; (d) is rightfully received from a third party without restriction and without breach of this Agreement.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">4. Term</p>
+    <p>This Agreement shall remain in effect for a period of two (2) years from the date of execution, unless earlier terminated by mutual written agreement of the Parties. The obligations of confidentiality shall survive termination of this Agreement.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">5. Return of Materials</p>
+    <p>Upon written request or upon termination of discussions, the Receiving Party shall promptly return or destroy all materials containing Confidential Information and certify in writing that it has done so.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">6. Remedies</p>
+    <p>Each Party acknowledges that any breach of this Agreement may cause irreparable harm for which monetary damages would be an inadequate remedy. Accordingly, the Disclosing Party shall be entitled to seek equitable relief, including injunction and specific performance, in addition to any other remedies available at law or in equity.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">7. Governing Law</p>
+    <p>This Agreement shall be governed by and construed in accordance with the laws of the State of Texas, without regard to its conflicts of laws principles. Any dispute arising under this Agreement shall be subject to the exclusive jurisdiction of the state and federal courts located in Harris County, Texas.</p>
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;">8. General Provisions</p>
+    <p>This Agreement constitutes the entire understanding between the Parties with respect to the subject matter hereof. No modification of this Agreement shall be binding unless in writing and signed by both Parties. This Agreement may not be assigned without the prior written consent of the other Party. If any provision is found to be invalid, the remaining provisions shall continue in full force and effect.</p>
+
+    <hr style="border:none;border-top:2px solid #B8943E;margin:30px 0 20px;">
+
+    <p style="font-size:11px;font-weight:bold;color:#96782E;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Execution</p>
+
+    <div style="display:flex;gap:40px;margin-top:20px;">
+      <div style="flex:1;">
+        <p style="font-size:10px;color:#96782E;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Party A - Arena Business Advisors, LLC</p>
+        <p style="margin:4px 0;"><strong>Jean Louis Hardy</strong></p>
+        <p style="margin:4px 0;font-size:11px;">Co-Founder & Operations Lead</p>
+        <p style="margin:4px 0;font-size:11px;">Date: ${signDate}</p>
+      </div>
+      <div style="flex:1;">
+        <p style="font-size:10px;color:#96782E;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Party B - ${company}</p>
+        <img src="${sigDataUrl}" style="height:50px;margin:4px 0;display:block;" alt="Signature">
+        <p style="margin:4px 0;"><strong>${name}</strong></p>
+        <p style="margin:4px 0;font-size:11px;">${title || 'Authorized Representative'}</p>
+        <p style="margin:4px 0;font-size:11px;">Email: ${email}</p>
+        <p style="margin:4px 0;font-size:11px;">Date: ${signDate}</p>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #ddd;margin:30px 0 16px;">
+    <p style="font-size:9px;color:#999;text-align:center;">This document was signed electronically pursuant to the Electronic Signatures in Global and National Commerce Act (E-SIGN) and the Texas Uniform Electronic Transactions Act (TUETA). Electronic signatures carry the same legal weight as handwritten signatures.</p>
+    <p style="font-size:9px;color:#999;text-align:center;margin-top:4px;">Arena Business Advisors, LLC | 3555 Timmons Lane, Suite 1140 | Houston, TX 77027 | support@thearenapartners.com</p>
+  </div>`;
+
+  const container = document.createElement('div');
+  container.innerHTML = pdfHtml;
+  document.body.appendChild(container);
+
+  const opt = {
+    margin: [10, 0, 10, 0],
+    filename: `NDA - The Arena Partners x ${company}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+
+  const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
+  document.body.removeChild(container);
+  return pdfBlob;
+}
+
 // ── Submit NDA ──────────────────────────────────────────────────────────────
 async function submitNDA() {
   const name      = document.getElementById('clientName').value.trim();
@@ -858,11 +952,30 @@ async function submitNDA() {
       });
     }
 
+    // Step 6: Generate PDF and trigger download
+    submitBtn.textContent = 'Generating PDF...';
+    try {
+      const pdfBlob = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
+      
+      // Auto-download the PDF
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = pdfUrl;
+      downloadLink.download = `NDA - The Arena Partners x ${company}.pdf`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(pdfUrl);
+    } catch(pdfErr) {
+      console.error('PDF generation error:', pdfErr);
+      // Non-blocking - NDA is still signed even if PDF fails
+    }
+
     // Show success
     document.getElementById('successName').textContent = name.split(' ')[0];
     document.getElementById('successMsg').style.display = 'block';
     document.getElementById('errorMsg').style.display   = 'none';
-    submitBtn.textContent = '✓ Signed';
+    submitBtn.textContent = '✓ Signed — PDF Downloaded';
     submitBtn.style.background = 'linear-gradient(135deg, #2d6a2d, #3d8a3d)';
     submitBtn.style.color = '#fff';
 
