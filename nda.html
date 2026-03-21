@@ -785,16 +785,20 @@ async function generateNDAPdf(name, company, title, email, sigDataUrl, signedAt)
   </div>`;
 
   const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;top:0;left:0;width:700px;background:#fff;color:#1a1a1a;z-index:9999;overflow:visible;';
   container.innerHTML = pdfHtml;
   document.body.appendChild(container);
 
+  // Wait for images (signature) to load
+  await new Promise(r => setTimeout(r, 500));
+
   const opt = {
-    margin: [10, 0, 10, 0],
+    margin: [8, 8, 8, 8],
     filename: `NDA - The Arena Partners x ${company}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 700 },
     jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    pagebreak: { mode: ['css', 'legacy'] }
   };
 
   const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
