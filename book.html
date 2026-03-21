@@ -463,6 +463,13 @@ fetch('book-content.json')
       });
     }
     
+    // Add back cover as last page
+    filtered.push({
+      title: '__backcover__',
+      content: [],
+      _backcover: true
+    });
+    
     chapters = filtered;
     
     // Load saved position
@@ -507,9 +514,14 @@ function renderPage() {
   const title = ch.title;
   const isPart = title.toLowerCase().startsWith('part ');
   const isDedication = ch._dedication;
-  const isTitle = !isDedication && (currentPage === 0 || (readerName && currentPage === 1));
+  const isBackCover = ch._backcover;
+  const isTitle = !isDedication && !isBackCover && (currentPage === 0 || (readerName && currentPage === 1));
   
-  if (isDedication) {
+  if (isBackCover) {
+    html = `<div class="title-page" style="padding:0;overflow:hidden;">
+      <img src="book-back-cover.png" alt="TRANSFERABLE - Back Cover" style="width:100%;height:100%;object-fit:contain;">
+    </div>`;
+  } else if (isDedication) {
     // Personalized dedication page
     html = `<div class="dedication-page">
       <p class="ded-to">For You</p>
