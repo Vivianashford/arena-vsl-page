@@ -2332,7 +2332,7 @@ function submitForm() {
   // GHL INTEGRATION
   // ══════════════════════════════════════════════════════════════════
   const ghlHeaders = {
-    'Authorization': 'Bearer pit-8db4722a-0d8f-41c0-8cc0-1d17de5bff3d',
+    'Authorization': 'Bearer proxy',
     'Version': '2021-07-28',
     'Content-Type': 'application/json'
   };
@@ -2386,7 +2386,7 @@ function submitForm() {
   // Upsert contact with assessment data + tag
   if (answers.email) {
     const nameParts = (answers.ownerName || '').split(' ');
-    fetch('https://services.leadconnectorhq.com/contacts/upsert', {
+    fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/upsert', {
       method: 'POST',
       headers: ghlHeaders,
       body: JSON.stringify({
@@ -2432,7 +2432,7 @@ function submitForm() {
         `Success: ${answers.successNote || 'None'}\n` +
         `Extra Notes: ${answers.extraNote || 'None'}`;
 
-      fetch('https://services.leadconnectorhq.com/contacts/' + contactId + '/notes', {
+      fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/' + contactId + '/notes', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({ body: noteBody })
@@ -2514,7 +2514,7 @@ function submitForm() {
         ${arenaSignature}
       </div>`;
 
-      fetch('https://services.leadconnectorhq.com/conversations/messages', {
+      fetch('https://arena-api.jean-475.workers.dev/api/ghl/conversations/messages', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({
@@ -2527,7 +2527,7 @@ function submitForm() {
       });
 
       // ── ENHANCED EMAIL TO JEAN ──
-      fetch('https://services.leadconnectorhq.com/contacts/upsert', {
+      fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/upsert', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({
@@ -2640,7 +2640,7 @@ function submitForm() {
           <p style="color:#6b6560;font-size:11px;margin-top:20px;">Arena Exit Assessment — Internal Notification</p>
         </div>`;
 
-        fetch('https://services.leadconnectorhq.com/conversations/messages', {
+        fetch('https://arena-api.jean-475.workers.dev/api/ghl/conversations/messages', {
           method: 'POST',
           headers: ghlHeaders,
           body: JSON.stringify({

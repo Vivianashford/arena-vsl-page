@@ -443,13 +443,13 @@ function submitContactForm(e) {
   btn.disabled = true;
 
   var ghlHeaders = {
-    'Authorization': 'Bearer pit-8db4722a-0d8f-41c0-8cc0-1d17de5bff3d',
+    'Authorization': 'Bearer proxy',
     'Version': '2021-07-28',
     'Content-Type': 'application/json'
   };
 
   // Create/upsert contact in GHL
-  fetch('https://services.leadconnectorhq.com/contacts/upsert', {
+  fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/upsert', {
     method: 'POST',
     headers: ghlHeaders,
     body: JSON.stringify({
@@ -466,7 +466,7 @@ function submitContactForm(e) {
     var contactId = data.contact ? data.contact.id : (data.contactId || null);
     if (contactId) {
       // Add note with the message
-      fetch('https://services.leadconnectorhq.com/contacts/' + contactId + '/notes', {
+      fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/' + contactId + '/notes', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({
