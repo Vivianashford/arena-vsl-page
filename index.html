@@ -1279,14 +1279,15 @@
       succession: 'Succession / Transition', explore: 'Exploring Options'
     };
 
-    // GHL API - create contact, opportunity, and send emails
+    // GHL API via Cloudflare Worker proxy (token is server-side)
+    var WORKER = 'https://arena-api.jean-475.workers.dev';
     var ghlHeaders = {
-      'Authorization': 'Bearer pit-8db4722a-0d8f-41c0-8cc0-1d17de5bff3d',
+      'Authorization': 'Bearer proxy',
       'Version': '2021-07-28',
       'Content-Type': 'application/json'
     };
 
-    fetch('https://services.leadconnectorhq.com/contacts/upsert', {
+    fetch(WORKER + '/api/ghl/contacts/upsert', {
       method: 'POST',
       headers: ghlHeaders,
       body: JSON.stringify({
@@ -1305,7 +1306,7 @@
       if (!contactId) return;
 
       // Create opportunity in "Arena Lead Pipe" -> "New Lead" stage
-      fetch('https://services.leadconnectorhq.com/opportunities/', {
+      fetch(WORKER + '/api/ghl/opportunities/', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({
@@ -1333,7 +1334,7 @@
         '<p style="font-size:16px;line-height:1.7;color:#9a9590;">If you have questions or want to discuss your situation directly, reply to this email.</p>' +
         '</div>' + arenaSignature;
 
-      fetch('https://services.leadconnectorhq.com/conversations/messages', {
+      fetch(WORKER + '/api/ghl/conversations/messages', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({
@@ -1348,7 +1349,7 @@
       // Send SMS to the lead with training link (delay 10s to let GHL process contact)
       if (phone) {
         setTimeout(function() {
-          fetch('https://services.leadconnectorhq.com/conversations/messages', {
+          fetch(WORKER + '/api/ghl/conversations/messages', {
             method: 'POST',
             headers: ghlHeaders,
             body: JSON.stringify({
@@ -1363,7 +1364,7 @@
       // Send notification to Jean via GHL note + email with LinkedIn outreach info
       var leadNote = 'NEW VSL LEAD\nName: ' + firstName + ' ' + lastName + '\nPhone: ' + phone + '\nEmail: ' + email + '\nRevenue: ' + (revenueLabels[revenue] || 'N/A') + '\nGoal: ' + (goalLabels[goal] || 'N/A') + '\nSource: Arena VSL Page\nTime: ' + new Date().toLocaleString('en-US', {timeZone: 'America/Chicago'}) + '\n\nLINKEDIN OUTREACH:\nSearch: ' + firstName + ' ' + lastName + '\nMessage: Hi ' + firstName + ', I saw you checked out our training on exit strategy. Looking forward to connecting. - Jean';
 
-      fetch('https://services.leadconnectorhq.com/contacts/' + contactId + '/notes', {
+      fetch(WORKER + '/api/ghl/contacts/' + contactId + '/notes', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({ body: leadNote })
@@ -1387,7 +1388,7 @@
         '<p style="color:#6b6560;font-size:11px;margin-top:20px;">Arena Follow-Up System</p></div>';
 
       // Create a temp contact for Jean to send email (or use existing)
-      fetch('https://services.leadconnectorhq.com/contacts/upsert', {
+      fetch(WORKER + '/api/ghl/contacts/upsert', {
         method: 'POST',
         headers: ghlHeaders,
         body: JSON.stringify({
@@ -1402,7 +1403,7 @@
       .then(function(d) {
         var jeanContactId = d.contact ? d.contact.id : d.contactId;
         if (jeanContactId) {
-          fetch('https://services.leadconnectorhq.com/conversations/messages', {
+          fetch(WORKER + '/api/ghl/conversations/messages', {
             method: 'POST',
             headers: ghlHeaders,
             body: JSON.stringify({
@@ -1418,9 +1419,9 @@
     })
     .catch(function(err) { console.error('GHL error:', err); });
 
-    // 3. Redirect to training page after short delay (pass contact info for video tracking)
+    // 3. Redirect to training page - fires regardless of API success
     setTimeout(function() {
-      var watchUrl = 'https://thearenapartners.com/watch.html?cid=' + encodeURIComponent(contactId) + '&email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(firstName);
+      var watchUrl = 'https://thearenapartners.com/watch.html?email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(firstName);
       window.location.href = watchUrl;
     }, 1500);
   }
