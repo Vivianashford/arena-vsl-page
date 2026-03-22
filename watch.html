@@ -1517,6 +1517,92 @@
 })();
 </script>
 
+<!-- ===================== GA4 ANALYTICS ===================== -->
+<!-- Replace GA_MEASUREMENT_ID with your actual ID from analytics.google.com -->
+<script>
+(function() {
+  var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+
+  // Load gtag.js
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+  document.head.appendChild(s);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', GA_MEASUREMENT_ID, { send_page_view: true });
+
+  // ── Video Play / Pause Tracking ──────────────────────────
+  // Hooks into the YT onStateChange after the player initializes
+  var _origOnYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady;
+  var ga4PlayFired = false;
+  var ga4PauseFired = false;
+
+  window.onYouTubeIframeAPIReady = function() {
+    if (typeof _origOnYouTubeIframeAPIReady === 'function') {
+      _origOnYouTubeIframeAPIReady();
+    }
+    // Patch player state changes after brief delay for player init
+    setTimeout(function patchPlayer() {
+      if (!window.player || !window.player.addEventListener) {
+        setTimeout(patchPlayer, 500);
+        return;
+      }
+      window.player.addEventListener('onStateChange', function(event) {
+        var YT = window.YT;
+        if (!YT) return;
+        if (event.data === YT.PlayerState.PLAYING && !ga4PlayFired) {
+          ga4PlayFired = true;
+          gtag('event', 'video_play', { event_category: 'video', event_label: 'vsl_training', video_id: 'ZkjCTC0JX-g' });
+        }
+        if (event.data === YT.PlayerState.PAUSED) {
+          var duration = window.player.getDuration ? window.player.getDuration() : 0;
+          var current = window.player.getCurrentTime ? window.player.getCurrentTime() : 0;
+          var pct = duration > 0 ? Math.round((current / duration) * 100) : 0;
+          gtag('event', 'video_pause', { event_category: 'video', event_label: 'vsl_training', video_percent: pct });
+          ga4PauseFired = true;
+        }
+      });
+    }, 1000);
+  };
+
+  // ── Video Milestone Tracking (% watched) ────────────────
+  // Hook into the existing fireMilestone function
+  document.addEventListener('DOMContentLoaded', function() {
+    var checkForFn = setInterval(function() {
+      if (typeof window.fireMilestone === 'function' && !window._ga4MilestonePatch) {
+        window._ga4MilestonePatch = true;
+        clearInterval(checkForFn);
+        var _origFire = window.fireMilestone;
+        window.fireMilestone = function(pct) {
+          gtag('event', 'video_progress', { event_category: 'video', event_label: 'vsl_training', video_percent: pct, video_id: 'ZkjCTC0JX-g' });
+          return _origFire.apply(this, arguments);
+        };
+      }
+    }, 200);
+  });
+
+  // ── Scroll Depth Tracking ────────────────────────────────
+  var scrollMilestones = { 25: false, 50: false, 75: false, 100: false };
+  window.addEventListener('scroll', function() {
+    var scrolled = window.scrollY || window.pageYOffset;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+    var pct = Math.round((scrolled / docHeight) * 100);
+    [25, 50, 75, 100].forEach(function(m) {
+      if (pct >= m && !scrollMilestones[m]) {
+        scrollMilestones[m] = true;
+        gtag('event', 'scroll_depth', { depth_threshold: m, page: 'watch' });
+      }
+    });
+  }, { passive: true });
+})();
+</script>
+<!-- ===================== END GA4 ===================== -->
+
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}</script>
 </body>
 </html>

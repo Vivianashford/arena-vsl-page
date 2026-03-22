@@ -953,7 +953,7 @@
 
 <!-- ANNOUNCEMENT BAR -->
 <div class="announcement-bar">
-  <span>🏆 You built something worth millions — now let's prove it to buyers</span>
+  <span>🏆 You built something worth millions  -  now let's prove it to buyers</span>
 </div>
 
 <!-- NAV -->
@@ -974,7 +974,7 @@
   </h1>
 
   <p class="hero-sub">
-    See how service-based business owners at <strong>$5M–$50M in revenue</strong> are using the Transferable Exit System™ to package what they've built — and exit at the premium they've earned.
+    See how service-based business owners at <strong>$5M–$50M in revenue</strong> are using the Transferable Exit System™ to package what they've built  -  and exit at the premium they've earned.
   </p>
 
   <!-- VSL VIDEO -->
@@ -989,7 +989,7 @@
     </div>
     <div class="vsl-duration">
       <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-      <span>27 min training — no fluff, just the system</span>
+      <span>27 min training  -  no fluff, just the system</span>
     </div>
   </div>
 
@@ -1026,19 +1026,19 @@
   <div class="problem-list">
     <div class="problem-item">
       <div class="problem-icon">🏗️</div>
-      <p><strong>You built this with your own hands.</strong> Every client relationship, every key decision — that's how you got here. But buyers pay a premium for businesses that run without the founder. Same strength, different packaging.</p>
+      <p><strong>You built this with your own hands.</strong> Every client relationship, every key decision  -  that's how you got here. But buyers pay a premium for businesses that run without the founder. Same strength, different packaging.</p>
     </div>
     <div class="problem-item">
       <div class="problem-icon">🔑</div>
-      <p><strong>Your best systems live in your head.</strong> You know how everything works. The play now is getting that knowledge into documented processes your team can own — so the business holds its value on day one without you.</p>
+      <p><strong>Your best systems live in your head.</strong> You know how everything works. The play now is getting that knowledge into documented processes your team can own  -  so the business holds its value on day one without you.</p>
     </div>
     <div class="problem-item">
       <div class="problem-icon">🏠</div>
-      <p><strong>Think of it like selling a house.</strong> Nobody lists without renovating first. Your business deserves the same treatment — button it up, present it right, and get what it's actually worth.</p>
+      <p><strong>Think of it like selling a house.</strong> Nobody lists without renovating first. Your business deserves the same treatment  -  button it up, present it right, and get what it's actually worth.</p>
     </div>
     <div class="problem-item">
       <div class="problem-icon">📈</div>
-      <p><strong>The value is already there.</strong> You're generating real revenue. The gap between what you have and a premium exit is just preparation — and that's exactly what the system does.</p>
+      <p><strong>The value is already there.</strong> You're generating real revenue. The gap between what you have and a premium exit is just preparation  -  and that's exactly what the system does.</p>
     </div>
   </div>
 </section>
@@ -1051,7 +1051,7 @@
   </div>
   <div class="stat">
     <div class="stat-number">42</div>
-    <div class="stat-label">months — the sweet spot<br>for exit preparation</div>
+    <div class="stat-label">months  -  the sweet spot<br>for exit preparation</div>
   </div>
   <div class="stat">
     <div class="stat-number">2–4×</div>
@@ -1100,7 +1100,7 @@
         <div class="testimonial-avatar">CB</div>
         <div>
           <div class="testimonial-name">Callen D. Basilio</div>
-          <div class="testimonial-role">CEO, Visaris Group — Healthcare M&A</div>
+          <div class="testimonial-role">CEO, Visaris Group  -  Healthcare M&A</div>
         </div>
       </div>
     </div>
@@ -1136,7 +1136,7 @@
         <div class="testimonial-avatar">EF</div>
         <div>
           <div class="testimonial-name">Earl Flormata</div>
-          <div class="testimonial-role">Business Growth Strategist — 14-year relationship</div>
+          <div class="testimonial-role">Business Growth Strategist  -  14-year relationship</div>
         </div>
       </div>
     </div>
@@ -1147,14 +1147,14 @@
 <section class="bottom-cta">
   <p class="section-eyebrow">Your Next Chapter</p>
   <h2>You've Done the Hard Part.<br>Let's Finish It Right.</h2>
-  <p>Watch the free training to see the 3-phase system owners like you are using to package what they've built — and exit at the number they deserve.</p>
+  <p>Watch the free training to see the 3-phase system owners like you are using to package what they've built  -  and exit at the number they deserve.</p>
   <button class="cta-btn" onclick="openModal()">
     Watch the Free Training Now
     <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </button>
   <p class="cta-note" style="margin-top: 14px;">
     <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-    Instant access — no credit card required
+    Instant access  -  no credit card required
   </p>
 </section>
 
@@ -1440,6 +1440,69 @@
   });
 </script>
 
+
+<!-- ===================== GA4 ANALYTICS ===================== -->
+<!-- Replace GA_MEASUREMENT_ID with your actual ID from analytics.google.com -->
+<script>
+(function() {
+  var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+
+  // Load gtag.js
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+  document.head.appendChild(s);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', GA_MEASUREMENT_ID, { send_page_view: true });
+
+  // ── Scroll Depth Tracking ────────────────────────────────
+  var scrollMilestones = { 25: false, 50: false, 75: false, 100: false };
+  function onScroll() {
+    var scrolled = window.scrollY || window.pageYOffset;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+    var pct = Math.round((scrolled / docHeight) * 100);
+    [25, 50, 75, 100].forEach(function(m) {
+      if (pct >= m && !scrollMilestones[m]) {
+        scrollMilestones[m] = true;
+        gtag('event', 'scroll_depth', { depth_threshold: m, page: 'landing' });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Outbound Click Tracking ──────────────────────────────
+  document.addEventListener('click', function(e) {
+    var a = e.target.closest('a');
+    if (!a) return;
+    var href = a.href || '';
+    if (href && !href.includes(location.hostname)) {
+      gtag('event', 'outbound_click', { link_url: href, link_text: (a.textContent || '').trim().slice(0, 100) });
+    }
+  });
+
+  // ── VSL Play Event (openModal hook) ─────────────────────
+  var _origOpenModal = window.openModal;
+  window.openModal = function() {
+    gtag('event', 'vsl_play', { event_category: 'video', event_label: 'landing_page_vsl' });
+    if (typeof _origOpenModal === 'function') _origOpenModal.apply(this, arguments);
+  };
+
+  // ── Form Submission Tracking ─────────────────────────────
+  var _origSubmitForm = window.submitForm;
+  window.submitForm = function() {
+    var email = (document.getElementById('email') || {}).value || '';
+    var revenue = (document.getElementById('revenue') || {}).value || '';
+    gtag('event', 'optin_submit', { event_category: 'lead', event_label: 'vsl_optin', revenue_range: revenue, has_email: !!email });
+    if (typeof _origSubmitForm === 'function') return _origSubmitForm.apply(this, arguments);
+  };
+})();
+</script>
+<!-- ===================== END GA4 ===================== -->
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}</script>
 </body>

@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Engagement Agreement | The Arena Partners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0a;
+      --bg2:       #111111;
+      --bg3:       #161616;
+      --bg4:       #1a1a1a;
+      --gold:      #c9a84c;
+      --gold-light:#e3c96e;
+      --gold-dark: #a8872e;
+      --gold-glow: rgba(201,168,76,0.15);
+      --text:      #f5f0e8;
+      --text2:     #d4cfc8;
+      --muted:     #a09a94;
+      --border:    rgba(201,168,76,0.12);
+      --border2:   rgba(201,168,76,0.25);
+      --green:     #3a8a5a;
+      --error:     #c44b3f;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .header-badge {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Layout ── */
+    .wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Document Header ── */
+    .doc-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .doc-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--border2);
+      padding: 6px 18px;
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+    .doc-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 600px) {
+      .doc-title { font-size: 24px; }
+    }
+    .doc-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    /* ── Prefill notice ── */
+    .prefill-notice {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+      padding: 14px 18px;
+      margin-bottom: 32px;
+      font-size: 14px;
+      color: var(--text2);
+      display: none;
+    }
+    .prefill-notice strong { color: var(--gold); }
+
+    /* ── Party block ── */
+    .party-block {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .party-row {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .party-row:last-child { margin-bottom: 0; }
+    .party-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .party-value {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .party-value.gold { color: var(--gold); }
+
+    /* ── Terms section ── */
+    .section {
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-body {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text2);
+    }
+    .section-body p { margin-bottom: 10px; }
+    .section-body p:last-child { margin-bottom: 0; }
+    .section-body strong { color: var(--text); font-weight: 600; }
+    .section-body ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    .section-body ul li {
+      margin-bottom: 6px;
+    }
+
+    /* ── Phase grid ── */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    @media (max-width: 600px) {
+      .phase-grid { grid-template-columns: 1fr; }
+    }
+    .phase-card {
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .phase-num {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .phase-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .phase-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    /* ── Guarantee list ── */
+    .guarantee-list {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+    }
+    .guarantee-list li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+    .guarantee-list li:last-child { border-bottom: none; }
+    .guarantee-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 50%;
+      background: var(--gold-glow);
+      border: 1px solid var(--border2);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 36px 0;
+    }
+
+    /* ── Signature section ── */
+    .sig-section {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 28px;
+    }
+    .sig-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .sig-section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .sig-pad-wrap {
+      margin-bottom: 20px;
+    }
+    .sig-label {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .sig-canvas-wrap {
+      position: relative;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0d0d0d;
+      touch-action: none;
+    }
+    #sigCanvas {
+      display: block;
+      width: 100%;
+      height: 160px;
+      cursor: crosshair;
+    }
+    .sig-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 13px;
+      color: rgba(160,154,148,0.4);
+      pointer-events: none;
+      transition: opacity 0.3s;
+      text-align: center;
+    }
+    .sig-hint.hidden { opacity: 0; }
+    .sig-clear-btn {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sig-clear-btn:hover { color: var(--gold); border-color: var(--border2); }
+
+    .sig-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    @media (max-width: 500px) {
+      .sig-fields { grid-template-columns: 1fr; }
+    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group.full { grid-column: 1 / -1; }
+    .field-label {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .field-input {
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 11px 14px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .field-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .field-input[readonly] {
+      color: var(--muted);
+      cursor: default;
+    }
+    .field-input.error { border-color: var(--error); }
+
+    /* ── Deposit section ── */
+    .deposit-section {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 28px;
+    }
+    .deposit-amount {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .deposit-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .deposit-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+    .stripe-field-wrap {
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 13px 14px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .stripe-field-wrap.StripeElement--focus { border-color: var(--gold); }
+    .stripe-field-wrap.StripeElement--invalid { border-color: var(--error); }
+    #stripe-errors {
+      color: var(--error);
+      font-size: 13px;
+      min-height: 18px;
+      margin-bottom: 8px;
+    }
+    .stripe-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+    .stripe-badge svg { flex-shrink: 0; }
+
+    /* ── Consent checkbox ── */
+    .consent-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+    .consent-row input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--gold);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%;
+      padding: 18px 32px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      color: #0a0a0a;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── Progress/status ── */
+    .progress-bar-wrap {
+      display: none;
+      margin-bottom: 16px;
+    }
+    .progress-bar-wrap.active { display: block; }
+    .progress-bar-bg {
+      background: var(--bg4);
+      border-radius: 4px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .progress-status {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    /* ── Success state ── */
+    #successPanel {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    #successPanel.active { display: block; }
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(58,138,90,0.15);
+      border: 2px solid #3a8a5a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    .success-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .success-sub {
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
+    .success-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-secondary {
+      display: inline-block;
+      padding: 12px 24px;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: var(--gold-glow); }
+
+    /* ── Error msg ── */
+    #errorMsg {
+      display: none;
+      background: rgba(196,75,63,0.1);
+      border: 1px solid rgba(196,75,63,0.3);
+      border-radius: 6px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #e07060;
+      margin-bottom: 16px;
+    }
+    #errorMsg.active { display: block; }
+
+    /* ── Grain overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Print: hide interactive elements ── */
+    @media print {
+      .site-header, .submit-btn, .deposit-section, .sig-clear-btn, .consent-row { display: none !important; }
+      body { background: white; color: black; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <a href="https://thearenapartners.com" class="logo">The Arena Partners</a>
+    <span class="header-badge">Engagement Agreement</span>
+  </header>
+
+  <div class="wrapper">
+
+    <!-- Document Header -->
+    <div class="doc-header">
+      <div class="doc-badge">Confidential - Engagement Agreement</div>
+      <h1 class="doc-title">Engagement Agreement<br>The Arena Partners</h1>
+      <p class="doc-subtitle">Transferable Exit System - Advisory Engagement</p>
+    </div>
+
+    <!-- Prefill Notice -->
+    <div class="prefill-notice" id="prefillNotice">
+      This agreement has been prepared for <strong id="noticeClient">you</strong> and is pre-populated with your information.
+    </div>
+
+    <!-- Parties -->
+    <div class="party-block">
+      <div class="party-row">
+        <span class="party-label">Client</span>
+        <span class="party-value" id="partyClient">[ Client Name ]</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Company</span>
+        <span class="party-value" id="partyCompany">[ Company ]</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Email</span>
+        <span class="party-value" id="partyEmail">[ Email ]</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Advisor</span>
+        <span class="party-value gold">Arena Business Advisors, LLC</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Effective</span>
+        <span class="party-value" id="partyDate">[ Date ]</span>
+      </div>
+    </div>
+
+    <!-- Agreement Terms -->
+    <div id="agreementBody">
+
+      <!-- 1. Scope -->
+      <div class="section">
+        <div class="section-title">1. Scope of Engagement</div>
+        <div class="section-body">
+          <p>Arena Business Advisors, LLC ("The Arena Partners" or "Advisor") agrees to provide advisory services under the <strong>Transferable Exit System</strong> program to the Client named above.</p>
+          <p>The engagement encompasses a comprehensive, hands-on advisory process designed to systemize, de-personalize, and prepare the Client's business for a premium exit or institutional sale - resulting in a business that operates independently of the owner.</p>
+        </div>
+      </div>
+
+      <!-- 2. Duration -->
+      <div class="section">
+        <div class="section-title">2. Duration</div>
+        <div class="section-body">
+          <p>This engagement is structured for a minimum of <strong>18 months</strong> from the Effective Date, with monthly review checkpoints and milestone-based progress tracking.</p>
+          <p>Extension beyond 18 months may be negotiated based on progress and mutual agreement.</p>
+        </div>
+      </div>
+
+      <!-- 3. Fee Structure -->
+      <div class="section">
+        <div class="section-title">3. Fee Structure</div>
+        <div class="section-body">
+          <p><strong>Engagement Fee:</strong> <span id="termsFee" style="color:var(--gold);font-weight:700;">To be discussed</span></p>
+          <p><strong>Payment Structure:</strong> An initial deposit is collected upon signing this agreement to secure your engagement and initiate onboarding. The remaining balance is structured as a monthly retainer over the engagement period.</p>
+          <p>All fees are non-refundable once the engagement has commenced, except as outlined in the Alignment Guarantee below.</p>
+        </div>
+      </div>
+
+      <!-- 4. Phases -->
+      <div class="section">
+        <div class="section-title">4. Engagement Phases</div>
+        <div class="section-body">
+          <p>The Transferable Exit System is delivered in four structured phases:</p>
+          <div class="phase-grid">
+            <div class="phase-card">
+              <div class="phase-num">Phase 1</div>
+              <div class="phase-name">Alignment</div>
+              <div class="phase-desc">Deep discovery, goal calibration, and exit readiness baseline. Identify gaps, set targets, and define the transformation roadmap.</div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">Phase 2</div>
+              <div class="phase-name">On-Site Immersion</div>
+              <div class="phase-desc">Hands-on, in-person operational audit. Shadow key departments, document processes, and capture institutional knowledge at the source.</div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">Phase 3</div>
+              <div class="phase-name">System Build</div>
+              <div class="phase-desc">Build the operating system - SOPs, org structure, KPIs, leadership team empowerment - so the business runs without you.</div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">Phase 4</div>
+              <div class="phase-name">Market Ready</div>
+              <div class="phase-desc">Prepare the full exit package: financial normalization, CIM, buyer positioning, and deal facilitation to maximize enterprise value.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Confidentiality -->
+      <div class="section">
+        <div class="section-title">5. Confidentiality</div>
+        <div class="section-body">
+          <p>Both parties agree to maintain strict confidentiality regarding all business information, financial data, processes, strategies, client lists, and proprietary methodologies shared during this engagement.</p>
+          <p>This obligation survives the termination of this agreement for a period of <strong>three (3) years</strong>. Neither party shall disclose confidential information to third parties without prior written consent, except as required by law.</p>
+        </div>
+      </div>
+
+      <!-- 6. Termination -->
+      <div class="section">
+        <div class="section-title">6. Termination</div>
+        <div class="section-body">
+          <p>Either party may terminate this engagement with <strong>30 days written notice</strong>. Upon termination, all work product, deliverables, and materials produced to date remain the property of the Client.</p>
+          <p>Fees paid prior to termination are non-refundable. Monthly retainer payments cease upon the 30-day notice period end date.</p>
+        </div>
+      </div>
+
+      <!-- 7. Guarantee -->
+      <div class="section">
+        <div class="section-title">7. The Arena Alignment Guarantee</div>
+        <div class="section-body">
+          <p>The Arena Partners commits to the following five obligations throughout this engagement:</p>
+          <ul class="guarantee-list">
+            <li>
+              <span class="guarantee-num">1</span>
+              <span><strong>Full Commitment:</strong> We dedicate the resources, expertise, and senior-level attention required to achieve your exit goals on the agreed timeline.</span>
+            </li>
+            <li>
+              <span class="guarantee-num">2</span>
+              <span><strong>Radical Transparency:</strong> We will tell you what we see - including the hard truths - with no sugarcoating. Our job is to fix the business, not to protect your ego.</span>
+            </li>
+            <li>
+              <span class="guarantee-num">3</span>
+              <span><strong>System-First Approach:</strong> Every recommendation will be designed for long-term operability, not quick fixes. We build for the buyer, not for appearances.</span>
+            </li>
+            <li>
+              <span class="guarantee-num">4</span>
+              <span><strong>Access to Network:</strong> You will have access to our curated network of M&amp;A advisors, brokers, family offices, and strategic buyers relevant to your business and sector.</span>
+            </li>
+            <li>
+              <span class="guarantee-num">5</span>
+              <span><strong>Satisfaction Checkpoint:</strong> At the 90-day mark, if you are not satisfied with the direction, approach, or quality of work, we will refund the most recent month's retainer and part ways on good terms.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 8. Governing Law -->
+      <div class="section">
+        <div class="section-title">8. Governing Law</div>
+        <div class="section-body">
+          <p>This agreement shall be governed by and construed in accordance with the laws of the State of Texas. Any disputes arising under this agreement shall be resolved through binding arbitration in Harris County, Texas.</p>
+        </div>
+      </div>
+
+    </div><!-- end agreementBody -->
+
+    <hr class="divider">
+
+    <!-- Signature Section -->
+    <div class="sig-section">
+      <div class="sig-section-title">Electronic Signature</div>
+      <div class="sig-section-sub">By signing below, you confirm that you have read, understood, and agree to the terms of this Engagement Agreement.</div>
+
+      <div class="sig-pad-wrap">
+        <div class="sig-label">Your Signature</div>
+        <div class="sig-canvas-wrap">
+          <canvas id="sigCanvas"></canvas>
+          <div class="sig-hint" id="sigHint">Sign here with your finger or mouse</div>
+        </div>
+        <button type="button" class="sig-clear-btn" onclick="clearSignature()">Clear Signature</button>
+      </div>
+
+      <div class="sig-fields">
+        <div class="field-group">
+          <label class="field-label" for="printName">Print Name</label>
+          <input type="text" id="printName" class="field-input" placeholder="Full legal name" autocomplete="name">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="sigTitle">Title</label>
+          <input type="text" id="sigTitle" class="field-input" placeholder="Owner / CEO / President">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="sigDate">Date</label>
+          <input type="text" id="sigDate" class="field-input" readonly>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="sigEmail">Email</label>
+          <input type="email" id="sigEmail" class="field-input" placeholder="your@email.com" autocomplete="email">
+        </div>
+      </div>
+    </div>
+
+    <!-- Deposit Section -->
+    <div class="deposit-section" id="depositSection">
+      <div class="sig-section-title">Initial Deposit</div>
+      <div class="sig-section-sub">Secure your engagement with an initial deposit. Your card details are encrypted and never stored on our servers.</div>
+
+      <div class="deposit-amount">
+        <span class="deposit-label">Deposit Amount:</span>
+        <span class="deposit-value" id="depositAmount">$5,000</span>
+      </div>
+
+      <!-- Stripe card element -->
+      <!-- Replace STRIPE_PUBLISHABLE_KEY with your actual key from dashboard.stripe.com -->
+      <div class="stripe-field-wrap" id="card-element"></div>
+      <div id="stripe-errors"></div>
+
+      <div class="stripe-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="11" width="18" height="11" rx="2" stroke="#a09a94" stroke-width="1.5"/>
+          <path d="M7 11V7a5 5 0 0110 0v4" stroke="#a09a94" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Secure payment powered by Stripe - 256-bit SSL encrypted
+      </div>
+    </div>
+
+    <!-- Consent -->
+    <div class="consent-row">
+      <input type="checkbox" id="consentCheck">
+      <label for="consentCheck">
+        I have read and agree to the Engagement Agreement terms above, including the fee structure, engagement phases, confidentiality obligations, and The Arena Alignment Guarantee. I authorize the initial deposit charge to my card on file.
+      </label>
+    </div>
+
+    <!-- Error -->
+    <div id="errorMsg"></div>
+
+    <!-- Progress -->
+    <div class="progress-bar-wrap" id="progressWrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="progress-status" id="progressStatus">Processing...</div>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn" id="submitBtn" onclick="submitAgreement()">Sign &amp; Submit Deposit</button>
+
+    <!-- Success -->
+    <div id="successPanel">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-title">Agreement Signed</div>
+      <div class="success-sub" id="successMsg">
+        Your Engagement Agreement has been signed and your deposit has been processed. You will receive a confirmation email shortly.<br><br>
+        Jean will be in touch within one business day to schedule your Alignment session.
+      </div>
+      <div class="success-actions">
+        <a href="https://thearenapartners.com" class="btn-secondary">Return to Website</a>
+      </div>
+    </div>
+
+  </div><!-- wrapper -->
+
+  <script>
+  // ── Config ──────────────────────────────────────────────────────────────────
+  const WORKER_URL = 'https://arena-api.jean-475.workers.dev';
+  const GHL_BASE   = WORKER_URL + '/api/ghl';
+  const TOKEN      = 'proxy';
+  const LOCATION   = 'LSvdgiiT7ManCRx9CCwE';
+  const JEAN_CID   = 'ZoSzNQkcfgjYjc37tPs4';
+
+  // Replace STRIPE_PUBLISHABLE_KEY with your actual key from dashboard.stripe.com
+  const STRIPE_KEY = 'pk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+
+  // ── URL Params ──────────────────────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const clientName    = decodeURIComponent(params.get('name')    || '');
+  const clientCompany = decodeURIComponent(params.get('company') || '');
+  const clientEmail   = decodeURIComponent(params.get('email')   || '');
+  const contactId     = decodeURIComponent(params.get('cid')     || '');
+  const feeParam      = decodeURIComponent(params.get('fee')     || 'To be discussed');
+  const depositParam  = params.get('deposit') || '5000';
+
+  // Format deposit
+  const depositRaw = parseInt(depositParam.replace(/[^0-9]/g, ''), 10) || 5000;
+  const depositFormatted = '$' + depositRaw.toLocaleString('en-US');
+
+  // ── Populate dynamic fields ─────────────────────────────────────────────────
+  document.getElementById('partyClient').textContent  = clientName    || '[ Client Name ]';
+  document.getElementById('partyCompany').textContent = clientCompany || '[ Company ]';
+  document.getElementById('partyEmail').textContent   = clientEmail   || '[ Email ]';
+  document.getElementById('termsFee').textContent     = feeParam;
+  document.getElementById('depositAmount').textContent = depositFormatted;
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('partyDate').textContent = dateStr;
+  document.getElementById('sigDate').value = dateStr;
+
+  if (clientEmail) document.getElementById('sigEmail').value = clientEmail;
+  if (clientName)  document.getElementById('printName').value = clientName;
+
+  if (clientName || clientCompany || clientEmail) {
+    document.getElementById('prefillNotice').style.display = 'block';
+    document.getElementById('noticeClient').textContent = clientName || clientEmail;
+  }
+
+  // ── Signature Pad ───────────────────────────────────────────────────────────
+  const canvas  = document.getElementById('sigCanvas');
+  const ctx     = canvas.getContext('2d');
+  const sigHint = document.getElementById('sigHint');
+  let isDrawing = false;
+  let hasSig    = false;
+
+  function resizeCanvas() {
+    const ratio  = Math.max(window.devicePixelRatio || 1, 1);
+    const rect   = canvas.getBoundingClientRect();
+    canvas.width  = rect.width  * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.strokeStyle = '#c9a84c';
+    ctx.lineWidth   = 2;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+  }
+
+  window.addEventListener('load', resizeCanvas);
+  window.addEventListener('resize', resizeCanvas);
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+
+  canvas.addEventListener('mousedown', function(e) {
+    isDrawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    sigHint.classList.add('hidden');
+    hasSig = true;
+    e.preventDefault();
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    if (!isDrawing) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    e.preventDefault();
+  });
+  canvas.addEventListener('mouseup',   function(e) { isDrawing = false; e.preventDefault(); });
+  canvas.addEventListener('mouseleave', function()  { isDrawing = false; });
+
+  canvas.addEventListener('touchstart', function(e) {
+    isDrawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    sigHint.classList.add('hidden');
+    hasSig = true;
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (!isDrawing) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchend', function(e) { isDrawing = false; e.preventDefault(); }, { passive: false });
+
+  function clearSignature() {
+    const rect = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    sigHint.classList.remove('hidden');
+    hasSig = false;
+  }
+
+  // ── Stripe Init ─────────────────────────────────────────────────────────────
+  let stripe, cardElement;
+  try {
+    stripe = Stripe(STRIPE_KEY);
+    const elements = stripe.elements({
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#c9a84c',
+          colorBackground: '#1a1a1a',
+          colorText: '#f5f0e8',
+          colorDanger: '#c44b3f',
+          borderRadius: '6px',
+          fontFamily: 'DM Sans, sans-serif',
+        }
+      }
+    });
+    cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#f5f0e8',
+          fontFamily: '"DM Sans", sans-serif',
+          fontSize: '14px',
+          fontSmoothing: 'antialiased',
+          '::placeholder': { color: '#a09a94' },
+          iconColor: '#c9a84c'
+        },
+        invalid: { color: '#e07060', iconColor: '#c44b3f' }
+      }
+    });
+    cardElement.mount('#card-element');
+    cardElement.on('change', function(event) {
+      document.getElementById('stripe-errors').textContent = event.error ? event.error.message : '';
+    });
+  } catch(e) {
+    console.warn('Stripe init error:', e.message);
+    document.getElementById('depositSection').innerHTML =
+      '<p style="color:var(--muted);font-size:14px;">Payment processing will be configured at launch. Your agreement signature is still recorded.</p>';
+  }
+
+  // ── PDF Generation ──────────────────────────────────────────────────────────
+  async function generateAgreementPdf(sigDataUrl, printedName, title, signedAt) {
+    const signerSection = `
+      <div style="margin-top:24px;padding:16px;border:1px solid #ccc;border-radius:6px;">
+        <p style="font-size:11px;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Electronic Signature</p>
+        <img src="${sigDataUrl}" style="max-width:280px;max-height:80px;display:block;margin-bottom:8px;" alt="Signature">
+        <p style="font-size:12px;margin:0;"><strong>${printedName}</strong> - ${title || 'Owner'}</p>
+        <p style="font-size:11px;color:#555;margin:4px 0 0;">Date: ${signedAt}</p>
+        <p style="font-size:11px;color:#555;margin:2px 0 0;">Company: ${clientCompany}</p>
+        <p style="font-size:11px;color:#555;margin:2px 0 0;">Email: ${clientEmail}</p>
+      </div>`;
+
+    const agreementHtml = document.getElementById('agreementBody').innerHTML;
+
+    const pdfHtml = `
+      <div style="font-family:Georgia,'Times New Roman',serif;max-width:740px;margin:0 auto;padding:40px;color:#1a1a1a;background:white;">
+        <div style="text-align:center;margin-bottom:32px;border-bottom:2px solid #c9a84c;padding-bottom:20px;">
+          <p style="font-size:22px;font-weight:bold;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin:0 0 4px;">The Arena Partners</p>
+          <p style="font-size:15px;color:#333;margin:0;">Engagement Agreement - Transferable Exit System</p>
+        </div>
+        <div style="display:flex;gap:24px;margin-bottom:24px;font-size:13px;">
+          <div><strong>Client:</strong> ${clientName}<br><strong>Company:</strong> ${clientCompany}<br><strong>Email:</strong> ${clientEmail}</div>
+          <div><strong>Advisor:</strong> Arena Business Advisors, LLC<br><strong>Effective Date:</strong> ${dateStr}<br><strong>Fee:</strong> ${feeParam}</div>
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:#222;">
+          ${agreementHtml
+            .replace(/class="[^"]*"/g, '')
+            .replace(/id="[^"]*"/g, '')
+            .replace(/style="[^"]*"/g, '')
+            .replace(/<div class="phase-grid"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g, '')
+          }
+        </div>
+        ${signerSection}
+        <div style="margin-top:20px;padding-top:12px;border-top:1px solid #ccc;font-size:10px;color:#888;text-align:center;">
+          Arena Business Advisors, LLC - 3555 Timmons Lane, Suite 1140, Houston, TX 77027 - Digitally signed via thearenapartners.com
+        </div>
+      </div>`;
+
+    const container = document.createElement('div');
+    container.innerHTML = pdfHtml;
+    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:780px;background:white;';
+    document.body.appendChild(container);
+
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename: `Engagement Agreement - The Arena Partners x ${clientCompany || clientName}.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
+    };
+
+    const blob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    document.body.removeChild(container);
+    return blob;
+  }
+
+  // ── Main Submit ─────────────────────────────────────────────────────────────
+  async function submitAgreement() {
+    const submitBtn    = document.getElementById('submitBtn');
+    const progressWrap = document.getElementById('progressWrap');
+    const progressFill = document.getElementById('progressFill');
+    const progressStatus = document.getElementById('progressStatus');
+    const errorMsg     = document.getElementById('errorMsg');
+
+    function setProgress(pct, label) {
+      progressFill.style.width  = pct + '%';
+      progressStatus.textContent = label;
+    }
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add('active');
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Sign & Submit Deposit';
+      progressWrap.classList.remove('active');
+    }
+
+    // Validation
+    const printName = document.getElementById('printName').value.trim();
+    const sigTitle  = document.getElementById('sigTitle').value.trim();
+    const sigEmail  = document.getElementById('sigEmail').value.trim();
+    const consent   = document.getElementById('consentCheck').checked;
+
+    errorMsg.classList.remove('active');
+
+    if (!hasSig) return showError('Please draw your signature in the signature pad.');
+    if (!printName) { document.getElementById('printName').classList.add('error'); return showError('Please enter your full name.'); }
+    if (!sigEmail)  { document.getElementById('sigEmail').classList.add('error');  return showError('Please enter your email address.'); }
+    if (!consent)   return showError('Please check the consent box to confirm you agree to the terms.');
+
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Processing...';
+    progressWrap.classList.add('active');
+    setProgress(5, 'Validating...');
+
+    try {
+      // Step 1: Process Stripe payment
+      let paymentMethodId = null;
+      if (stripe && cardElement) {
+        setProgress(15, 'Processing payment...');
+        const { paymentMethod, error: stripeErr } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: cardElement,
+          billing_details: {
+            name: printName,
+            email: sigEmail
+          }
+        });
+        if (stripeErr) return showError('Payment error: ' + stripeErr.message);
+        paymentMethodId = paymentMethod.id;
+
+        // Send to Worker to process charge
+        const chargeResp = await fetch(WORKER_URL + '/api/stripe/charge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentMethodId: paymentMethodId,
+            amount: depositRaw * 100, // cents
+            currency: 'usd',
+            description: 'Engagement Deposit - The Arena Partners x ' + (clientCompany || clientName),
+            email: sigEmail,
+            name: printName
+          })
+        });
+        if (!chargeResp.ok) {
+          const chargeData = await chargeResp.json().catch(() => ({}));
+          return showError('Payment declined: ' + (chargeData.error || 'Please check your card details and try again.'));
+        }
+      }
+
+      setProgress(30, 'Generating agreement PDF...');
+      const signedAt  = new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' });
+      const sigDataUrl = canvas.toDataURL('image/png');
+      const pdfBlob   = await generateAgreementPdf(sigDataUrl, printName, sigTitle, signedAt);
+
+      setProgress(50, 'Uploading signed agreement...');
+      const pdfFileName = 'Engagement Agreement - The Arena Partners x ' + (clientCompany || clientName) + '.pdf';
+      const r2Form = new FormData();
+      r2Form.append('file', new Blob([pdfBlob], { type: 'application/pdf' }), pdfFileName);
+      r2Form.append('company', clientCompany || clientName);
+      r2Form.append('category', 'agreement');
+      r2Form.append('contactId', contactId || '');
+
+      let pdfUrl = '';
+      const r2Resp = await fetch(WORKER_URL + '/api/upload', { method: 'POST', body: r2Form });
+      if (r2Resp.ok) {
+        const r2Data = await r2Resp.json();
+        pdfUrl = r2Data.url || '';
+      }
+
+      setProgress(65, 'Updating contact record...');
+      const ghlHeaders = {
+        'Authorization': 'Bearer ' + TOKEN,
+        'Version': '2021-07-28',
+        'Content-Type': 'application/json'
+      };
+
+      // Resolve or upsert contact
+      let resolvedCid = contactId;
+      if (!resolvedCid && sigEmail) {
+        const upsertResp = await fetch(GHL_BASE + '/contacts/upsert', {
+          method: 'POST',
+          headers: ghlHeaders,
+          body: JSON.stringify({
+            locationId: LOCATION,
+            email: sigEmail,
+            firstName: printName.split(' ')[0],
+            lastName: printName.split(' ').slice(1).join(' '),
+            companyName: clientCompany || ''
+          })
+        });
+        if (upsertResp.ok) {
+          const ud = await upsertResp.json();
+          resolvedCid = (ud.contact && ud.contact.id) ? ud.contact.id : '';
+        }
+      }
+
+      if (resolvedCid) {
+        // Apply tag and update contact
+        await fetch(GHL_BASE + '/contacts/' + resolvedCid, {
+          method: 'PUT',
+          headers: ghlHeaders,
+          body: JSON.stringify({ tags: ['agreement-signed'] })
+        }).catch(function(e) { console.error('Tag error:', e); });
+
+        // Add note
+        await fetch(GHL_BASE + '/contacts/' + resolvedCid + '/notes', {
+          method: 'POST',
+          headers: ghlHeaders,
+          body: JSON.stringify({
+            body: 'ENGAGEMENT AGREEMENT SIGNED\nSigned by: ' + printName + '\nTitle: ' + (sigTitle || 'Not provided') + '\nEmail: ' + sigEmail + '\nDeposit: ' + depositFormatted + '\nTimestamp: ' + signedAt + (pdfUrl ? '\nAgreement PDF: ' + pdfUrl : '')
+          })
+        }).catch(function(e) { console.error('Note error:', e); });
+      }
+
+      setProgress(80, 'Sending confirmation email...');
+      const pdfBtnHtml = pdfUrl
+        ? '<p style="margin:20px 0;text-align:center;"><a href="' + pdfUrl + '" style="display:inline-block;padding:12px 24px;background:#c9a84c;color:#0a0a0a;font-weight:bold;text-decoration:none;border-radius:6px;font-size:14px;">Download Signed Agreement (PDF)</a></p>'
+        : '';
+
+      const clientFirstName = (printName || clientName || 'there').split(' ')[0];
+
+      // Confirmation email to client
+      if (resolvedCid || sigEmail) {
+        const confirmEmailHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px;background:#0a0a0a;color:#f5f0e8;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <p style="font-family:Georgia,serif;font-size:22px;color:#c9a84c;margin:0;">The Arena Partners</p>
+          </div>
+          <div style="background:#141414;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:28px;">
+            <p style="font-size:15px;line-height:1.7;color:#f5f0e8;margin:0 0 16px;">Hi ${clientFirstName},</p>
+            <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0 0 16px;">Your Engagement Agreement with The Arena Partners has been signed and your deposit of <strong style="color:#c9a84c;">${depositFormatted}</strong> has been processed successfully.</p>
+            <div style="background:rgba(201,168,76,0.08);border-left:3px solid #c9a84c;padding:14px 18px;margin:20px 0;border-radius:0 6px 6px 0;">
+              <p style="font-size:13px;color:#c9a84c;margin:0 0 6px;font-weight:bold;">Agreement Details</p>
+              <p style="font-size:13px;color:#d5d0c8;margin:0;">Signed by: ${printName}<br>Company: ${clientCompany || 'N/A'}<br>Date: ${dateStr}<br>Deposit: ${depositFormatted}</p>
+            </div>
+            ${pdfBtnHtml}
+            <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:16px 0;">Jean will be in touch within one business day to schedule your Phase 1 Alignment session. This is where we go deep on your business and build the roadmap.</p>
+            <p style="font-size:15px;color:#f5f0e8;margin:16px 0 0;">Jean Hardy<br><span style="font-size:13px;color:#9a9590;">Co-Founder - The Arena Partners</span></p>
+          </div>
+          <p style="font-size:11px;color:#6a6560;text-align:center;margin-top:20px;">Arena Business Advisors, LLC - 3555 Timmons Lane, Suite 1140, Houston, TX 77027</p>
+        </div>`;
+
+        if (resolvedCid) {
+          await fetch(GHL_BASE + '/conversations/messages', {
+            method: 'POST',
+            headers: ghlHeaders,
+            body: JSON.stringify({
+              type: 'Email',
+              contactId: resolvedCid,
+              subject: 'Engagement Agreement Confirmed - The Arena Partners',
+              html: confirmEmailHtml,
+              emailFrom: 'The Arena Partners <support@thearenapartners.com>'
+            })
+          }).catch(function(e) { console.error('Confirm email error:', e); });
+        }
+      }
+
+      setProgress(92, 'Notifying Jean...');
+
+      // Notify Jean
+      const jeanNotifyHtml = `<div style="font-family:Arial,sans-serif;padding:20px;">
+        <p style="font-size:18px;font-weight:bold;color:#c9a84c;">Agreement Signed + Deposit Collected</p>
+        <p><strong>${printName}</strong> (${clientCompany || 'N/A'}) has signed the Engagement Agreement.</p>
+        <p style="margin-top:12px;"><strong>Deposit:</strong> ${depositFormatted}<br><strong>Email:</strong> ${sigEmail}<br><strong>Title:</strong> ${sigTitle || 'Not provided'}<br><strong>Signed:</strong> ${signedAt}</p>
+        ${pdfUrl ? '<p style="margin-top:12px;"><a href="' + pdfUrl + '" style="color:#c9a84c;">View Signed Agreement PDF</a></p>' : ''}
+        ${resolvedCid ? '<p style="margin-top:8px;"><a href="https://app.gohighlevel.com/v2/location/LSvdgiiT7ManCRx9CCwE/contacts/detail/' + resolvedCid + '" style="color:#c9a84c;">View in GHL</a></p>' : ''}
+        <p style="margin-top:16px;color:#c9a84c;font-weight:bold;">Next step: Schedule Phase 1 Alignment call.</p>
+      </div>`;
+
+      await fetch(GHL_BASE + '/conversations/messages', {
+        method: 'POST',
+        headers: ghlHeaders,
+        body: JSON.stringify({
+          type: 'Email',
+          contactId: JEAN_CID,
+          subject: 'AGREEMENT SIGNED: ' + printName + ' (' + (clientCompany || 'N/A') + ') - ' + depositFormatted + ' deposit',
+          html: jeanNotifyHtml,
+          emailFrom: 'The Arena Partners <support@thearenapartners.com>'
+        })
+      }).catch(function(e) { console.error('Jean notify error:', e); });
+
+      setProgress(100, 'Complete');
+
+      // Show success
+      document.getElementById('successPanel').classList.add('active');
+      document.getElementById('successMsg').innerHTML =
+        'Your Engagement Agreement has been signed and your deposit of <strong style="color:var(--gold);">' + depositFormatted + '</strong> has been processed.<br><br>You will receive a confirmation email shortly. Jean will be in touch within one business day to schedule your Phase 1 Alignment session.';
+
+      // Hide form sections
+      document.querySelector('.sig-section').style.display    = 'none';
+      document.getElementById('depositSection').style.display = 'none';
+      document.querySelector('.consent-row').style.display    = 'none';
+      submitBtn.style.display                                  = 'none';
+      progressWrap.style.display                               = 'none';
+
+      // Trigger PDF download
+      try {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(pdfBlob);
+        a.download = pdfFileName;
+        a.click();
+        setTimeout(function() { URL.revokeObjectURL(a.href); }, 5000);
+      } catch(e) { console.warn('PDF download error:', e); }
+
+    } catch(err) {
+      console.error('Agreement submission error:', err);
+      showError('Something went wrong: ' + err.message + '. Please try again or contact support@thearenapartners.com.');
+    }
+  }
+  </script>
+
+  <!-- ===================== GA4 ANALYTICS ===================== -->
+  <!-- Replace GA_MEASUREMENT_ID with your actual ID from analytics.google.com -->
+  <script>
+  (function() {
+    var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+    document.head.appendChild(s);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID, { send_page_view: true });
+
+    // Track agreement page view with context
+    gtag('event', 'agreement_view', {
+      event_category: 'agreement',
+      has_contact_id: !!(new URLSearchParams(window.location.search).get('cid')),
+      deposit_amount: parseInt((new URLSearchParams(window.location.search).get('deposit') || '5000').replace(/[^0-9]/g,''), 10) || 5000
+    });
+
+    // Track signature start
+    document.addEventListener('mousedown', function trackSigStart(e) {
+      if (e.target && e.target.id === 'sigCanvas') {
+        gtag('event', 'agreement_signature_start', { event_category: 'agreement' });
+        document.removeEventListener('mousedown', trackSigStart);
+      }
+    });
+    document.addEventListener('touchstart', function trackSigStartTouch(e) {
+      if (e.target && e.target.id === 'sigCanvas') {
+        gtag('event', 'agreement_signature_start', { event_category: 'agreement', input_type: 'touch' });
+        document.removeEventListener('touchstart', trackSigStartTouch);
+      }
+    }, { passive: true });
+
+    // Track submit click
+    var _origSubmit = window.submitAgreement;
+    window.submitAgreement = function() {
+      gtag('event', 'agreement_submit_attempt', { event_category: 'agreement' });
+      return _origSubmit.apply(this, arguments);
+    };
+  })();
+  </script>
+  <!-- ===================== END GA4 ===================== -->
+
+  <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}</script>
+</body>
+</html>
