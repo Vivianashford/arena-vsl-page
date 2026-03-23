@@ -60,7 +60,15 @@
     .disclaimer { color: #555; font-size: 0.8rem; margin-top: 24px; text-align: center; }
     footer { text-align: center; padding: 40px 20px; color: #555; font-size: 0.85rem; }
     footer a { color: #c8a24e; text-decoration: none; }
-    @media (max-width: 600px) { .row, .factors { grid-template-columns: 1fr; } h1 { font-size: 1.5rem; } .result-card .value { font-size: 2rem; } }
+    .yn-grid { display: flex; flex-direction: column; gap: 12px; }
+    .yn-q { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
+    .yn-q span { flex: 1; font-size: 0.95rem; color: #ccc; }
+    .yn-btns { display: flex; gap: 8px; flex-shrink: 0; }
+    .yn-btn { padding: 8px 20px; border: 1px solid #333; background: #1a1a1a; color: #888; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; }
+    .yn-btn:hover { border-color: #c8a24e; color: #c8a24e; }
+    .yn-btn.yes-active { background: #1a2a1a; border-color: #4caf50; color: #4caf50; }
+    .yn-btn.no-active { background: #2a1a1a; border-color: #f44336; color: #f44336; }
+    @media (max-width: 600px) { .row, .factors { grid-template-columns: 1fr; } h1 { font-size: 1.5rem; } .result-card .value { font-size: 2rem; } .yn-q { flex-direction: column; align-items: flex-start; gap: 8px; } }
   </style>
 </head>
 <body>
@@ -98,115 +106,68 @@
       </div>
 
       <div class="calc-section">
-        <h2>2. Transferability Factors</h2>
-        <div class="field">
-          <label>How long could the business run without you?</label>
-          <select id="owner_dep">
-            <option value="1">Less than 1 week</option>
-            <option value="2">1-2 weeks</option>
-            <option value="3">1-3 months</option>
-            <option value="4">3-6 months</option>
-            <option value="5">6+ months (runs independently)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>What percentage of processes are documented?</label>
-          <select id="docs">
-            <option value="1">Less than 10%</option>
-            <option value="2">10-25%</option>
-            <option value="3">25-50%</option>
-            <option value="4">50-75%</option>
-            <option value="5">75%+ fully documented</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>What percentage of revenue is recurring (service agreements, contracts)?</label>
-          <select id="recurring">
-            <option value="1">Less than 10%</option>
-            <option value="2">10-25%</option>
-            <option value="3">25-50%</option>
-            <option value="4">50-75%</option>
-            <option value="5">75%+ recurring</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Largest single customer as % of revenue</label>
-          <select id="concentration">
-            <option value="1">Over 30%</option>
-            <option value="2">20-30%</option>
-            <option value="3">15-20%</option>
-            <option value="4">10-15%</option>
-            <option value="5">Under 10% (well diversified)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>EBITDA trend over last 3 years</label>
-          <select id="trend">
-            <option value="1">Declining significantly</option>
-            <option value="2">Declining slightly</option>
-            <option value="3">Flat</option>
-            <option value="4">Growing moderately</option>
-            <option value="5">Growing strongly (15%+ annually)</option>
-          </select>
-        </div>
-      </div>
+        <h2>2. Quick Assessment</h2>
+        <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Answer honestly. Buyers will find all of this in due diligence.</p>
 
-      <div class="calc-section">
-        <h2>3. Risk Deductions</h2>
-        <p style="color: #888; margin-bottom: 16px; font-size: 0.9rem;">These factors reduce your valuation. Answer honestly - buyers will find them in due diligence.</p>
-        <div class="field">
-          <label>Are your financials clean? (No personal expenses through the business)</label>
-          <select id="ded_financials">
-            <option value="0">Yes - fully separated</option>
-            <option value="-0.3">Minor items (car payment, cell phone)</option>
-            <option value="-0.5">Moderate commingling</option>
-            <option value="-1.0">Heavy commingling (family on payroll, vacations, etc.)</option>
-          </select>
+        <div class="yn-grid">
+          <div class="yn-q">
+            <span>Can you take 90 days off with no phone calls and the business runs fine?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q1" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q1" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Do you have written SOPs for your top 20 processes?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q2" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q2" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Is 50%+ of your revenue recurring (service agreements, contracts)?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q3" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q3" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Is your largest customer under 15% of total revenue?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q4" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q4" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Is your EBITDA growing year over year?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q5" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q5" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Do you have a management team that makes decisions without you?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q6" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q6" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Are your financials clean? (No personal expenses through the business)</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q7" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q7" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Could a new hire get fully productive in under 30 days using your training systems?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q8" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q8" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Do you own your facility or have a long-term lease (5+ years)?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q9" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q9" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Is your equipment/fleet under 5 years old and well maintained?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q10" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q10" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Are you free of lawsuits, liens, and regulatory issues?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q11" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q11" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
+          <div class="yn-q">
+            <span>Would your key employees stay through an ownership change?</span>
+            <div class="yn-btns"><button class="yn-btn" data-q="q12" data-v="1" onclick="ynSelect(this)">Yes</button><button class="yn-btn" data-q="q12" data-v="0" onclick="ynSelect(this)">No</button></div>
+          </div>
         </div>
-        <div class="field">
-          <label>Any pending or recent lawsuits, liens, or regulatory issues?</label>
-          <select id="ded_legal">
-            <option value="0">None</option>
-            <option value="-0.2">Minor resolved issue</option>
-            <option value="-0.5">Pending lawsuit or lien</option>
-            <option value="-1.0">Multiple legal/regulatory issues</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>How old is your key equipment/fleet?</label>
-          <select id="ded_equipment">
-            <option value="0">Under 5 years - well maintained</option>
-            <option value="-0.2">5-10 years - good condition</option>
-            <option value="-0.5">10+ years - needs replacement soon</option>
-            <option value="-0.8">Significant deferred maintenance</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Do you have a signed lease or own your facility?</label>
-          <select id="ded_facility">
-            <option value="0">Own the property or long-term lease (5+ years)</option>
-            <option value="-0.2">Lease with 2-5 years remaining</option>
-            <option value="-0.5">Lease expiring within 2 years</option>
-            <option value="-0.8">Month-to-month or no formal lease</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Key employee risk - could you lose critical people during a sale?</label>
-          <select id="ded_keypeople">
-            <option value="0">Team is stable with retention agreements</option>
-            <option value="-0.2">Stable but no formal retention plans</option>
-            <option value="-0.5">1-2 key people might leave</option>
-            <option value="-0.8">High turnover or key person flight risk</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Industry headwinds or tailwinds?</label>
-          <select id="ded_market">
-            <option value="0.3">Strong tailwinds (growing demand, consolidation wave)</option>
-            <option value="0">Stable market</option>
-            <option value="-0.3">Some headwinds (regulatory, competition)</option>
-            <option value="-0.5">Significant headwinds</option>
-          </select>
+
+        <div id="score-bar" style="margin-top: 20px; display: none;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="color: #888; font-size: 0.85rem;">Transferability Score</span>
+            <span id="score-label" style="font-weight: 700;"></span>
+          </div>
+          <div style="background: #222; border-radius: 8px; height: 12px; overflow: hidden;">
+            <div id="score-fill" style="height: 100%; border-radius: 8px; transition: width 0.3s;"></div>
+          </div>
         </div>
       </div>
 
@@ -253,6 +214,38 @@
   </footer>
 
   <script>
+  const ynState = {};
+
+  function ynSelect(btn) {
+    const q = btn.dataset.q;
+    const v = parseInt(btn.dataset.v);
+    ynState[q] = v;
+
+    // Style buttons
+    const btns = btn.parentElement.querySelectorAll('.yn-btn');
+    btns.forEach(b => b.className = 'yn-btn');
+    btn.className = 'yn-btn ' + (v === 1 ? 'yes-active' : 'no-active');
+
+    // Update score bar
+    updateScoreBar();
+  }
+
+  function updateScoreBar() {
+    const answered = Object.keys(ynState).length;
+    if (answered < 3) { document.getElementById('score-bar').style.display = 'none'; return; }
+    document.getElementById('score-bar').style.display = 'block';
+
+    const yesCount = Object.values(ynState).reduce((a, b) => a + b, 0);
+    const pct = Math.round((yesCount / 12) * 100);
+    const fill = document.getElementById('score-fill');
+    fill.style.width = pct + '%';
+    fill.style.background = pct >= 70 ? '#4caf50' : pct >= 40 ? '#ff9800' : '#f44336';
+
+    const label = document.getElementById('score-label');
+    label.textContent = yesCount + '/12 (' + pct + '%)';
+    label.style.color = pct >= 70 ? '#4caf50' : pct >= 40 ? '#ff9800' : '#f44336';
+  }
+
   function calculate() {
     const revenue = parseFloat(document.getElementById('revenue').value) || 0;
     const ebitda = parseFloat(document.getElementById('ebitda').value) || 0;
@@ -260,20 +253,38 @@
 
     if (ebitda <= 0) { alert('Please enter your EBITDA.'); return; }
 
-    const ownerDep = parseInt(document.getElementById('owner_dep').value);
-    const docs = parseInt(document.getElementById('docs').value);
-    const recurring = parseInt(document.getElementById('recurring').value);
-    const concentration = parseInt(document.getElementById('concentration').value);
-    const trend = parseInt(document.getElementById('trend').value);
+    // Count yes/no answers
+    const questions = {
+      q1:  { name: 'Owner Independence (90-day test)', weight: 0.8 },
+      q2:  { name: 'Documented SOPs', weight: 0.5 },
+      q3:  { name: 'Recurring Revenue (50%+)', weight: 0.6 },
+      q4:  { name: 'Customer Diversification', weight: 0.4 },
+      q5:  { name: 'EBITDA Growth', weight: 0.5 },
+      q6:  { name: 'Management Team', weight: 0.6 },
+      q7:  { name: 'Clean Financials', weight: -0.5 },
+      q8:  { name: 'Training Systems', weight: 0.3 },
+      q9:  { name: 'Facility Security', weight: -0.3 },
+      q10: { name: 'Equipment Condition', weight: -0.3 },
+      q11: { name: 'No Legal Issues', weight: -0.5 },
+      q12: { name: 'Key Employee Retention', weight: -0.4 }
+    };
 
-    // Risk deductions
-    const dedFinancials = parseFloat(document.getElementById('ded_financials').value);
-    const dedLegal = parseFloat(document.getElementById('ded_legal').value);
-    const dedEquipment = parseFloat(document.getElementById('ded_equipment').value);
-    const dedFacility = parseFloat(document.getElementById('ded_facility').value);
-    const dedKeypeople = parseFloat(document.getElementById('ded_keypeople').value);
-    const dedMarket = parseFloat(document.getElementById('ded_market').value);
-    const totalDeductions = dedFinancials + dedLegal + dedEquipment + dedFacility + dedKeypeople + dedMarket;
+    let boost = 0;  // yes = add to multiple
+    let deduct = 0; // no on risk questions = subtract from multiple
+    const results = [];
+
+    for (const [key, q] of Object.entries(questions)) {
+      const val = ynState[key] !== undefined ? ynState[key] : 0;
+      if (q.weight > 0) {
+        // Positive factors: yes = boost, no = nothing
+        if (val === 1) boost += q.weight;
+        results.push({ name: q.name, answered: val, type: 'boost', weight: q.weight });
+      } else {
+        // Risk factors: no = deduct, yes = nothing
+        if (val === 0) deduct += q.weight; // weight is negative
+        results.push({ name: q.name, answered: val, type: 'risk', weight: q.weight });
+      }
+    }
 
     // Base multiples by industry
     const baseMultiples = {
@@ -283,11 +294,10 @@
     };
 
     const [baseMin, baseMax] = baseMultiples[industry];
-    const totalScore = ownerDep + docs + recurring + concentration + trend; // 5-25
-    const scorePercent = (totalScore - 5) / 20; // 0-1
+    const midpoint = (baseMin + baseMax) / 2;
 
-    const rawMultiple = baseMin + (baseMax - baseMin) * scorePercent;
-    const multiple = Math.max(baseMin, rawMultiple + totalDeductions);
+    // Start at midpoint, add boosts, apply deductions
+    const multiple = Math.max(baseMin, Math.min(baseMax, midpoint + boost + deduct));
     const lowMultiple = Math.max(baseMin, multiple - 0.5);
     const highMultiple = Math.min(baseMax, multiple + 0.5);
 
@@ -300,46 +310,34 @@
     document.getElementById('est-value').textContent = fmt(estValue);
     document.getElementById('est-range').textContent = 'Range: ' + fmt(lowValue) + ' - ' + fmt(highValue);
     document.getElementById('est-multiple').textContent = multiple.toFixed(1) + 'x EBITDA';
+    const yesCount = Object.values(ynState).reduce((a, b) => a + b, 0);
     document.getElementById('multiple-context').textContent =
-      'Industry range: ' + baseMin + 'x - ' + baseMax + 'x | Your score: ' + totalScore + '/25';
+      'Industry range: ' + baseMin + 'x - ' + baseMax + 'x | Score: ' + yesCount + '/12';
 
     // Factor cards
-    const factors = [
-      { name: 'Owner Independence', score: ownerDep, labels: ['Critical dependency', 'High dependency', 'Moderate', 'Low dependency', 'Fully independent'] },
-      { name: 'Process Documentation', score: docs, labels: ['Undocumented', 'Minimal', 'Partial', 'Well documented', 'Fully documented'] },
-      { name: 'Revenue Recurring %', score: recurring, labels: ['Project-based', 'Mostly project', 'Mixed', 'Mostly recurring', 'Highly recurring'] },
-      { name: 'Customer Diversification', score: concentration, labels: ['High concentration', 'Concentrated', 'Moderate risk', 'Diversified', 'Well diversified'] },
-      { name: 'EBITDA Trajectory', score: trend, labels: ['Declining fast', 'Declining', 'Flat', 'Growing', 'Strong growth'] }
-    ];
+    // Build factor cards from yes/no results
+    let boostHtml = '';
+    let riskHtml = '';
 
-    let html = '';
-    factors.forEach(f => {
-      const cls = f.score >= 4 ? 'good' : f.score >= 3 ? 'mid' : 'bad';
-      html += '<div class="factor"><div class="name">' + f.name + '</div><div class="score ' + cls + '">' + f.labels[f.score - 1] + ' (' + f.score + '/5)</div></div>';
-    });
-    document.getElementById('factor-cards').innerHTML = html;
-
-    // Deduction cards
-    const deductions = [
-      { name: 'Financial Cleanliness', val: dedFinancials },
-      { name: 'Legal/Regulatory Risk', val: dedLegal },
-      { name: 'Equipment Condition', val: dedEquipment },
-      { name: 'Facility/Lease Security', val: dedFacility },
-      { name: 'Key Employee Retention', val: dedKeypeople },
-      { name: 'Market Conditions', val: dedMarket }
-    ];
-    let dedHtml = '';
-    deductions.forEach(d => {
-      if (d.val !== 0) {
-        const cls = d.val > 0 ? 'good' : d.val >= -0.3 ? 'mid' : 'bad';
-        const sign = d.val > 0 ? '+' : '';
-        dedHtml += '<div class="factor"><div class="name">' + d.name + '</div><div class="score ' + cls + '">' + sign + d.val.toFixed(1) + 'x</div></div>';
+    results.forEach(r => {
+      if (r.type === 'boost') {
+        const cls = r.answered === 1 ? 'good' : 'bad';
+        const label = r.answered === 1 ? '+' + r.weight.toFixed(1) + 'x' : 'Missing';
+        boostHtml += '<div class="factor"><div class="name">' + r.name + '</div><div class="score ' + cls + '">' + label + '</div></div>';
+      } else {
+        const cls = r.answered === 1 ? 'good' : 'bad';
+        const label = r.answered === 1 ? 'Clear' : r.weight.toFixed(1) + 'x';
+        riskHtml += '<div class="factor"><div class="name">' + r.name + '</div><div class="score ' + cls + '">' + label + '</div></div>';
       }
     });
-    if (dedHtml) {
-      document.getElementById('deduction-cards').innerHTML = dedHtml;
+
+    document.getElementById('factor-cards').innerHTML = boostHtml;
+
+    if (riskHtml) {
+      document.getElementById('deduction-cards').innerHTML = riskHtml;
       document.getElementById('deduction-section').style.display = 'block';
-      document.getElementById('deduction-total').textContent = (totalDeductions > 0 ? '+' : '') + totalDeductions.toFixed(1) + 'x total risk adjustment';
+      const dedTotal = deduct;
+      document.getElementById('deduction-total').textContent = dedTotal === 0 ? 'No deductions - clean!' : dedTotal.toFixed(1) + 'x total risk deduction';
     } else {
       document.getElementById('deduction-section').style.display = 'none';
     }
@@ -353,7 +351,7 @@
       gtag('event', 'calculator_submit', {
         industry: industry,
         revenue_range: revenue > 20000000 ? '20M+' : revenue > 10000000 ? '10-20M' : revenue > 5000000 ? '5-10M' : 'under5M',
-        score: totalScore,
+        score: yesCount,
         multiple: multiple.toFixed(1)
       });
     }
