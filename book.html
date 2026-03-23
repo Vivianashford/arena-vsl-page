@@ -59,7 +59,7 @@ body{
 .toc-btn:hover{color:var(--gold);border-color:var(--gold)}
 
 /* -- Book Container -- */
-.book-area{min-height:500px;
+.book-area{min-height:500px;padding:8px 0;
   flex:1;display:flex;align-items:center;justify-content:center;
   overflow:hidden;position:relative;
   background:radial-gradient(ellipse at center,#3a3430 0%,#2a2420 70%);
@@ -69,7 +69,7 @@ body{
 /* -- Page Styles -- */
 .book-page{
   background:var(--paper);
-  padding:40px 48px;
+  padding:24px 28px;
   overflow:hidden;
   font-family:'Source Serif 4',Georgia,serif;
 }
@@ -234,7 +234,7 @@ body{
 .book-page .page-scroll-area{
   position:relative;z-index:10;
   pointer-events:auto;touch-action:pan-y;
-  overflow-y:auto;height:100%;width:100%;
+  overflow-y:auto;height:100%;width:100%;padding:20px 24px;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:thin;scrollbar-color:rgba(184,148,62,0.2) transparent;
 }
@@ -372,8 +372,8 @@ const bookmarkKey = 'transferable-bm' + (readerName ? '-' + readerName.toLowerCa
 // Calculate book size based on viewport
 function getBookSize() {
   const area = document.querySelector('.book-area');
-  const h = area.clientHeight - 20;
-  const w = Math.min(area.clientWidth - 40, h * 0.7); // book ratio ~0.7
+  const h = area.clientHeight - 10;
+  const w = Math.min(area.clientWidth - 20, h * 0.72);
   return { w: Math.floor(w), h: Math.floor(h) };
 }
 
@@ -546,21 +546,22 @@ window.addEventListener("load", function(){ fetch('book-content.json?v=' + Date.
     pageFlip = new St.PageFlip(container, {
       width: size.w,
       height: size.h,
-      size: 'stretch',
+      size: 'fixed',
       minWidth: 280,
-      maxWidth: 800,
-      minHeight: 450,
-      maxHeight: 1200,
+      maxWidth: 900,
+      minHeight: 400,
+      maxHeight: 1400,
       drawShadow: true,
       flippingTime: 800,
       usePortrait: true,
       showCover: true,
       maxShadowOpacity: 0.5,
       mobileScrollSupport: false,
-      swipeDistance: 120,
+      swipeDistance: 80,
       startPage: 0,
-      autoSize: true,
+      autoSize: false,
       clickEventForward: false,
+      useMouseEvents: false,
     });
 
     pageFlip.loadFromHTML(document.querySelectorAll('.book-page'));
