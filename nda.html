@@ -958,15 +958,23 @@ async function submitNDA() {
         })
       });
 
-      // Step 4: Upload PDF to GHL media and send confirmation email with attachment
+      // Step 4: Generate PDF ONCE and use for upload + download
       const firstName = name.split(' ')[0];
       let pdfDownloadUrl = '';
+      let pdfResult = null;
+      const pdfFileName = `NDA - The Arena Partners x ${company}.pdf`;
+
+      try {
+        submitBtn.textContent = 'Generating PDF...';
+        pdfResult = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
+      } catch(genErr) {
+        console.error('PDF generation error:', genErr);
+      }
 
       // Upload PDF to R2 storage via Worker + GHL media
       try {
-        const result2 = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
-        const pdfBlob2 = result2.blob;
-        const pdfFileName = `NDA - The Arena Partners x ${company}.pdf`;
+        const pdfBlob2 = pdfResult ? pdfResult.blob : null;
+        if (!pdfBlob2) throw new Error('No PDF generated');
 
         // Upload to R2 (permanent storage)
         const r2Form = new FormData();
@@ -1063,15 +1071,42 @@ async function submitNDA() {
       });
     }
 
-    // Step 6: Generate PDF and trigger download
-    submitBtn.textContent = 'Generating PDF...';
+    // Step 6: Trigger PDF download (reuse already-generated PDF)
+    submitBtn.textContent = 'Downloading PDF...';
     try {
-      const result = await generateNDAPdf(name, company, title, email, sigDataUrl, signedAt);
-      // Use jsPDF's native save which handles mobile better
-      result.doc.save(`NDA - The Arena Partners x ${company}.pdf`);
+      if (pdfResult && pdfResult.blob) {
+        // Create download link from blob - works on all browsers including mobile
+        const downloadUrl = URL.createObjectURL(pdfResult.blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadUrl;
+        downloadLink.download = pdfFileName;
+        downloadLink.style.display = 'none';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        // Cleanup after a short delay
+        setTimeout(() => {
+          document.body.removeChild(downloadLink);
+          URL.revokeObjectURL(downloadUrl);
+        }, 1000);
+      } else if (pdfResult && pdfResult.doc) {
+        // Fallback to jsPDF native save
+        pdfResult.doc.save(pdfFileName);
+      } else {
+        // PDF wasn't generated - offer R2 download link if available
+        if (pdfDownloadUrl) {
+          window.open(pdfDownloadUrl, '_blank');
+        } else {
+          alert('PDF download unavailable right now. We will email you a signed copy.');
+        }
+      }
     } catch(pdfErr) {
-      console.error('PDF generation error:', pdfErr);
-      alert('PDF generation issue: ' + pdfErr.message + '. Your NDA is still signed - we will email you a copy.');
+      console.error('PDF download error:', pdfErr);
+      // Last resort - try R2 link or alert
+      if (pdfDownloadUrl) {
+        window.open(pdfDownloadUrl, '_blank');
+      } else {
+        alert('PDF download issue: ' + pdfErr.message + '. Your NDA is still signed - we will email you a copy.');
+      }
     }
 
     // Show success
