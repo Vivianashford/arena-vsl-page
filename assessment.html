@@ -1028,7 +1028,7 @@ input.field-error {
     <div class="step-header">
       <div class="step-eyebrow">Section 2 of 5</div>
       <h2>Your Timeline &amp; <em>Exit Plan</em></h2>
-      <p>The gap between when you want to exit and how prepared you are is one of the biggest risk factors buyers exploit. Let's find out where you stand.</p>
+      <p>Understanding your timeline and readiness is one of the most valuable things you can do before going to market. Let's see where you stand.</p>
     </div>
     <div class="gold-rule"></div>
     <div class="step-body">
@@ -1168,7 +1168,7 @@ input.field-error {
     <div class="step-header">
       <div class="step-eyebrow">Section 3 of 5</div>
       <h2>Business Health <em>&amp; Operations</em></h2>
-      <p>These are the four things buyers look at first when they're deciding whether to discount your offer  -  or walk away entirely.</p>
+      <p>These are the four areas that have the biggest impact on your multiple. Strengthening any one of them directly increases your exit value.</p>
     </div>
     <div class="gold-rule"></div>
     <div class="step-body">
@@ -1177,7 +1177,7 @@ input.field-error {
         <div class="field-label">How is your EBITDA trending?
           <span class="risk-tag high">Direct multiple impact</span>
         </div>
-        <div class="field-hint">Buyers pay for trajectory. A declining EBITDA kills multiple negotiations before they start.</div>
+        <div class="field-hint">Buyers pay for trajectory. Growing EBITDA is the single biggest driver of premium multiples.</div>
         <div class="options-grid three">
           <div class="option-card" onclick="selectOption(this,'ebitda','growing')">
             <input type="radio" name="ebitda" value="growing">
@@ -1204,7 +1204,7 @@ input.field-error {
         <div class="field-label">Could the business run for 90 days without you present?
           <span class="risk-tag high">Key man risk</span>
         </div>
-        <div class="field-hint">This is the exact question PE buyers ask during due diligence. If the answer is no, they see a liability  -  not an asset. This is the #1 multiple killer.</div>
+        <div class="field-hint">This is the exact question PE buyers ask during due diligence. Packaging your expertise into systems is the single biggest lever for increasing your multiple.</div>
         <div class="options-grid">
           <div class="option-card" onclick="selectOption(this,'runWithout','yes')">
             <input type="radio" name="runWithout" value="yes">
@@ -1258,7 +1258,7 @@ input.field-error {
         <div class="field-label">How concentrated is your customer base?
           <span class="risk-tag high">Deal-breaking risk</span>
         </div>
-        <div class="field-hint">If one client walks after the sale, your buyer's entire investment is at risk. They price that in  -  hard.</div>
+        <div class="field-hint">Diversifying your client base is one of the fastest ways to increase your multiple. Buyers pay premium prices for balanced revenue streams.</div>
         <div class="options-grid">
           <div class="option-card" onclick="selectOption(this,'custConc','diversified')">
             <input type="radio" name="custConc" value="diversified">
@@ -1570,7 +1570,7 @@ input.field-error {
           <div class="result-score-of">/ 100</div>
         </div>
       </div>
-      <h2 id="resultTitle">Your business has <em>several risk factors</em> buyers will use against you.</h2>
+      <h2 id="resultTitle">Your business has <em>real strengths</em> - here's how to maximize them for your exit.</h2>
       <p id="resultSub"></p>
     </div>
     <div class="gold-rule"></div>
@@ -1641,17 +1641,17 @@ const INSIGHTS = {
   // ── OWNER DEPENDENCY (runWithout) ──
   runWithout: {
     no: {
-      diagnosis: "Your business can't function without you. Every key relationship, every big decision, every critical process runs through you personally. You don't own a business - you own a job that happens to have employees.",
-      buyerView: "A buyer sees a business that dies the day you leave. They're not buying a company - they're buying a dependency on you. Most serious buyers will walk. The ones who stay will structure the deal to keep you locked in for 3-5 years with heavy earnout provisions.",
-      impact: "This alone can reduce your multiple by 1.5-2x. On a $2M EBITDA business, that's $3-4M left on the table. It's the single biggest value destroyer in any deal.",
+      diagnosis: "You've built something that runs on your talent - the next step is packaging that talent into systems your team can carry forward. That's how you unlock the premium.",
+      buyerView: "Buyers want to see that the business can thrive independently. Building systems around your expertise is the single highest-leverage move you can make before going to market - and it directly translates to a higher multiple.",
+      impact: "Packaging your expertise into systems can add 1.5-2x to your multiple. On a $2M EBITDA business, that's $3-4M in additional value waiting to be captured.",
       fixTimeline: "12-18 months",
       priority: 1,
       category: "Owner / Key-Man Dependency"
     },
     maybe: {
-      diagnosis: "Your business would survive without you, but it wouldn't thrive. There are people who can keep things running, but you're still the linchpin for sales, key accounts, or strategic decisions. It's better than total dependency, but buyers see the gap.",
-      buyerView: "A buyer sees transition risk. They'll want an earnout clause to protect themselves and will likely require you to stay 12-24 months post-close. They'll also discount the offer to account for the uncertainty of whether your team can actually step up.",
-      impact: "Expect a 0.5-1x multiple reduction. Buyers will also structure more of the deal as earnout rather than cash at close, meaning you carry more risk.",
+      diagnosis: "You've already started building independence. A few more systems and your business becomes fully transferable - that's where the premium multiples live.",
+      buyerView: "Buyers see a business with a solid foundation. Strengthening the handoff systems for sales, key accounts, or strategic decisions will move you from a standard offer to a competitive one. You're close.",
+      impact: "Tightening up these systems can add 0.5-1x to your multiple and improve your deal structure - more cash at close, shorter transition, less earnout.",
       fixTimeline: "6-12 months",
       priority: 2,
       category: "Owner / Key-Man Dependency"
@@ -1669,16 +1669,16 @@ const INSIGHTS = {
   // ── CUSTOMER CONCENTRATION (custConc) ──
   custConc: {
     very_concentrated: {
-      diagnosis: "One customer controls 50%+ of your revenue. That's not a customer base - that's a dependency. If that client leaves, gets acquired, or changes vendors, half your business disappears overnight. You're one phone call away from a crisis.",
-      buyerView: "This is a deal-killer for most sophisticated buyers. They're essentially betting that a single relationship they don't control will hold after you leave. Most PE firms won't even make an offer. The ones who do will demand that client sign a long-term contract before close.",
-      impact: "This can reduce your multiple by 2-3x or kill the deal entirely. On a $2M EBITDA business, the difference between a diversified and very concentrated customer base can be $4-6M in enterprise value.",
+      diagnosis: "You've built a strong relationship with a major client who accounts for 50%+ of revenue. That's a testament to your service quality. The next step is replicating that success across more clients to build a balanced revenue base.",
+      buyerView: "Spreading your revenue across more clients is one of the highest-ROI moves before an exit. It directly increases your multiple and gives you negotiating leverage. Locking in long-term contracts with key clients also adds significant value.",
+      impact: "Diversifying your revenue base can add 2-3x to your multiple. On a $2M EBITDA business, the difference between concentrated and diversified revenue can be $4-6M in enterprise value.",
       fixTimeline: "12-18 months",
       priority: 1,
       category: "Customer Concentration Risk"
     },
     concentrated: {
-      diagnosis: "Your top client represents 25-50% of revenue. That's a significant concentration risk. You've built a business that's partially hostage to one relationship. If they renegotiate terms or leave, your EBITDA takes a massive hit.",
-      buyerView: "Buyers will flag this in due diligence and use it to negotiate a lower price or build in protections. Expect them to require customer retention guarantees or structure a portion of the deal around that client staying for 12-24 months post-close.",
+      diagnosis: "Your top client represents 25-50% of revenue. You've clearly earned their trust and loyalty. Broadening your client base to match that level of service across more accounts will strengthen your position significantly.",
+      buyerView: "Buyers will want to see a plan for continued diversification. Securing contracts with your top clients and growing other accounts will give you stronger positioning in negotiations and better deal terms.",
       impact: "Expect a 1-1.5x multiple reduction. Buyers will also shift more of the deal structure toward earnout provisions tied to customer retention.",
       fixTimeline: "6-12 months",
       priority: 2,
@@ -1705,16 +1705,16 @@ const INSIGHTS = {
   // ── EBITDA TRAJECTORY (ebitda) ──
   ebitda: {
     declining: {
-      diagnosis: "Your EBITDA is going down. Regardless of the reason - market shifts, rising costs, lost accounts - a buyer sees a business that's losing momentum. They don't pay premium multiples for declining trajectory. They discount for it.",
-      buyerView: "A declining EBITDA tells a buyer the best days might be behind this business. They'll either walk, apply a distress discount, or use trailing 12-month numbers to calculate a lower offer. Some will wait and come back in 6 months when your number is even lower and their leverage is even higher.",
-      impact: "A declining trajectory typically costs 1-2x on your multiple. Buyers may also use a lower EBITDA base (not your peak year) for valuation, compounding the discount.",
+      diagnosis: "Your EBITDA has dipped - that's a solvable challenge, not a permanent condition. Identifying the root cause and stabilizing your trajectory before going to market is one of the most valuable things you can do.",
+      buyerView: "Buyers pay premium multiples for momentum. Stabilizing and then growing your EBITDA before going to market dramatically changes your negotiating position. Even 6-12 months of upward trend shifts how buyers value your business.",
+      impact: "Reversing a declining trajectory can add 1-2x to your multiple. Timing your exit after a growth period means buyers compete on your terms.",
       fixTimeline: "6-12 months",
       priority: 1,
       category: "EBITDA Trajectory"
     },
     stable: {
-      diagnosis: "Your EBITDA is flat. It's not declining, which is better than most, but it's not growing either. Flat EBITDA tells a buyer you've plateaued. They'll still make an offer, but they won't pay a growth premium - and they'll want to know why you've stalled.",
-      buyerView: "Buyers see a stable business as safe but not exciting. They'll value it fairly but won't compete aggressively for it. If they're a PE firm, they'll look at where they can inject growth post-acquisition - which means they'll pay you less so their returns are still attractive.",
+      diagnosis: "Your EBITDA is stable - that's a solid foundation. You've built a business that consistently delivers. The opportunity now is to find the growth levers that take you from stable to trending up before you go to market.",
+      buyerView: "Buyers see a dependable business. Adding even modest growth trajectory before going to market moves you from market-rate multiples into premium territory. PE firms especially pay up for businesses where they can see momentum.",
       impact: "You'll get market-rate multiples but no premium. In most trades and services businesses, that's the difference between 4x and 5-6x EBITDA.",
       fixTimeline: "3-6 months",
       priority: 3,
@@ -1733,16 +1733,16 @@ const INSIGHTS = {
   // ── SOPs / DOCUMENTATION (sops) ──
   sops: {
     no: {
-      diagnosis: "Nothing is documented. Every process, every procedure, every 'way we do things' lives in someone's head. When those people leave - and they will after a sale - the operational knowledge walks out the door with them. You don't have a system. You have a collection of habits.",
-      buyerView: "Buyers see a business that's one resignation away from chaos. No SOPs means they'll need to invest significant time and money post-close to build what should already exist. They'll price that cost directly into a lower offer.",
+      diagnosis: "Your team clearly knows how to get things done - the knowledge is there. The opportunity is to capture that know-how into documented systems. Once it's on paper, your business becomes transferable and significantly more valuable.",
+      buyerView: "Documented processes are one of the easiest ways to increase buyer confidence and your multiple. Building SOPs signals operational maturity and makes the transition seamless - that's what commands premium pricing.",
       impact: "Expect a 0.5-1x multiple reduction. Buyers will also factor in 6-12 months of operational risk during their integration plan, which further depresses the offer.",
       fixTimeline: "6-12 months",
       priority: 2,
       category: "Operational Documentation (SOPs)"
     },
     partial: {
-      diagnosis: "You've documented some processes but not all. Key areas might be covered, but there are significant gaps. It shows intent and some operational maturity, but a buyer will still see gaps that create risk during transition.",
-      buyerView: "Buyers will give you credit for having started but will probe the gaps. They'll ask which departments lack documentation and factor in the cost of completing it. It's a moderate risk, not a deal-breaker.",
+      diagnosis: "You've already started documenting your processes - that's more than most businesses at this stage. Completing the remaining areas will round out your operational picture and make the transition straightforward.",
+      buyerView: "Buyers give credit for documented processes and see a business that's on the right track. Filling the remaining gaps before going to market strengthens your negotiating position and improves deal terms.",
       impact: "Minor multiple impact - about 0.25-0.5x reduction. The bigger impact is in how the deal gets structured. Better documentation means a smoother transition, which means fewer earnout provisions.",
       fixTimeline: "3-6 months",
       priority: 3,
@@ -1761,24 +1761,24 @@ const INSIGHTS = {
   // ── SUCCESSION PLAN (succPlan) ──
   succPlan: {
     no: {
-      diagnosis: "You have no succession plan. There's no one identified to take over, no timeline for transition, and no structure for what happens when you step away. Right now, if you got hit by a bus tomorrow, the business would be in serious trouble.",
-      buyerView: "Buyers see maximum transition risk. They'll want you to stay longer, they'll add earnout provisions, and they'll discount the offer because the entire transition plan needs to be built from scratch. Every month of unclear transition is a month of risk they're pricing in.",
-      impact: "Expect a 0.5-1x multiple reduction. You'll also get worse deal terms - longer required stay, more earnout, less cash at close.",
+      diagnosis: "You haven't formalized a succession plan yet - that's completely normal at this stage. Building one is straightforward and it's one of the most impactful things you can do to increase your exit value and shorten your post-sale commitment.",
+      buyerView: "A clear succession plan tells buyers the transition will be smooth. It directly reduces your required stay post-close, increases cash at close, and gives buyers the confidence to compete for your business.",
+      impact: "Building a succession plan can add 0.5-1x to your multiple and dramatically improve deal terms - shorter required stay, less earnout, more cash at close.",
       fixTimeline: "6-12 months",
       priority: 2,
       category: "Succession & Transition Plan"
     },
     unsure: {
-      diagnosis: "You don't know where to start on succession planning. That's honest, but it means you're further behind than most. A buyer will see this and know they're dealing with someone who hasn't thought through the transition. That gives them leverage.",
-      buyerView: "A buyer sees an owner who hasn't seriously considered life after the sale. They'll use this to push for terms that protect them - longer stay periods, heavier earnouts, and more control during transition.",
-      impact: "Similar to having no plan - expect 0.5-1x multiple reduction plus unfavorable deal structure.",
+      diagnosis: "Not knowing where to start on succession is common - most owners focus on running the business, not planning their exit from it. The good news is that a solid plan can be built in 6-12 months and it's one of the highest-value investments you can make.",
+      buyerView: "Building even a basic succession framework changes the conversation with buyers entirely. It signals that you're planning strategically, which earns respect and better terms at the table.",
+      impact: "Creating a succession plan can add 0.5-1x to your multiple and unlock significantly better deal structure.",
       fixTimeline: "6-12 months",
       priority: 2,
       category: "Succession & Transition Plan"
     },
     yes_partial: {
-      diagnosis: "You've thought about succession but haven't formalized it. There are some ideas, maybe a few people in mind, but nothing documented or tested. It's a starting point, but buyers will see the gap between intent and execution.",
-      buyerView: "Buyers will probe how real your plan is. If it's just 'I've thought about it,' they'll treat it as no plan. If there's a clear next-in-line person with some responsibility already, they'll give you partial credit.",
+      diagnosis: "You've already started thinking about succession - that puts you ahead of most. Formalizing your plan with documented roles, a clear next-in-line, and a transition timeline will lock in the value you've already started building.",
+      buyerView: "Buyers respond well to owners who are proactively planning their transition. Documenting your succession approach and giving your candidate more responsibility now strengthens your position significantly.",
       impact: "Minor impact - about 0.25-0.5x reduction. The key variable is whether you can show a credible candidate who's already taking on responsibility.",
       fixTimeline: "3-6 months",
       priority: 3,
@@ -1797,24 +1797,24 @@ const INSIGHTS = {
   // ── FINANCIAL CLEANLINESS (finances) ──
   finances: {
     very_mixed: {
-      diagnosis: "Your personal and business finances are deeply intertwined. Personal cars, vacations, family expenses - they're all running through the business. This makes it nearly impossible for a buyer to determine the real profitability of the company. And if they can't see it, they won't pay for it.",
-      buyerView: "This is a due diligence nightmare. Buyers will either walk or bring in forensic accountants to untangle the mess - at your expense (reflected in a lower offer). They can't underwrite a loan or justify an investment when the numbers are unreliable.",
-      impact: "Commingled finances can reduce your multiple by 0.5-1.5x and are the #1 reason deals collapse in due diligence. Even if the deal survives, the cost of cleanup comes directly out of your proceeds.",
+      diagnosis: "Your personal and business finances are intertwined - that's common for owner-operated businesses and it's made sense for tax efficiency. The opportunity now is to separate them so buyers can see the true profitability of what you've built.",
+      buyerView: "Clean financials are the foundation of a smooth deal. Separating personal and business expenses gives buyers confidence in your numbers, speeds up due diligence, and positions you for the strongest possible offer.",
+      impact: "Cleaning up your financials can add 0.5-1.5x to your multiple and is the #1 way to prevent delays during due diligence. It's one of the highest-ROI preparation steps.",
       fixTimeline: "6-12 months",
       priority: 1,
       category: "Financial Cleanliness"
     },
     mixed: {
-      diagnosis: "There are personal expenses running through the business. It's common - most owners do it for tax advantages - but it creates a real problem when it's time to sell. Buyers need clean financials to calculate what the business actually earns.",
-      buyerView: "Buyers will flag every personal expense and use it to question your reported EBITDA. They'll do their own add-back calculations and they won't be generous. Expect disputes about what's a legitimate business expense vs. what's personal.",
-      impact: "Expect a 0.5-1x multiple reduction. The more time spent debating financials in due diligence, the more leverage shifts to the buyer.",
+      diagnosis: "Some personal expenses are running through the business - that's extremely common for owner-operators. Cleaning these up before going to market is straightforward and lets buyers see the full earning power of your business.",
+      buyerView: "Buyers appreciate transparency. Cleaning up the personal expenses and preparing clear add-back documentation puts you in control of the narrative and speeds up the due diligence process.",
+      impact: "Tidying up financials can add 0.5-1x to your multiple. Clear documentation also keeps the negotiation focused on value rather than accounting questions.",
       fixTimeline: "3-6 months",
       priority: 2,
       category: "Financial Cleanliness"
     },
     mostly: {
       diagnosis: "Your finances are mostly clean with minor overlap. Maybe a few personal expenses find their way into the business, but the core financials tell a clear story. This is fixable quickly and shows operational discipline.",
-      buyerView: "Buyers will note the minor issues but won't use them as a significant negotiation lever. A few adjustments during due diligence and the picture will be clear. This is a normal finding, not a red flag.",
+      buyerView: "Buyers will note the minor items but won't see them as a significant concern. A few adjustments during due diligence and the picture will be crystal clear. This is a normal finding for well-run businesses.",
       impact: "Minimal impact - cleanup might take a few weeks of accounting work. No meaningful multiple reduction if you clean it up before going to market.",
       fixTimeline: "1-3 months",
       priority: 4,
@@ -1823,7 +1823,7 @@ const INSIGHTS = {
     clean: {
       diagnosis: "Your personal and business finances are completely separated. Clean books, clear P&L, documented add-backs. This is the standard every business should meet before going to market - and you're already there.",
       buyerView: "Buyers can trust the numbers. Clean financials mean faster due diligence, fewer surprises, and higher confidence in the deal. This accelerates the entire process.",
-      impact: "No negative impact. Clean financials are table stakes, but meeting this standard means you avoid the 0.5-1.5x penalty that messy books create.",
+      impact: "No negative impact. Clean financials are table stakes, and meeting this standard positions you for the strongest possible offer. Well done.",
       fixTimeline: "Maintain ongoing",
       priority: 5,
       category: "Financial Cleanliness"
@@ -1833,8 +1833,8 @@ const INSIGHTS = {
   // ── TIMELINE URGENCY (timeline) ──
   timeline: {
     asap: {
-      diagnosis: "You want to exit within 12 months. Urgency creates leverage - for the buyer. The less time you have, the less room you have to negotiate, fix issues, or walk away from a bad deal. Every month of pressure you feel is a discount the buyer will apply.",
-      buyerView: "A buyer who knows you need to sell quickly will use that against you. They'll move slowly, introduce delays in due diligence, and know you can't afford to walk away. Urgency is the buyer's best friend and your worst enemy.",
+      diagnosis: "You want to exit within 12 months - that's doable, and it means every preparation step you take now has an outsized impact. The key is making targeted improvements that maximize your value within this window.",
+      buyerView: "A well-prepared business can command strong offers even on an accelerated timeline. The key is going to market from a position of strength - with clean financials, documented processes, and a clear transition plan. That's what creates competitive tension among buyers.",
       impact: "Urgency without preparation typically costs 10-20% of total deal value. It also limits your buyer pool because you can't run a competitive process.",
       fixTimeline: "Immediate - start prep now",
       priority: 2,
@@ -1842,7 +1842,7 @@ const INSIGHTS = {
     },
     '1to3': {
       diagnosis: "You're looking at a 1-3 year exit window. This is the ideal planning horizon. Enough time to fix real issues, build a competitive process, and approach the market from a position of strength. But only if you start now.",
-      buyerView: "A 1-3 year timeline tells a buyer you're planning, not panicking. This means you can afford to walk away from a bad deal, which shifts leverage to you. Buyers compete harder when they know you have time and options.",
+      buyerView: "A 1-3 year timeline tells a buyer you're planning strategically. This means you can choose the right deal, not just the first one. Buyers compete harder when they know you have time and options.",
       impact: "This timeline gives you room to add 1-2x to your multiple by fixing the issues identified in this report. Time is your most valuable asset right now.",
       fixTimeline: "Use the full window",
       priority: 4,
@@ -2119,10 +2119,10 @@ function calculateRisk() {
 // ── TEV CALCULATION ────────────────────────────────────────────────
 function calculateTEV(total) {
   if (total <= 15) return { pct: '90-100%', note: 'Your business is close to fully transferable. Minor optimizations could push you to maximum value.' };
-  if (total <= 30) return { pct: '70-85%', note: 'You\'re leaving 15-30% of your enterprise value on the table. The gaps are fixable, but they need attention before you go to market.' };
-  if (total <= 50) return { pct: '45-65%', note: 'A buyer would discount your business by 35-55% from its potential value. That\'s real money - on a $10M enterprise, you\'re walking away from $3.5-5.5M.' };
-  if (total <= 70) return { pct: '25-40%', note: 'You\'d capture less than half of what this business could be worth. Going to market now would be one of the most expensive decisions you ever make.' };
-  return { pct: '10-20%', note: 'In its current state, a buyer would pay a fraction of what this business is worth - if they make an offer at all. The gap between where you are and where you need to be is significant, but it\'s fixable.' };
+  if (total <= 30) return { pct: '70-85%', note: 'You\'re capturing most of your value already. A few targeted improvements before going to market could unlock the remaining 15-30%.' };
+  if (total <= 50) return { pct: '45-65%', note: 'There\'s significant upside available. On a $10M enterprise, preparation could unlock $3.5-5.5M in additional value. Every improvement compounds.' };
+  if (total <= 70) return { pct: '25-40%', note: 'Your business has real value - the opportunity is in preparation. Addressing the areas below before going to market can more than double what you capture at exit.' };
+  return { pct: '10-20%', note: 'You\'ve built something valuable. The gap between where you are and maximum exit value is significant - but it\'s entirely fixable. The right preparation plan changes everything.' };
 }
 
 // ── EMAIL SIGNATURE ────────────────────────────────────────────────
@@ -2179,19 +2179,19 @@ function submitForm() {
     sub = `With a risk score of ${total}/100, your business is well-positioned for a premium exit. Your Transferable Enterprise Value is high - you've done the hard work. Our call will focus on optimization and maximizing your multiple.`;
   } else if (total <= 45) {
     band = 'moderate'; headerClass = badgeClass = 'moderate';
-    badgeText = '◐ Moderate Risk  -  Not Yet Transferable';
-    title = `${name}, you have <em>real risk factors</em> a buyer will use against you.`;
-    sub = `With a risk score of ${total}/100, your Transferable Enterprise Value is significantly below your full enterprise value. The issues below are exactly what buyers use to justify a lower offer. Each one is fixable - our call will map the timeline.`;
+    badgeText = '◐ Moderate  -  Preparation Opportunities';
+    title = `${name}, your business has <em>real strengths</em> - here's how to maximize them for your exit.`;
+    sub = `With a score of ${total}/100, there's meaningful upside available. The areas below are exactly where targeted preparation will increase your multiple. Each one is addressable - our call will map the timeline.`;
   } else if (total <= 70) {
     band = 'high'; headerClass = badgeClass = 'high';
-    badgeText = '▲ High Risk  -  Significant Transferability Gaps';
-    title = `${name}, several factors will <em>significantly discount your multiple</em>  -  or kill the deal.`;
-    sub = `With a risk score of ${total}/100, going to market today would leave serious money on the table. Buyers will exploit every gap identified below. The Transferable Exit System addresses each one. Our call shows you how.`;
+    badgeText = '▲ High  -  Significant Preparation Gaps';
+    title = `${name}, you've built something valuable - here's how to <em>capture its full worth</em> at exit.`;
+    sub = `With a score of ${total}/100, there's significant value to unlock through preparation. Each area below represents upside waiting to be captured. The Transferable Exit System addresses each one. Our call shows you how.`;
   } else {
     band = 'critical'; headerClass = badgeClass = 'critical';
-    badgeText = '✕ Critical Risk  -  Not Transferable';
-    title = `${name}, in its current state, this business <em>will struggle to sell</em>  -  or sell far below value.`;
-    sub = `With a risk score of ${total}/100, buyers will either walk away or structure a deal that protects them at your expense. This is not permanent - the Transferable Exit System has turned businesses like yours around. Our call is the first step.`;
+    badgeText = '✕ Needs Preparation  -  Not Yet Transferable';
+    title = `${name}, you've built something worth fighting for - here's the <em>preparation plan</em> to get full value.`;
+    sub = `With a score of ${total}/100, your business needs focused preparation before going to market. This is not permanent - the Transferable Exit System has transformed businesses like yours into premium exits. Our call is the first step.`;
   }
 
   document.getElementById('resultHeader').className = 'result-header ' + headerClass;
@@ -2202,7 +2202,7 @@ function submitForm() {
   document.getElementById('resultSub').textContent = sub;
 
   // Confirmation text
-  document.getElementById('confirmText').innerHTML = `Your diagnostic report is ready and your advisor has received a detailed copy. <strong>Come prepared to discuss these risk areas directly.</strong> A full copy has been sent to ${answers.email || 'your email'}.`;
+  document.getElementById('confirmText').innerHTML = `Your diagnostic report is ready and your advisor has received a detailed copy. <strong>Come prepared to discuss your preparation plan.</strong> A full copy has been sent to ${answers.email || 'your email'}.`;
 
   // ── Section A: Executive Summary ──
   const worstAreas = breakdown.filter(b => b.insight && b.insight.priority <= 2).sort((a, b) => b.score/b.max - a.score/a.max);
@@ -2210,12 +2210,12 @@ function submitForm() {
   let summaryText = `<p><strong>${answers.ownerName || 'Assessment'}  -  ${company}</strong></p>`;
   summaryText += `<p style="margin-top:10px;">Your overall Exit Risk Score is <strong>${total}/100</strong> (${band} risk). `;
   if (worstNames.length >= 2) {
-    summaryText += `Your biggest vulnerabilities are in <strong>${worstNames[0]}</strong> and <strong>${worstNames[1]}</strong>. `;
+    summaryText += `Your biggest opportunities for improvement are in <strong>${worstNames[0]}</strong> and <strong>${worstNames[1]}</strong>. `;
   } else if (worstNames.length === 1) {
-    summaryText += `Your primary vulnerability is in <strong>${worstNames[0]}</strong>. `;
+    summaryText += `Your primary opportunity for improvement is in <strong>${worstNames[0]}</strong>. `;
   }
   if (total > 45) {
-    summaryText += `If you went to market today, buyers would exploit these gaps to discount your offer significantly - or walk away entirely. Every issue identified below is fixable with the right plan and timeline.</p>`;
+    summaryText += `Going to market after addressing the areas below will significantly increase your multiple and strengthen your negotiating position. Every area identified is improvable with the right plan and timeline.</p>`;
   } else if (total > 20) {
     summaryText += `These areas will come up in due diligence and give buyers negotiation leverage. Addressing them before going to market is the difference between a good deal and a great one.</p>`;
   } else {
@@ -2289,8 +2289,8 @@ function submitForm() {
   if (phase1.length > 0) {
     roadmapHtml += `<div class="roadmap-phase">
       <div class="roadmap-phase-header">
-        <div class="roadmap-phase-dot urgent"></div>
-        <div class="roadmap-phase-title">Fix in First 90 Days  -  Critical</div>
+        <div class="roadmap-phase-dot priority"></div>
+        <div class="roadmap-phase-title">First 90 Days  -  Highest Impact</div>
       </div>
       ${phase1.map(i => `<div class="roadmap-item"><span class="roadmap-item-arrow">→</span><div><strong>${i.category}:</strong> ${i.impact} <em style="color:var(--muted);">(${i.fixTimeline})</em></div></div>`).join('')}
     </div>`;
@@ -2323,9 +2323,9 @@ function submitForm() {
   ctaEl.innerHTML = `
     <div class="cta-box">
       <h3>Your Next Step</h3>
-      <p>You now know exactly where your risks are. The question is what you do about them.</p>
+      <p>You now know exactly where your opportunities are. The question is how fast you act on them.</p>
       <a href="https://api.leadconnectorhq.com/widget/booking/ZMY7F82g3SOZnYBn3pod" class="btn-cta">Book Your Diagnostic Call →</a>
-      <div class="cta-quote">"I've reviewed hundreds of businesses like yours. On our call, I'll walk you through exactly how to close the gaps identified above."  -  Jean Hardy</div>
+      <div class="cta-quote">"I've worked with hundreds of businesses like yours. On our call, I'll walk you through exactly how to maximize the value you've already built."  -  Jean Hardy</div>
     </div>`;
 
   // ══════════════════════════════════════════════════════════════════
@@ -2506,11 +2506,11 @@ function submitForm() {
         </div>
         ${roadmapEmailHtml}
         <div style="text-align:center;margin:30px 0;padding:24px;background:#161616;border:1px solid rgba(201,168,76,0.15);border-radius:8px;">
-          <p style="color:#f5f0e8;font-size:15px;font-weight:600;margin:0 0 8px;">Ready to Close These Gaps?</p>
-          <p style="color:#9a9590;font-size:13px;line-height:1.6;margin:0 0 16px;">Your advisor has this report and will walk you through exactly how to address each risk area.</p>
+          <p style="color:#f5f0e8;font-size:15px;font-weight:600;margin:0 0 8px;">Ready to Maximize Your Exit Value?</p>
+          <p style="color:#9a9590;font-size:13px;line-height:1.6;margin:0 0 16px;">Your advisor has this report and will walk you through exactly how to capture maximum value from each area.</p>
           <a href="https://api.leadconnectorhq.com/widget/booking/ZMY7F82g3SOZnYBn3pod" style="display:inline-block;background:#c9a84c;color:#0a0a0a;font-weight:700;padding:12px 28px;text-decoration:none;text-transform:uppercase;font-size:12px;letter-spacing:1px;">Book Your Diagnostic Call →</a>
         </div>
-        <p style="font-style:italic;color:#c9a84c;font-size:13px;line-height:1.6;text-align:center;margin:20px 0;">"I've reviewed hundreds of businesses like yours. On our call, I'll walk you through exactly how to close the gaps identified above."  -  Jean Hardy</p>
+        <p style="font-style:italic;color:#c9a84c;font-size:13px;line-height:1.6;text-align:center;margin:20px 0;">"I've worked with hundreds of businesses like yours. On our call, I'll walk you through exactly how to maximize the value you've already built."  -  Jean Hardy</p>
         ${arenaSignature}
       </div>`;
 
