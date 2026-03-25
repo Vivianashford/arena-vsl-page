@@ -1385,6 +1385,7 @@
   var contactId = params.get('cid') || '';
   var contactEmail = params.get('email') || '';
   var contactName = params.get('name') || '';
+  var contactResolved = !!contactId;
 
   // GHL API config
   var GHL_TOKEN = 'proxy';
@@ -1394,6 +1395,30 @@
     'Version': '2021-07-28',
     'Content-Type': 'application/json'
   };
+
+  // Resolve contactId from email if not provided
+  if (!contactId && contactEmail) {
+    console.log('[Arena] No cid param - looking up contact by email: ' + contactEmail);
+    fetch(GHL_BASE + '/contacts/?query=' + encodeURIComponent(contactEmail) + '&locationId=LSvdgiiT7ManCRx9CCwE', {
+      method: 'GET',
+      headers: GHL_HEADERS
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.contacts && data.contacts.length > 0) {
+        contactId = data.contacts[0].id;
+        contactResolved = true;
+        console.log('[Arena] Resolved contact ID from email: ' + contactId);
+        // Fire any queued milestones
+        Object.keys(pendingMilestones).forEach(function(pct) {
+          if (pendingMilestones[pct]) fireMilestone(parseInt(pct));
+        });
+      } else {
+        console.warn('[Arena] No contact found for email: ' + contactEmail);
+      }
+    })
+    .catch(function(e) { console.error('[Arena] Contact lookup failed:', e); });
+  }
 
   // Tag IDs
   var TAGS = {
@@ -1414,9 +1439,17 @@
 
   // Track which milestones have been fired
   var firedMilestones = { 25: false, 50: false, 75: false, 100: false };
+  // Queue milestones hit before contact ID is resolved
+  var pendingMilestones = { 25: false, 50: false, 75: false, 100: false };
 
   function fireMilestone(pct) {
-    if (!contactId || firedMilestones[pct]) return;
+    // If contact ID not yet resolved, queue it
+    if (!contactId) {
+      pendingMilestones[pct] = true;
+      console.log('[Arena] Queued milestone ' + pct + '% (waiting for contact lookup)');
+      return;
+    }
+    if (firedMilestones[pct]) return;
     firedMilestones[pct] = true;
 
     console.log('[Arena] Video milestone: ' + pct + '% for contact ' + contactId);
