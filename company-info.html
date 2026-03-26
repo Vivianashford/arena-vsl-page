@@ -643,5 +643,6 @@ async function submitForm() {
 <!-- GHL token now server-side on Worker -->
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}</script>
+<script>window.addEventListener("load",function(){if(typeof gtag==="function")gtag("event","view_company_form",{event_category:"conversion"})});</script>
 </body>
 </html>
