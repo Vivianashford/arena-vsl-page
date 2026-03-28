@@ -5,6 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>TRANSFERABLE - Jean Louis Hardy | The Arena Partners</title>
+<meta name="description" content="Read TRANSFERABLE by Jean Louis Hardy. The complete guide to building a service business that runs without you and exits at maximum value. Free to read online.">
+<link rel="canonical" href="https://thearenapartners.com/book.html">
+<!-- Open Graph -->
+<meta property="og:type" content="book">
+<meta property="og:title" content="TRANSFERABLE by Jean Louis Hardy | The Arena Partners">
+<meta property="og:description" content="The complete guide to building a service business that runs without you and exits at maximum value.">
+<meta property="og:url" content="https://thearenapartners.com/book.html">
+<meta property="og:image" content="https://thearenapartners.com/book-cover.png">
+<meta property="og:site_name" content="The Arena Partners">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TRANSFERABLE by Jean Louis Hardy">
+<meta name="twitter:description" content="The complete guide to building a service business that runs without you and exits at maximum value.">
+<meta name="twitter:image" content="https://thearenapartners.com/book-cover.png">
+<!-- Schema.org: Book -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "TRANSFERABLE",
+  "author": {
+    "@type": "Person",
+    "name": "Jean Louis Hardy",
+    "jobTitle": "Exit Advisor",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "The Arena Partners"
+    }
+  },
+  "url": "https://thearenapartners.com/book.html",
+  "image": "https://thearenapartners.com/book-cover.png",
+  "description": "The complete guide to building a service business that runs without you and exits at maximum value.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "The Arena Partners",
+    "url": "https://thearenapartners.com"
+  },
+  "inLanguage": "en",
+  "genre": "Business",
+  "about": "Exit planning for service business owners"
+}
+</script>
+<!-- Schema.org: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://thearenapartners.com/"},
+    {"@type": "ListItem", "position": 2, "name": "TRANSFERABLE Book", "item": "https://thearenapartners.com/book.html"}
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
@@ -117,6 +170,22 @@ body{font-family:'Source Serif 4',Georgia,serif;background:#2a2420;color:#1A1A1A
 </div>
 
 <div class="bot-bar"><button class="arr" id="prev" onclick="flipPrev()">&#8249;</button><span class="pg-info" id="pgi">Loading...</span><button class="arr" id="next" onclick="flipNext()">&#8250;</button></div>
+
+<!-- CTA Bar - appears after reading progress -->
+<div id="bookCta" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:linear-gradient(90deg,#1a1714,#2a2420);border-top:2px solid #C9A84C;padding:10px 16px;text-align:center;">
+  <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:#fdfaf7;margin-right:12px;">Ready to see where you stand?</span>
+  <a href="assessment.html" style="display:inline-block;background:#C9A84C;color:#1a1714;padding:8px 20px;border-radius:5px;text-decoration:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;margin-right:8px;">Take the Free Exit Assessment</a>
+  <a href="https://thearenapartners.com/book-a-call.html" style="display:inline-block;background:transparent;border:1px solid #C9A84C;color:#C9A84C;padding:8px 20px;border-radius:5px;text-decoration:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;">Book a Call with Jean</a>
+</div>
+<script>
+// Show CTA bar after 15% reading progress
+var ctaShown=false;
+setInterval(function(){
+  if(ctaShown)return;
+  var pp=document.getElementById('pp');
+  if(pp){var pct=parseInt(pp.textContent);if(pct>=15){document.getElementById('bookCta').style.display='block';ctaShown=true;}}
+},2000);
+</script>
 
 <div class="toc-ov" id="tocOv" onclick="if(event.target===this)toggleTOC()"><div class="toc-pn" id="tocPn"></div></div>
 

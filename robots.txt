@@ -1,3 +1,18 @@
 User-agent: *
 Allow: /
+Disallow: /sw.js
+
 Sitemap: https://thearenapartners.com/sitemap.xml
+
+# AI crawlers welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
