@@ -982,7 +982,7 @@ async function submitNDA() {
         r2Form.append('company', company);
         r2Form.append('category', 'nda');
         r2Form.append('contactId', resolvedContactId);
-        const r2Resp = await fetch(WORKER_URL + '/api/upload', { method: 'POST', body: r2Form });
+        const r2Resp = await fetch(WORKER_URL + '/upload', { method: 'POST', body: r2Form });
         if (r2Resp.ok) {
           const r2Data = await r2Resp.json();
           pdfDownloadUrl = r2Data.url || '';
