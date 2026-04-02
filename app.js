@@ -166,6 +166,18 @@ var watchUrl = 'https://thearenapartners.com/watch.html?email=' + encodeURICompo
 window.location.href = watchUrl;
 }, 1500);
 }
+function submitBottomForm() {
+  var fn = document.getElementById('btmFirstName').value || '';
+  var em = document.getElementById('btmEmail').value || '';
+  var ph = document.getElementById('btmPhone').value || '';
+  if (!fn) { alert('Please enter your first name.'); return; }
+  if (!em) { alert('Please enter your email address.'); return; }
+  if (!ph) { alert('Please enter your phone number so we can send you the training link.'); return; }
+  document.getElementById('firstName').value = fn;
+  document.getElementById('email').value = em;
+  document.getElementById('phone').value = ph;
+  submitForm();
+}
 document.getElementById('modal').addEventListener('click', function(e) {
 if (e.target === this) closeModal();
 });
