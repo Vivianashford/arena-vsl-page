@@ -1317,8 +1317,11 @@ async function submitAll() {
 
         // PRIMARY: Upload to GHL media library (permanent CDN URL)
         try {
+          // Rename file: "CompanyName - Category - filename.pdf"
+          var catLabel = CATEGORIES[cat].name.replace(/[^a-zA-Z0-9 ]/g, '');
+          var renamedFile = new File([files[i]], company + ' - ' + catLabel + ' - ' + files[i].name, { type: files[i].type });
           var ghlForm = new FormData();
-          ghlForm.append('file', files[i]);
+          ghlForm.append('file', renamedFile);
           ghlForm.append('hosted', 'false');
           ghlForm.append('fileProcessingType', 'static');
           ghlForm.append('locationId', LOCATION_ID);
