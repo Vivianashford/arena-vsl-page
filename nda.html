@@ -880,6 +880,7 @@ async function submitNDA() {
 
   submitBtn.disabled    = true;
   submitBtn.textContent = 'Submitting...';
+  let _step = 'init';
 
   // Export signature with white background (canvas is transparent by default)
   const sigCanvas = document.createElement('canvas');
@@ -894,10 +895,7 @@ async function submitNDA() {
   const contactId  = window._ghlContactId || '';
 
   try {
-    // Call our serverless proxy / GitHub Actions workflow
-    // Since thearenapartners.com → vivianashford.github.io (static),
-    // we POST directly to the GHL API via a CORS-aware endpoint.
-    // The GHL API itself accepts cross-origin POSTs for contacts.
+    _step = 'setup';
     const WORKER_URL = 'https://arena-api.jean-475.workers.dev';
     const GHL_BASE   = WORKER_URL + '/api/ghl';
     const LOCATION   = 'LSvdgiiT7ManCRx9CCwE';
@@ -906,6 +904,7 @@ async function submitNDA() {
 
     let resolvedContactId = contactId;
 
+    _step = 'upsert';
     // Step 1: Upsert contact to get/create contact ID
     if (!resolvedContactId && email) {
       const upsertResp = await fetch(`${GHL_BASE}/contacts/upsert`, {
@@ -929,6 +928,7 @@ async function submitNDA() {
       }
     }
 
+    _step = 'update-contact';
     // Step 2: Update NDA Status custom field + add tag
     if (resolvedContactId) {
       await fetch(`${GHL_BASE}/contacts/${resolvedContactId}`, {
@@ -946,6 +946,7 @@ async function submitNDA() {
         })
       });
 
+      _step = 'add-note';
       // Step 3: Add a note to the contact
       await fetch(`${GHL_BASE}/contacts/${resolvedContactId}/notes`, {
         method: 'POST',
@@ -959,6 +960,7 @@ async function submitNDA() {
         })
       });
 
+      _step = 'generate-pdf';
       // Step 4: Generate PDF ONCE and use for upload + download
       const firstName = name.split(' ')[0];
       let pdfDownloadUrl = '';
@@ -1045,6 +1047,7 @@ async function submitNDA() {
         ? `<p style="margin:24px 0;text-align:center;"><a href="${pdfDownloadUrl}" style="display:inline-block;padding:14px 30px;background:#c9a84c;color:#0a0a0a;font-weight:bold;text-decoration:none;border-radius:6px;font-size:14px;">Download Your Signed NDA (PDF)</a></p>`
         : '';
 
+      _step = 'send-email';
       const signerEmailHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px;background:#0a0a0a;color:#f5f0e8;">
         <div style="text-align:center;margin-bottom:24px;">
           <p style="font-family:Georgia,serif;font-size:22px;color:#c9a84c;margin:0;">The Arena Partners</p>
@@ -1081,6 +1084,7 @@ async function submitNDA() {
         })
       });
 
+      _step = 'notify-jean';
       // Step 5: Notify Jean
       const JEAN_CONTACT_ID = 'ZoSzNQkcfgjYjc37tPs4';
       const notifyHtml = `<div style="font-family:Arial,sans-serif;padding:20px;">
@@ -1107,6 +1111,7 @@ async function submitNDA() {
       });
     }
 
+    _step = 'pdf-download';
     // Step 6: Trigger PDF download (reuse already-generated PDF)
     submitBtn.textContent = 'Downloading PDF...';
     try {
@@ -1155,7 +1160,9 @@ async function submitNDA() {
 
   } catch (err) {
     console.error('NDA submission error:', err);
-    document.getElementById('errorMsg').style.display   = 'block';
+    const errorEl = document.getElementById('errorMsg');
+    errorEl.innerHTML = `<strong>Error at step "${_step}":</strong> ${err.message || err}<br><small style="color:#9a9590;">${(err.stack || '').substring(0, 300)}</small><br><br>Please try again or email <a href="mailto:support@thearenapartners.com" style="color:#c9a84c;">support@thearenapartners.com</a> directly.`;
+    errorEl.style.display = 'block';
     document.getElementById('successMsg').style.display = 'none';
     submitBtn.disabled    = false;
     submitBtn.textContent = 'Sign & Submit Agreement';
