@@ -1301,7 +1301,7 @@ async function submitAll() {
 
   var allFileLinks = []; // Track uploaded file URLs for contact notes
 
-  // Upload files - GHL media primary, R2 backup
+  // Upload files via Worker - creates folder per contact, uploads into it
   for (var cat in uploadedFiles) {
     var files = uploadedFiles[cat];
     if (!files || files.length === 0) continue;
@@ -1313,48 +1313,21 @@ async function submitAll() {
 
     for (var i = 0; i < files.length; i++) {
       try {
-        var uploaded = false;
         var fileUrl = '';
 
-        // PRIMARY: Upload to GHL media library (permanent CDN URL)
-        try {
-          // Rename file: "CompanyName - Category - filename.pdf"
-          var catLabel = CATEGORIES[cat].name.replace(/[^a-zA-Z0-9 ]/g, '');
-          var renamedFile = new File([files[i]], company + ' - ' + catLabel + ' - ' + files[i].name, { type: files[i].type });
-          var ghlForm = new FormData();
-          ghlForm.append('file', renamedFile);
-          ghlForm.append('hosted', 'false');
-          ghlForm.append('fileProcessingType', 'static');
-          ghlForm.append('locationId', LOCATION_ID);
-          var ghlUpResp = await fetch(GHL_API + '/medias/upload-file', {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer ' + GHL_TOKEN,
-              'Version': GHL_VERSION
-            },
-            body: ghlForm
-          });
-          if (ghlUpResp.ok) {
-            var ghlUpData = await ghlUpResp.json();
-            fileUrl = ghlUpData.url || '';
-            uploaded = true;
-          }
-        } catch (ghlErr) { console.error('GHL upload error:', ghlErr); }
+        // Upload through Worker - handles GHL folder + media + R2 backup + contact note
+        var uploadForm = new FormData();
+        uploadForm.append('file', files[i]);
+        uploadForm.append('contactName', name);
+        uploadForm.append('companyName', company);
+        uploadForm.append('category', CATEGORIES[cat].name);
+        uploadForm.append('contactId', cid);
+        uploadForm.append('contactEmail', email);
 
-        // BACKUP: Upload to R2 via Worker (if GHL failed)
-        if (!uploaded && WORKER_URL && !WORKER_URL.includes('your-domain')) {
-          try {
-            var r2Form = new FormData();
-            r2Form.append('company', company);
-            r2Form.append('category', cat);
-            r2Form.append('contactId', cid);
-            r2Form.append('file', files[i]);
-            var r2Resp = await fetch(WORKER_URL + '/upload', { method: 'POST', body: r2Form });
-            if (r2Resp.ok) {
-              var r2Data = await r2Resp.json();
-              fileUrl = r2Data.url || '';
-            }
-          } catch (r2Err) { console.error('R2 backup error:', r2Err); }
+        var resp = await fetch(WORKER_URL + '/api/upload-to-contact', { method: 'POST', body: uploadForm });
+        if (resp.ok) {
+          var respData = await resp.json();
+          fileUrl = respData.fileUrl || '';
         }
 
         if (fileUrl) {
@@ -1369,49 +1342,7 @@ async function submitAll() {
     }
   }
 
-  // Send each file to Make.com for GHL Documents tab attachment
-  for (var m = 0; m < allFileLinks.length; m++) {
-    try {
-      // Re-upload file to Make webhook with contact metadata
-      var matchCat = allFileLinks[m].category;
-      var matchName = allFileLinks[m].name;
-      // Find the original file
-      for (var mCat in uploadedFiles) {
-        var mFiles = uploadedFiles[mCat];
-        if (!mFiles) continue;
-        for (var mf = 0; mf < mFiles.length; mf++) {
-          if (mFiles[mf].name === matchName && CATEGORIES[mCat].name === matchCat) {
-            var makeForm = new FormData();
-            makeForm.append('file', mFiles[mf]);
-            makeForm.append('contactEmail', email);
-            makeForm.append('contactName', name);
-            makeForm.append('companyName', company);
-            makeForm.append('contactId', cid);
-            makeForm.append('category', matchCat);
-            makeForm.append('fileName', company + ' - ' + matchCat + ' - ' + mFiles[mf].name);
-            makeForm.append('fileUrl', allFileLinks[m].url || '');
-            await fetch(MAKE_WEBHOOK, { method: 'POST', body: makeForm }).catch(function(e) { console.error('Make webhook error:', e); });
-          }
-        }
-      }
-    } catch (makeErr) { console.error('Make send error:', makeErr); }
-  }
-
-  // Add a note to the contact with all file download links
-  if (cid && allFileLinks.length > 0) {
-    try {
-      var noteLines = ['DOCUMENTS UPLOADED VIA PORTAL', 'Company: ' + company, 'Contact: ' + name, 'Time: ' + new Date().toLocaleString('en-US', {timeZone:'America/Chicago'}), '', '--- Files ---'];
-      for (var f = 0; f < allFileLinks.length; f++) {
-        noteLines.push(allFileLinks[f].category + ': ' + allFileLinks[f].name);
-        noteLines.push('  Download: ' + allFileLinks[f].url);
-      }
-      await fetch(GHL_API + '/contacts/' + cid + '/notes', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + GHL_TOKEN, 'Version': GHL_VERSION, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: noteLines.join('\n') })
-      });
-    } catch (noteErr) { console.error('Note with links error:', noteErr); }
-  }
+  // Notes are now created by the Worker for each file upload
 
   // Update GHL contact directly (fallback if worker not deployed)
   try {
