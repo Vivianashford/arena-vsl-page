@@ -18,12 +18,16 @@ function closeModal() {
 
 function submitForm() {
   var firstName = document.getElementById('firstName').value.trim();
+  var lastName = document.getElementById('lastName').value.trim();
   var email = document.getElementById('email').value.trim();
   var phone = document.getElementById('phone').value.trim();
+  var smsConsent = document.getElementById('smsConsent').checked;
+  var marketingConsent = document.getElementById('marketingConsent').checked;
 
   if (!firstName) { alert('Please enter your first name.'); return; }
   if (!email) { alert('Please enter your email address.'); return; }
   if (!phone) { alert('Please enter your phone number.'); return; }
+  if (!smsConsent) { alert('Please consent to receive text messages to continue.'); return; }
 
   var btn = document.querySelector('.modal .cta-btn');
   var origHTML = btn.innerHTML;
@@ -35,8 +39,11 @@ function submitForm() {
     formId: GHL_FORM_ID,
     location_id: GHL_LOCATION_ID,
     first_name: firstName,
+    last_name: lastName,
     email: email,
     phone: phone,
+    smsConsent: smsConsent,
+    marketingConsent: marketingConsent,
     source: 'Arena VSL Page',
     pageUrl: window.location.href,
     pageName: document.title
@@ -49,12 +56,10 @@ function submitForm() {
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
-    // Redirect to watch page
     window.location.href = 'https://thearenapartners.com/watch.html?email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(firstName);
   })
   .catch(function(err) {
     console.error('GHL form submit error:', err);
-    // Still redirect even if submission fails
     window.location.href = 'https://thearenapartners.com/watch.html?email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(firstName);
   });
 }

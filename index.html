@@ -440,24 +440,37 @@
 
     <div class="form-group">
       <label>First Name</label>
-      <input type="text" id="firstName" placeholder="James" autocomplete="given-name" required />
+      <input type="text" id="firstName" placeholder="First Name" autocomplete="given-name" required />
     </div>
     <div class="form-group">
-      <label>Email Address</label>
-      <input type="email" id="email" placeholder="you@company.com" autocomplete="email" inputmode="email" required />
+      <label>Last Name</label>
+      <input type="text" id="lastName" placeholder="Last Name" autocomplete="family-name" />
     </div>
     <div class="form-group">
-      <label>Phone Number</label>
-      <input type="tel" id="phone" placeholder="(713) 555-0100" autocomplete="tel" inputmode="tel" required />
+      <label>Phone <span style="color:var(--gold);">*</span></label>
+      <input type="tel" id="phone" placeholder="Phone" autocomplete="tel" inputmode="tel" required />
+    </div>
+    <div class="form-group">
+      <label>Email <span style="color:var(--gold);">*</span></label>
+      <input type="email" id="email" placeholder="Email" autocomplete="email" inputmode="email" required />
     </div>
 
-    <p style="font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:20px;line-height:1.5;">
-      <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--gold)" fill="none" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-      We'll text you the training link so you don't lose it.<br>You're busy - come back to it anytime.
-    </p>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;line-height:1.5;color:var(--text-muted);">
+        <input type="checkbox" id="smsConsent" style="margin-top:3px;min-width:18px;min-height:18px;accent-color:var(--gold);" required />
+        <span>By checking this box, I consent to receive non-marketing text messages from <strong>The Arena Partners</strong> about <strong>your exit advisory consultation and training access</strong>. Message frequency varies, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+      </label>
+    </div>
+
+    <div class="form-group" style="margin-bottom:20px;">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;line-height:1.5;color:var(--text-muted);">
+        <input type="checkbox" id="marketingConsent" style="margin-top:3px;min-width:18px;min-height:18px;accent-color:var(--gold);" />
+        <span>By checking this box, I consent to receive marketing and promotional messages including special offers, discounts, new product updates among others from <strong>The Arena Partners</strong> at the phone number provided. Frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+      </label>
+    </div>
 
     <button class="cta-btn" onclick="submitForm()">
-      Watch the Training Now
+      WATCH THE TRAINING NOW
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
 
