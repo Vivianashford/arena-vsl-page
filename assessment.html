@@ -2739,7 +2739,11 @@ function submitForm() {
             });
           }
 
-          // ALWAYS email to Zapier
+        }).catch(e => console.error('PDF upload error:', e));
+
+        // ALWAYS email to Zapier - INDEPENDENT of PDF upload
+        // This ensures Zapier gets notified even if PDF upload fails
+        setTimeout(() => {
           const zapierPayload = {
             to: 'thearenaadvisors.opmm2a@zapiermail.com',
             subject: 'Exit Assessment: ' + (answers.ownerName || 'Unknown') + ' - ' + total + '/100 (' + band + ') - ' + (answers.companyName || ''),
@@ -2753,11 +2757,10 @@ function submitForm() {
             industry: getLabel('industry'),
             revenue: getLabel('revenue'),
             timeline: getLabel('timeline'),
-            pdfUrl: pdfUrl,
             timestamp: new Date().toISOString()
           };
 
-          // Send via email through GHL
+          // Upsert Zapier contact
           fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/upsert', {
             method: 'POST',
             headers: ghlHeaders,
@@ -2769,22 +2772,39 @@ function submitForm() {
               tags: ['zapier-inbox'],
               source: 'System'
             })
-          }).then(r => r.json()).then(zd => {
-            const zapierId = zd.contact ? zd.contact.id : zd.contactId;
-            if (!zapierId) return;
-            fetch('https://arena-api.jean-475.workers.dev/api/ghl/conversations/messages', {
-              method: 'POST',
-              headers: ghlHeaders,
-              body: JSON.stringify({
-                type: 'Email',
-                contactId: zapierId,
-                subject: zapierPayload.subject,
-                emailFrom: 'The Arena Partners <support@thearenapartners.com>',
-                html: leadResultHtml + (pdfUrl ? '<p style="text-align:center;margin:20px 0;"><a href="' + pdfUrl + '" style="color:#c9a84c;font-weight:700;">Download PDF Report</a></p>' : '')
-              })
-            });
-          });
-        }).catch(e => console.error('PDF upload error:', e));
+          })
+            .then(r => r.json())
+            .then(zd => {
+              const zapierId = zd.contact ? zd.contact.id : zd.contactId;
+              if (!zapierId) { console.error('No Zapier contact ID'); return; }
+              
+              // Send email to Zapier
+              return fetch('https://arena-api.jean-475.workers.dev/api/ghl/conversations/messages', {
+                method: 'POST',
+                headers: ghlHeaders,
+                body: JSON.stringify({
+                  type: 'Email',
+                  contactId: zapierId,
+                  subject: zapierPayload.subject,
+                  emailFrom: 'The Arena Partners <support@thearenapartners.com>',
+                  html: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#f5f0e8;padding:40px;">' +
+                    '<h2 style="color:#c9a84c;">Exit Assessment Submitted</h2>' +
+                    '<p><strong>Name:</strong> ' + zapierPayload.ownerName + '</p>' +
+                    '<p><strong>Company:</strong> ' + zapierPayload.companyName + '</p>' +
+                    '<p><strong>Email:</strong> ' + zapierPayload.email + '</p>' +
+                    '<p><strong>Phone:</strong> ' + zapierPayload.phone + '</p>' +
+                    '<p style="margin-top:24px;border-top:1px solid #c9a84c;padding-top:16px;">' +
+                    '<strong style="color:#c9a84c;">Score: ' + zapierPayload.score + '/100 (' + zapierPayload.band + ')</strong><br>' +
+                    'TEV: ' + zapierPayload.tev + '<br>' +
+                    'Industry: ' + zapierPayload.industry + '<br>' +
+                    'Revenue: ' + zapierPayload.revenue + '<br>' +
+                    'Timeline: ' + zapierPayload.timeline +
+                    '</p></div>'
+                })
+              });
+            })
+            .catch(e => console.error('Zapier email error:', e));
+        }, 500); // Delay slightly to ensure it runs after PDF upload completes
       }
     } catch(pdfErr) { console.error('PDF generation error:', pdfErr); }
   }
