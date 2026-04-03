@@ -1061,7 +1061,7 @@ async function submitNDA() {
           </div>
           ${pdfButtonHtml}
           <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0 0 16px;">Your next step is to complete the Company Information Request. The sooner we have this, the sooner we can start building your custom exit plan.</p>
-          <p style="margin:20px 0;text-align:center;"><a href="https://thearenapartners.com/company-info.html?name=${encodeURIComponent(name)}&company=${encodeURIComponent(company)}&email=${encodeURIComponent(email)}&cid=${resolvedContactId}" style="display:inline-block;padding:14px 30px;background:transparent;color:#c9a84c;font-weight:bold;text-decoration:none;border-radius:6px;font-size:14px;border:2px solid #c9a84c;">Complete Company Information →</a></p>
+          <p style="margin:20px 0;text-align:center;"><a href="https://thearenapartners.com/upload.html?name=${encodeURIComponent(name)}&company=${encodeURIComponent(company)}&email=${encodeURIComponent(email)}&cid=${resolvedContactId}" style="display:inline-block;padding:14px 30px;background:transparent;color:#c9a84c;font-weight:bold;text-decoration:none;border-radius:6px;font-size:14px;border:2px solid #c9a84c;">Upload Your Documents →</a></p>
           <p style="font-size:15px;line-height:1.7;color:#d5d0c8;margin:0;">Looking forward to working with you.</p>
           <p style="font-size:15px;color:#f5f0e8;margin:16px 0 0;">Jean Hardy<br><span style="font-size:13px;color:#9a9590;">Co-Founder & Operations Lead<br>The Arena Partners</span></p>
         </div>
@@ -1109,6 +1109,27 @@ async function submitNDA() {
           emailFrom: 'The Arena Partners <support@thearenapartners.com>'
         })
       });
+    }
+
+    // Step 5b: Send SMS with upload link
+    _step = 'send-sms';
+    if (resolvedContactId) {
+      const uploadLink = `https://thearenapartners.com/upload.html?name=${encodeURIComponent(name)}&company=${encodeURIComponent(company)}&email=${encodeURIComponent(email)}&cid=${resolvedContactId}`;
+      try {
+        await fetch(`${GHL_BASE}/conversations/messages`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Version': '2021-07-28',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'SMS',
+            contactId: resolvedContactId,
+            message: `Hi ${name.split(' ')[0]}, your NDA with The Arena Partners is confirmed. Next step - upload your documents here: ${uploadLink}`
+          })
+        });
+      } catch(smsErr) { console.error('SMS error:', smsErr); }
     }
 
     _step = 'pdf-download';
