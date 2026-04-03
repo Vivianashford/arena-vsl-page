@@ -870,6 +870,7 @@ input.field-error {
 }
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23C9A84C'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='18' font-family='Georgia' fill='%230A0A0A' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -2698,7 +2699,279 @@ function submitForm() {
       });
     })
     .catch(err => console.error('GHL assessment error:', err));
+
+    // ── GENERATE PDF & EMAIL TO ZAPIER ──
+    try {
+      const pdfBlob = generateAssessmentPdf(answers, total, band, tev, breakdown, topRisks, allInsights);
+      if (pdfBlob) {
+        // Upload PDF to GHL media for a CDN link
+        const pdfForm = new FormData();
+        const pdfFileName = (answers.companyName || 'Assessment') + ' - Exit Diagnostic Report.pdf';
+        pdfForm.append('file', new Blob([pdfBlob], {type:'application/pdf'}), pdfFileName);
+        pdfForm.append('hosted', 'false');
+        pdfForm.append('fileProcessingType', 'static');
+        pdfForm.append('locationId', 'LSvdgiiT7ManCRx9CCwE');
+
+        fetch('https://arena-api.jean-475.workers.dev/api/ghl/medias/upload-file', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer proxy', 'Version': '2021-07-28' },
+          body: pdfForm
+        }).then(r => r.json()).then(mediaData => {
+          const pdfUrl = mediaData.url || '';
+
+          // Email PDF link to the lead
+          if (contactId && answers.email && pdfUrl) {
+            fetch('https://arena-api.jean-475.workers.dev/api/ghl/conversations/messages', {
+              method: 'POST',
+              headers: ghlHeaders,
+              body: JSON.stringify({
+                type: 'Email',
+                contactId: contactId,
+                subject: 'Your Exit Diagnostic Report (PDF) - ' + (answers.companyName || ''),
+                emailFrom: 'The Arena Partners <support@thearenapartners.com>',
+                html: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#f5f0e8;padding:40px;">' +
+                  '<h2 style="font-family:Georgia,serif;color:#c9a84c;margin:0 0 16px;">Your Exit Diagnostic Report</h2>' +
+                  '<p style="color:#9a9590;font-size:14px;line-height:1.7;">Hi ' + name + ',</p>' +
+                  '<p style="color:#9a9590;font-size:14px;line-height:1.7;">Here\'s your full Exit Diagnostic Report as a PDF. Keep this for your records and bring it to our call.</p>' +
+                  '<p style="text-align:center;margin:24px 0;"><a href="' + pdfUrl + '" style="display:inline-block;background:#c9a84c;color:#0a0a0a;font-weight:700;padding:14px 30px;text-decoration:none;border-radius:6px;">Download Your Report (PDF)</a></p>' +
+                  '<p style="color:#6b6560;font-size:12px;text-align:center;">Arena Business Advisors, LLC | 3555 Timmons Lane, Suite 1140, Houston, TX 77027</p></div>'
+              })
+            });
+          }
+
+          // ALWAYS email to Zapier
+          const zapierPayload = {
+            to: 'thearenaadvisors.opmm2a@zapiermail.com',
+            subject: 'Exit Assessment: ' + (answers.ownerName || 'Unknown') + ' - ' + total + '/100 (' + band + ') - ' + (answers.companyName || ''),
+            ownerName: answers.ownerName || '',
+            companyName: answers.companyName || '',
+            email: answers.email || '',
+            phone: answers.phone || '',
+            score: total,
+            band: band,
+            tev: tev.pct,
+            industry: getLabel('industry'),
+            revenue: getLabel('revenue'),
+            timeline: getLabel('timeline'),
+            pdfUrl: pdfUrl,
+            timestamp: new Date().toISOString()
+          };
+
+          // Send via email through GHL
+          fetch('https://arena-api.jean-475.workers.dev/api/ghl/contacts/upsert', {
+            method: 'POST',
+            headers: ghlHeaders,
+            body: JSON.stringify({
+              firstName: 'Arena',
+              lastName: 'Advisors Zapier',
+              email: 'thearenaadvisors.opmm2a@zapiermail.com',
+              locationId: 'LSvdgiiT7ManCRx9CCwE',
+              tags: ['zapier-inbox'],
+              source: 'System'
+            })
+          }).then(r => r.json()).then(zd => {
+            const zapierId = zd.contact ? zd.contact.id : zd.contactId;
+            if (!zapierId) return;
+            fetch('https://arena-api.jean-475.workers.dev/api/ghl/conversations/messages', {
+              method: 'POST',
+              headers: ghlHeaders,
+              body: JSON.stringify({
+                type: 'Email',
+                contactId: zapierId,
+                subject: zapierPayload.subject,
+                emailFrom: 'The Arena Partners <support@thearenapartners.com>',
+                html: leadResultHtml + (pdfUrl ? '<p style="text-align:center;margin:20px 0;"><a href="' + pdfUrl + '" style="color:#c9a84c;font-weight:700;">Download PDF Report</a></p>' : '')
+              })
+            });
+          });
+        }).catch(e => console.error('PDF upload error:', e));
+      }
+    } catch(pdfErr) { console.error('PDF generation error:', pdfErr); }
   }
+}
+
+// ── PDF GENERATION ─────────────────────────────────────────────────
+function generateAssessmentPdf(answers, total, band, tev, breakdown, topRisks, allInsights) {
+  if (!window.jspdf) { console.error('jsPDF not loaded'); return null; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'letter' });
+  const W = doc.internal.pageSize.getWidth();
+  const M = 20; // margin
+  let y = 20;
+
+  function addPage() { doc.addPage(); y = 20; }
+  function checkPage(need) { if (y + need > 260) addPage(); }
+
+  // Header
+  doc.setFillColor(10, 10, 10);
+  doc.rect(0, 0, W, 45, 'F');
+  doc.setFillColor(201, 168, 76);
+  doc.rect(0, 45, W, 1, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(201, 168, 76);
+  doc.text('Exit Diagnostic Report', M, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(154, 149, 144);
+  doc.text('The Arena Partners  -  Transferable Exit System', M, 28);
+
+  doc.setFontSize(10);
+  doc.setTextColor(245, 240, 232);
+  doc.text((answers.ownerName || '') + '  |  ' + (answers.companyName || ''), M, 37);
+  doc.text(new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}), W - M, 37, {align:'right'});
+
+  y = 55;
+
+  // Score Box
+  doc.setFillColor(22, 22, 22);
+  doc.roundedRect(M, y, W - 2*M, 35, 4, 4, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(36);
+  doc.setTextColor(201, 168, 76);
+  doc.text(total + '/100', M + 10, y + 22);
+  doc.setFontSize(14);
+  doc.setTextColor(251, 146, 60);
+  doc.text(band.toUpperCase() + ' RISK', M + 60, y + 22);
+  doc.setFontSize(11);
+  doc.setTextColor(154, 149, 144);
+  doc.text('Transferable Enterprise Value: ' + tev.pct, W - M - 10, y + 22, {align:'right'});
+  y += 45;
+
+  // Executive Summary
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(201, 168, 76);
+  doc.text('Executive Summary', M, y);
+  y += 8;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(154, 149, 144);
+  const worstAreas = breakdown.filter(b => b.insight && b.insight.priority <= 2).sort((a,b) => b.score/b.max - a.score/a.max);
+  const worstNames = worstAreas.slice(0,2).map(b => b.label.toLowerCase());
+  let summaryLine = 'Your overall Exit Risk Score is ' + total + '/100 (' + band + ' risk).';
+  if (worstNames.length >= 2) summaryLine += ' Your biggest opportunities: ' + worstNames[0] + ' and ' + worstNames[1] + '.';
+  const summaryLines = doc.splitTextToSize(summaryLine, W - 2*M);
+  doc.text(summaryLines, M, y);
+  y += summaryLines.length * 5 + 8;
+
+  // Category Breakdown
+  checkPage(20);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(201, 168, 76);
+  doc.text('Category Breakdown', M, y);
+  y += 8;
+
+  breakdown.forEach(b => {
+    checkPage(18);
+    // Bar background
+    const barW = W - 2*M - 50;
+    doc.setFillColor(30, 30, 30);
+    doc.rect(M, y, barW, 6, 'F');
+    // Bar fill
+    const pct = Math.round((b.score / b.max) * 100);
+    const fillW = (pct / 100) * barW;
+    if (b.color === 'red') doc.setFillColor(196, 75, 63);
+    else if (b.color === 'amber') doc.setFillColor(212, 164, 59);
+    else doc.setFillColor(74, 158, 110);
+    doc.rect(M, y, fillW, 6, 'F');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(245, 240, 232);
+    doc.text(b.label, M, y - 2);
+    doc.setTextColor(201, 168, 76);
+    doc.text(b.score + '/' + b.max, W - M, y + 4, {align:'right'});
+    y += 14;
+  });
+
+  // Top Risks
+  if (topRisks.length > 0) {
+    checkPage(30);
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(201, 168, 76);
+    doc.text('Priority Risks', M, y);
+    y += 8;
+
+    topRisks.forEach((r, i) => {
+      checkPage(30);
+      doc.setFillColor(22, 22, 22);
+      doc.roundedRect(M, y, W - 2*M, 24, 3, 3, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(251, 146, 60);
+      doc.text('Risk #' + (i+1) + ': ' + r.label, M + 4, y + 7);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(154, 149, 144);
+      const diagLines = doc.splitTextToSize(r.insight.diagnosis, W - 2*M - 8);
+      doc.text(diagLines.slice(0, 2), M + 4, y + 13);
+      doc.setTextColor(196, 75, 63);
+      doc.text(r.insight.impact.substring(0, 80), M + 4, y + 21);
+      y += 28;
+    });
+  }
+
+  // Roadmap
+  checkPage(20);
+  y += 5;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(201, 168, 76);
+  doc.text('Actionable Roadmap', M, y);
+  y += 8;
+
+  const phases = [
+    { label: 'Fix in First 90 Days', items: allInsights.filter(i => i.priority <= 2), color: [196,75,63] },
+    { label: 'Fix in 6-12 Months', items: allInsights.filter(i => i.priority >= 3 && i.priority <= 4), color: [212,164,59] },
+    { label: 'Optimize Ongoing', items: allInsights.filter(i => i.priority >= 5), color: [74,158,110] }
+  ];
+
+  phases.forEach(p => {
+    if (p.items.length === 0) return;
+    checkPage(15);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...p.color);
+    doc.text(p.label + ':', M, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(154, 149, 144);
+    p.items.forEach(item => {
+      checkPage(8);
+      const line = doc.splitTextToSize('> ' + item.category + ': ' + item.impact, W - 2*M - 5);
+      doc.text(line.slice(0, 2), M + 4, y);
+      y += line.slice(0, 2).length * 4 + 3;
+    });
+    y += 3;
+  });
+
+  // CTA
+  checkPage(25);
+  y += 5;
+  doc.setFillColor(22, 22, 22);
+  doc.roundedRect(M, y, W - 2*M, 20, 4, 4, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(245, 240, 232);
+  doc.text('Ready to discuss your exit plan?', W/2, y + 9, {align:'center'});
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(201, 168, 76);
+  doc.text('Book your diagnostic call: thearenapartners.com', W/2, y + 16, {align:'center'});
+
+  // Footer
+  doc.setFontSize(7);
+  doc.setTextColor(106, 101, 96);
+  doc.text('Arena Business Advisors, LLC | 3555 Timmons Lane, Suite 1140, Houston, TX 77027', W/2, 270, {align:'center'});
+  doc.text('Confidential  -  Prepared for ' + (answers.ownerName || 'Assessment Taker'), W/2, 274, {align:'center'});
+
+  return doc.output('blob');
 }
 
 // ── RESTART ────────────────────────────────────────────────────────
