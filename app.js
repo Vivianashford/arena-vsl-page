@@ -1,3 +1,13 @@
+function openModal() {
+  document.getElementById('modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 /* Arena VSL Page - Form Handler
  * ONLY does: Contact upsert + tag in GHL, then redirect to watch.html
  * ALL automation (emails, SMS, pipeline, notifications) lives in GHL workflows
