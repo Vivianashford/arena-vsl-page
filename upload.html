@@ -644,7 +644,7 @@ const LOCATION_ID = 'LSvdgiiT7ManCRx9CCwE';
 const CF_COMPANY_INFO_STATUS = '34Hw5yMzDL7XoXe4z2zK';
 const JEAN_EMAIL = 'jhardy@trekonecapital.com';
 const MAKE_WEBHOOK = 'https://hook.us2.make.com/uyicpl36ebwkc06yn74qslsl0e0iayu6';
-const DRIVE_WEBHOOK = 'https://hook.us2.make.com/bdf4dc2r0yk4i3isdedmhb4vtps764a6';
+const DRIVE_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxz2Tuv4XNyaq3uMDUqvi9C7HrP5FUa2XqAwZSDMkD5d6ZAX8XxdtByIRRAOP6iP8CSQA/exec';
 </script>
 
 <!-- HEADER -->
@@ -1316,21 +1316,32 @@ async function submitAll() {
       try {
         var fileUrl = '';
 
-        // Upload to Google Drive via Make.com (cloud-based, no local dependency)
-        var uploadForm = new FormData();
-        uploadForm.append('file', files[i]);
-        uploadForm.append('contactName', name);
-        uploadForm.append('companyName', company);
-        uploadForm.append('category', CATEGORIES[cat].name);
-        uploadForm.append('contactId', cid);
-        uploadForm.append('contactEmail', email);
-        uploadForm.append('fileName', files[i].name);
+        // Upload to Google Drive via Apps Script
+        var fileBase64 = await new Promise(function(resolve) {
+          var reader = new FileReader();
+          reader.onload = function() { resolve(reader.result.split(',')[1]); };
+          reader.readAsDataURL(files[i]);
+        });
 
-        var resp = await fetch(DRIVE_WEBHOOK, { method: 'POST', body: uploadForm });
+        var resp = await fetch(DRIVE_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contactName: name,
+            companyName: company,
+            category: CATEGORIES[cat].name,
+            contactId: cid,
+            contactEmail: email,
+            fileName: files[i].name,
+            fileData: fileBase64,
+            fileType: files[i].type || 'application/octet-stream'
+          }),
+          redirect: 'follow'
+        });
         if (resp.ok) {
           try {
             var respData = await resp.json();
-            fileUrl = respData.webViewLink || respData.fileUrl || respData.url || '';
+            fileUrl = respData.fileUrl || respData.webViewLink || respData.url || '';
           } catch(e) { fileUrl = 'uploaded'; }
         }
 
