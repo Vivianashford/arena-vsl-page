@@ -1057,6 +1057,7 @@
 
       <!-- Capacity Badge -->
       <div class="capacity-badge" style="display:inline-flex;align-items:center;gap:10px;background:rgba(10,10,10,.85);border:1px solid #c9a84c;border-radius:6px;padding:10px 20px;margin-bottom:14px;">
+        <span class="cb-blinker" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e74c3c;animation:cbBlink 1.2s ease-in-out infinite;flex-shrink:0;"></span>
         <span class="cb-text" style="font-family:'DM Sans',sans-serif;font-size:13px;color:#d4cfc8;"></span>
       </div>
 
@@ -1140,8 +1141,8 @@
     </div>
 
     <!-- Capacity Badge -->
-    <div class="capacity-badge" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(10,10,10,.85);border:1px solid #c9a84c;border-radius:6px;padding:12px 24px;margin:0 auto 20px;max-width:420px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <div class="capacity-badge" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(10,10,10,.85);border:1px solid #c9a84c;border-radius:6px;padding:12px 24px;margin:0 auto 20px;max-width:480px;">
+      <span class="cb-blinker" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e74c3c;animation:cbBlink 1.2s ease-in-out infinite;flex-shrink:0;"></span>
       <span class="cb-text" style="font-family:'DM Sans',sans-serif;font-size:14px;color:#d4cfc8;"></span>
     </div>
 
@@ -1279,9 +1280,20 @@
   });
 </script>
 
+<style>
+@keyframes cbBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+</style>
 <script>
 (function(){
-  var text='We work with a limited number of companies each quarter.';
+  // Quarter starts at 6 spots, drops by 1 each week, floors at 2
+  var quarterStart = new Date('2026-04-01T00:00:00');
+  var now = new Date();
+  var weeksSinceStart = Math.floor((now - quarterStart) / (7 * 24 * 60 * 60 * 1000));
+  var spots = Math.max(2, 6 - weeksSinceStart);
+  var text = 'Only ' + spots + ' spots remaining this quarter - we work with a limited number of companies.';
   document.querySelectorAll('.cb-text').forEach(function(el){el.textContent=text});
 })();
 </script>
