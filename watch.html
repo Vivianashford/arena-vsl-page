@@ -567,62 +567,7 @@
     50% { transform: translateY(6px); }
   }
 
-  .chapters {
-    max-width: 880px;
-    margin: 48px auto 0;
-    position: relative;
-    z-index: 1;
-    animation: fadeInUp 0.7s ease-out 0.5s both;
-  }
 
-  .chapters-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-
-  .chapters-header svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 2; }
-
-  .chapters-header span {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  .chapters-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
-  }
-
-  .chapter-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 18px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-  }
-
-  .chapter-card:hover {
-    border-color: rgba(201, 168, 76, 0.3);
-    background: rgba(201, 168, 76, 0.03);
-  }
-
-  .chapter-time {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
-    background: rgba(201, 168, 76, 0.08);
-    padding: 5px 10px;
-    border-radius: 6px;
-    flex-shrink: 0;
-    min-width: 52px;
-    text-align: center;
-  }
-
-  .chapter-title { font-size: 14px; font-weight: 500; color: var(--text-secondary); line-height: 1.4; }
 
   .section-divider {
     max-width: 880px;
@@ -987,9 +932,8 @@
     .bio-text p { font-size: 14px; }
     .booking-section, .trust-section, .bio-section { padding: 0 16px 40px; }
     .booking-card { border-radius: 12px; }
-    .chapters { margin-top: 36px; }
-    .chapters-grid { grid-template-columns: 1fr; gap: 8px; }
-    .chapter-card { padding: 12px 14px; gap: 10px; }
+
+
     .video-cta { margin-top: 32px; }
     .video-cta-card { padding: 28px 18px; }
     .video-cta-card h3 { font-size: 22px; }
@@ -1023,9 +967,8 @@
     .bio-stat-num { font-size: 18px; }
     .trust-content h3 { font-size: 18px; }
     .trust-content p { font-size: 14px; }
-    .chapters-header span { font-size: 10px; }
-    .chapter-time { font-size: 11px; min-width: 44px; padding: 4px 8px; }
-    .chapter-title { font-size: 13px; }
+
+
     .calendar-embed { padding: 12px; }
   }
 </style>
@@ -1143,50 +1086,7 @@
     </div>
   </div>
 
-  <!-- CHAPTER MARKERS -->
-  <div class="chapters">
-    <div class="chapters-header">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      <span>Chapter Markers</span>
-    </div>
-    <div class="chapters-grid">
-      <div class="chapter-card">
-        <span class="chapter-time">0:00</span>
-        <span class="chapter-title">Two fathers who built incredible businesses - and the legacy lesson</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">2:00</span>
-        <span class="chapter-title">What separates the top 20% of exits from everyone else</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">5:00</span>
-        <span class="chapter-title">The hidden premium inside your business (and how to unlock it)</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">7:30</span>
-        <span class="chapter-title">5 areas where premium value is built - the transferability blueprint</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">10:00</span>
-        <span class="chapter-title">Why size alone doesn't drive multiples - but this does</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">12:00</span>
-        <span class="chapter-title">The 4-phase system: Align, Map, Automate, Transfer</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">20:00</span>
-        <span class="chapter-title">What premium exits have in common (the data)</span>
-      </div>
-      <div class="chapter-card">
-        <span class="chapter-time">25:30</span>
-        <span class="chapter-title">Your next step - claim the exit you've earned</span>
-      </div>
-    </div>
-  </div>
-</section>
 
-<div class="section-divider"></div>
 
 <!-- TESTIMONIALS -->
 <section style="padding:60px 20px;max-width:1100px;margin:0 auto;">
