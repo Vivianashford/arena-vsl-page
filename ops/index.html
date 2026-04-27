@@ -962,6 +962,67 @@ function App() {
        );
       })()}
 
+      {/* ─── GENERATE MESSAGE ─── */}
+      {(() => {
+        const [genMsg, setGenMsg] = useState("");
+        const [copied, setCopied] = useState(false);
+        const dailyBreakevenGen = ((D.fixedCosts[i] || 330000) / 30) * 1.1;
+        const companyMonthGapGen = Math.max(0, monthlyTarget - (W ? wMR : 0));
+        const companyDailyNeedGen = companyMonthGapGen / remainingDays;
+        function buildMsg() {
+          const d = today.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+          let lines = [];
+          lines.push(`📋 TEJAS DAILY TARGETS — ${d}`);
+          lines.push("");
+          lines.push(`🏢 COMPANY`);
+          lines.push(`  • Need today to hit monthly goal: ${fmtF(companyDailyNeedGen)}`);
+          lines.push(`  • Daily breakeven: ${fmtF(dailyBreakevenGen)}`);
+          lines.push(`  • MTD Revenue: ${fmtF(W ? wMR : 0)} / ${fmtF(monthlyTarget)}`);
+          lines.push("");
+          locationsMeta.forEach(loc => {
+            const wLoc = W?.locations?.find(l=>l.name.toLowerCase().includes(loc.name.split(" ")[0].toLowerCase()));
+            const locTarget = BENCH[loc.k].target / 12;
+            const locMTD = wLoc?.totalRevenue?.mtd || 0;
+            const locGap = Math.max(0, locTarget - locMTD);
+            const locDailyNeedGen = locGap / remainingDays;
+            const locBE = dailyBreakevenGen * BENCH[loc.k].weight;
+            lines.push(`📍 ${loc.name.toUpperCase()}`);
+            lines.push(`  • Need today to hit goal: ${locDailyNeedGen > 0 ? fmtF(locDailyNeedGen) : "TARGET HIT ✅"}`);
+            lines.push(`  • Breakeven today: ${fmtF(locBE)}`);
+            lines.push(`  • MTD: ${fmtF(locMTD)} / ${fmtF(locTarget)}`);
+            lines.push("");
+          });
+          lines.push(`${remainingDays} days left in ${monthName}.`);
+          return lines.join("\n");
+        }
+        function handleGenerate() {
+          const msg = buildMsg();
+          setGenMsg(msg);
+          setCopied(false);
+        }
+        function handleCopy() {
+          navigator.clipboard.writeText(genMsg).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2500); });
+        }
+        return (
+          <Card padding={16} style={{ marginBottom:20 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: genMsg ? 12 : 0 }}>
+              <Eyebrow style={{ fontSize:12 }}>Daily Briefing Message</Eyebrow>
+              <button onClick={handleGenerate} style={{ background:tj.navy900, color:tj.white, border:"none", padding:"8px 20px", fontFamily:tj.fontSans, fontSize:12, fontWeight:700, letterSpacing:"0.08em", cursor:"pointer" }}>
+                ⚡ Generate
+              </button>
+            </div>
+            {genMsg && (
+              <div>
+                <textarea readOnly value={genMsg} onClick={e=>e.target.select()} style={{ width:"100%", minHeight:200, fontFamily:tj.fontMono, fontSize:12, padding:"12px", border:`1px solid ${tj.border}`, background:tj.gray50, color:tj.ink, resize:"vertical", lineHeight:1.6 }} />
+                <button onClick={handleCopy} style={{ marginTop:8, background:copied?tj.ok:tj.sky, color:tj.white, border:"none", padding:"8px 20px", fontFamily:tj.fontSans, fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.08em" }}>
+                  {copied ? "✓ Copied!" : "📋 Copy to Clipboard"}
+                </button>
+              </div>
+            )}
+          </Card>
+        );
+      })()}
+
       {/* ─── ACTIVE LOCATIONS ─── */}
       <Eyebrow style={{ marginBottom:16, fontSize:12 }}>Locations</Eyebrow>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24, marginBottom:24 }}>
