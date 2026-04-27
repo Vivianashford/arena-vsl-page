@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tejas Environmental COO Dashboard</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F9FAFB; }
+    button:hover, label:hover, a:hover { opacity: .92; }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr !important; }
+      .grid-3 { grid-template-columns: 1fr !important; }
+      .grid-4 { grid-template-columns: 1fr 1fr !important; }
+      .grid-5 { grid-template-columns: 1fr 1fr !important; }
+      .hero-strip { flex-wrap: wrap !important; }
+    }
+    .collapsible-content { overflow: hidden; transition: max-height 0.3s ease; }
+    .section-divider { height: 3px; background: linear-gradient(90deg, #002060, #BF0A30); margin: 28px 0 20px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback, useEffect, useMemo } = React;
+
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════ */
+const tj = {
+ navy900:"#002060", navy800:"#002868", navy700:"#0A3A7A",
+ crimson:"#BF0A30", crimson700:"#99082A",
+ sky:"#5B9BD5",
+ ink:"#1C1C1E",
+ gray700:"#6B7280", gray500:"#9CA3AF", gray300:"#D6D0C8",
+ gray100:"#F1F3F5", gray50:"#F9FAFB", white:"#FFFFFF",
+ ok:"#2F7A4F", okBg:"#E8F1EA",
+ warn:"#B78119", warnBg:"#FBF1DC",
+ bad:"#BF0A30", badBg:"#FBE8EC",
+ surface:"#FFFFFF", surfaceCream:"#FBFAF7", bg:"#F9FAFB", border:"#D6D0C8",
+ fontSerif:"Georgia, 'Times New Roman', serif",
+ fontSans:"Calibri, Carlito, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+ fontMono:"ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace",
+};
+
+/* ═══════════════════════════════════════════
+   STORAGE POLYFILL
+   ═══════════════════════════════════════════ */
+window.storage = {
+ async get(k){ try { const v = localStorage.getItem(k); return v == null ? null : { value: v }; } catch(e){ return null; } },
+ async set(k,v){ try { localStorage.setItem(k,v); } catch(e){} },
+ async delete(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+
+/* ═══════════════════════════════════════════
+   SOURCE LINKS
+   ═══════════════════════════════════════════ */
+const SOURCE_LINKS = {
+ weekly: {
+  label: "Jessica's Weekly File",
+  url: "https://swanenergyinc-my.sharepoint.com/:x:/r/personal/jbaustert_njectllc_com/_layouts/15/Doc.aspx?sourcedoc=%7B5B5D9BE1-9C3B-487E-BB0B-C257200800C7%7D&file=Tejas%20Volumes%20and%20Profits.xlsx&fromShare=true&action=default&mobileredirect=true",
+ },
+ monthly: { label: "QBO P&L (from Tom)", url: "" },
+};
+
+/* ═══════════════════════════════════════════
+   INITIAL DATA (pre-loaded sample - Apr 25 to Mar 26)
+   ═══════════════════════════════════════════ */
+const INIT = {
+ months: ['Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+ shortMo: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+ revenue: [853531,959001,667685,393807,467210,640384,667988,557451,523789,456085,455833,607202],
+ grossProfit: [366243,521316,215299,-45295,26323,134330,134475,118928,63412,42026,53970,147162],
+ ebitda: [423332,578730,268131,2264,73552,169669,168868,153155,43318,64596,80136,178462],
+ adjEbitda: [467734,587880,365982,351857,350703,205969,205908,162305,132812,74596,90136,216856],
+ ttmEbitda: [4837080,4861787,4896161,4876935,4910261,4904501,4758524,4640847,4077328,3551918,3212738,3212738],
+ fixedCosts: [332514,342561,331376,308275,334163,334614,394176,335257,347355,321501,323772,370729],
+ variableCosts: [154774,95125,121010,130827,106723,171439,139337,103266,113022,92558,78092,89310],
+ labor: [83720,89154,87113,59645,73400,82906,85726,77838,74591,60628,54222,69351],
+ netIncome: [265522,409689,109650,-156314,-90777,609,14254,-7984,-122666,-90808,-87769,27475],
+ interest: [48825,48312,37752,37879,43599,48330,33884,40409,45255,34675,34185,29891],
+ liquid: [72958,65083,83559,55648,63643,78741,83301,75838,55550,48512,51333,80146],
+ solids: [530040,687614,389073,258303,296087,385615,418514,347711,318511,274941,304287,312850],
+ skimOil: [138782,122799,135555,45954,58083,90801,91849,70326,87568,84227,44634,152038],
+ washout: [112740,84890,59380,33902,49397,84709,74324,63575,61745,49695,56520,62130],
+ bigLake: { rev: [487288,437686,452386,439102,440887,506053,324366,268190,234200,230852,175968,235449], ni: [200680,292990,78038,-44655,-3037,13270,168069,128122,61432,108852,61058,82640] },
+ gonzalez: { rev: [341403,498225,202692,0,0,0,291953,241249,275716,202692,236473,269889], ni: [78181,126395,36461,0,0,0,-24350,-20835,-16360,-39515,5396,25615] },
+ liveOak: { rev: [24839,23091,12607,-45295,26323,134330,51669,48012,13345,22540,43392,101347], ni: [-13339,-9696,-4850,-111659,-87740,-12661,-45063,-26155,-64772,-54283,-34553,18037] },
+ source: "Pre-loaded (Mar 2026)",
+ uploadedAt: null,
+};
+
+const BENCH = {
+ // From Tejas_Bonus_sales_Plan_2026.xlsx - "best month of 2025 per location, annualized x12"
+ bigLake:  { target:6650000, t75:4987500, t110:7315000, weight:0.46, bonusTarget:9200, bonusStretch:9200 },
+ gonzalez: { target:5550000, t75:4162500, t110:6105000, weight:0.385, bonusTarget:7700, bonusStretch:7700 },
+ liveOak:  { target:2200000, t75:1650000, t110:2420000, weight:0.155, bonusTarget:3100, bonusStretch:3100 },
+ total:    { target:14400000, t75:10800000, t110:15840000 },
+};
+
+/* ═══════════════════════════════════════════
+   PARSERS
+   ═══════════════════════════════════════════ */
+function parseNum(s) {
+ if (!s || typeof s !== "string") return 0;
+ s = s.trim().replace(/[$,\s]/g, "");
+ if (s === "-" || s === "" || s === "n/a" || s.includes("DIV")) return 0;
+ const neg = s.startsWith("(") && s.endsWith(")");
+ if (neg) s = s.slice(1, -1);
+ const n = parseFloat(s);
+ return isNaN(n) ? 0 : neg ? -n : n;
+}
+
+function parseCSV(text) {
+ const rows = [];
+ let cur = "", inQ = false;
+ for (const ch of text) {
+  if (ch === '"') { inQ = !inQ; cur += ch; }
+  else if (ch === '\n' && !inQ) { rows.push(cur); cur = ""; }
+  else cur += ch;
+ }
+ if (cur.trim()) rows.push(cur);
+ return rows.map(r => {
+  const f = []; let field = "", q = false;
+  for (const ch of r.replace(/\r/g, "")) {
+   if (ch === '"') q = !q;
+   else if (ch === "," && !q) { f.push(field.trim()); field = ""; }
+   else field += ch;
+  }
+  f.push(field.trim());
+  return f;
+ });
+}
+
+function parseXLSX(buffer) {
+ try {
+  const wb = XLSX.read(new Uint8Array(buffer), { type: "array" });
+  const conName = wb.SheetNames.find(n => /consol/i.test(n)) || wb.SheetNames.find(n => /summary|p\s*&?\s*l|profit|income/i.test(n)) || wb.SheetNames[0];
+  const raw = XLSX.utils.sheet_to_json(wb.Sheets[conName], { header: 1, defval: 0 });
+  if (raw.length < 5) return null;
+  let monthRow = -1;
+  const monthRegex = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?\s*[\-\/]?\s*2\d(\s*,?\s*20\d{2})?$/i;
+  const monthRegex2 = /^(January|February|March|April|May|June|July|August|September|October|November|December)\s+20?\d{2,4}$/i;
+  const isMonthCell = (v) => { const s = String(v||"").trim(); return monthRegex.test(s) || monthRegex2.test(s); };
+  for (let r = 0; r < Math.min(30, raw.length); r++) {
+   if ((raw[r] || []).filter(isMonthCell).length >= 3) { monthRow = r; break; }
+  }
+  if (monthRow < 0) return null;
+  const monthCols = [];
+  for (let c = 0; c < (raw[monthRow] || []).length; c++) {
+   if (isMonthCell(raw[monthRow][c])) monthCols.push({ col: c, label: String(raw[monthRow][c]).trim() });
+  }
+  const last12 = monthCols.slice(-12);
+  const months = last12.map(m => m.label);
+  const shortMo = months.map(m => m.split(" ")[0].replace(/\.,?$/,""));
+  const cols = last12.map(m => m.col);
+  const findRowMulti = (searches, from = 0) => {
+   const list = Array.isArray(searches) ? searches : [searches];
+   for (const search of list) {
+    const s = search.toLowerCase();
+    for (let r = from; r < raw.length; r++)
+     for (let c = 0; c < Math.min(12, (raw[r] || []).length); c++)
+      if (String(raw[r][c] || "").trim().toLowerCase().includes(s)) return r;
+   }
+   return -1;
+  };
+  const getVals = (rowIdx) => rowIdx < 0 || !raw[rowIdx] ? cols.map(() => 0) :
+   cols.map(c => { const v = raw[rowIdx]?.[c]; if (typeof v === "number") return v; const cleaned = String(v||"0").replace(/[$,\s]/g,""); const neg = cleaned.startsWith("(") && cleaned.endsWith(")"); const n = parseFloat(neg?cleaned.slice(1,-1):cleaned); return isNaN(n)?0:neg?-n:n; });
+  const gpRow = findRowMulti(["gross profit","total gross profit"]);
+  const niRow = findRowMulti(["net income","net ordinary income","net profit"], Math.max(0, gpRow));
+  const revRow = findRowMulti(["total income","total revenue","net revenue","income","revenue"]);
+  const result = {
+   months, shortMo,
+   revenue: getVals(revRow),
+   grossProfit: getVals(gpRow),
+   ebitda: getVals(findRowMulti(["ebitda","earnings before"])),
+   adjEbitda: getVals(findRowMulti(["adjusted ebitda","adj ebitda","adj. ebitda"])),
+   ttmEbitda: getVals(findRowMulti(["ttm ebitda","ttm adjusted ebitda","trailing 12"])),
+   fixedCosts: getVals(findRowMulti(["total total fixed cost","total fixed cost","fixed costs","total fixed expenses"])),
+   variableCosts: getVals(findRowMulti(["total total variable cost","total variable cost","variable costs","total variable expenses"])),
+   labor: getVals(findRowMulti(["641202","total labor","total payroll","payroll expense","total wages"])),
+   netIncome: getVals(niRow),
+   interest: getVals(findRowMulti(["total 6605","interest expense","total interest"])),
+   liquid: getVals(findRowMulti(["total 6001","liquid revenue","liquids"])),
+   solids: getVals(findRowMulti(["total 6002","solids revenue","solids"])),
+   skimOil: getVals(findRowMulti(["total 6003","skim oil","oil revenue"])),
+   washout: getVals(findRowMulti(["total 6004","washout revenue","washouts"])),
+   source: `Uploaded P&L (${months[months.length - 1]})`,
+   uploadedAt: new Date().toISOString(),
+  };
+  // Per-location: only include if sheets exist
+  for (const [key, search] of [["bigLake", "Big Lake"], ["gonzalez", "Gonzal"], ["liveOak", "Live Oak"]]) {
+   const sn = wb.SheetNames.find(n => new RegExp(search, "i").test(n));
+   if (!sn) continue;
+   const lraw = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, defval: 0 });
+   let lMonthRow = -1;
+   for (let r = 0; r < Math.min(30, lraw.length); r++) {
+    if ((lraw[r]||[]).filter(isMonthCell).length >= 3) { lMonthRow = r; break; }
+   }
+   if (lMonthRow < 0) continue;
+   const lCols = [];
+   for (let c = 0; c < (lraw[lMonthRow]||[]).length; c++) if (isMonthCell(lraw[lMonthRow][c])) lCols.push(c);
+   const ll12 = lCols.slice(-12);
+   const lFind = (alts, from = 0) => { for (const s of alts) { for (let r = from; r < lraw.length; r++) for (let c = 0; c < 12; c++) if (String(lraw[r]?.[c] || "").toLowerCase().includes(s.toLowerCase())) return r; } return -1; };
+   const lVals = (ri) => ri < 0 ? ll12.map(() => 0) : ll12.map(c => { const v = lraw[ri]?.[c]; if (typeof v === "number") return v; const cl = String(v||"0").replace(/[$,\s]/g,""); const ng = cl.startsWith("(")&&cl.endsWith(")"); const n = parseFloat(ng?cl.slice(1,-1):cl); return isNaN(n)?0:ng?-n:n; });
+   const revR = lFind(["total income","total revenue","net revenue","income"]);
+   const niR = lFind(["net income","net ordinary income"], Math.max(0, lFind(["gross profit"])));
+   result[key] = { rev: lVals(revR), ni: lVals(niR) };
+  }
+  return result;
+ } catch (e) { console.error("XLSX parse error:", e); return null; }
+}
+
+function extractWeekly(csvText) {
+ const rows = parseCSV(csvText);
+ if (rows.length < 10) return null;
+ let dates = [], updatedThru = "";
+ const dp = /\d{1,2}-[A-Za-z]{3}/;
+ for (let i = 0; i < 12; i++) {
+  const r = rows[i];
+  if (r && r.filter(c => dp.test(c)).length >= 3) {
+   for (let c = 3; c < 22; c += 3) if (dp.test(r[c])) dates.push(r[c].trim());
+   break;
+  }
+ }
+ for (let i = 0; i < 5; i++)
+  if (rows[i]?.[0] && /updated/i.test(rows[i][0]))
+   updatedThru = rows[i][0].replace(/Updated thru\s*/i, "").trim();
+ const locNames = ["Big Lake", "Gonzales", "Gonzalez", "Live Oak"];
+ const locations = [];
+ for (let i = 0; i < rows.length; i++) {
+  const r = rows[i];
+  if (!r?.[0]) continue;
+  const lm = locNames.find(n => r[0].trim().toLowerCase().includes(n.toLowerCase()));
+  if (!lm) continue;
+  const ln = lm === "Gonzales" ? "Gonzalez" : lm;
+  const loc = { name: ln };
+  const fields = ["water","solids","solidsRev","washouts","oilSold","totalRevenue","laborCost","overhead","pl"];
+  fields.forEach(f => { loc[f] = { daily: [], weekTotal: 0, mtd: 0 }; });
+  for (let d = 0; d < 7; d++) {
+   const b = 3 + d * 3;
+   loc.water.daily.push({ day: parseNum(r[b]), night: parseNum(r[b+1]), total: parseNum(r[b+2]) });
+  }
+  loc.water.weekTotal = parseNum(r[24]);
+  loc.water.mtd = parseNum(r[27]);
+  for (let j = i + 1; j < Math.min(i + 15, rows.length); j++) {
+   const sr = rows[j];
+   if (!sr?.[1]) continue;
+   const lb = sr[1].trim().toLowerCase();
+   let t = null;
+   if (lb.includes("solids") && lb.includes("revenue")) t = loc.solidsRev;
+   else if (lb.includes("solid")) t = loc.solids;
+   else if (lb.includes("washout")) t = loc.washouts;
+   else if (lb.includes("oil sold")) t = loc.oilSold;
+   else if (lb.includes("total revenue")) t = loc.totalRevenue;
+   else if (lb.includes("labor")) t = loc.laborCost;
+   else if (lb.includes("facility") || lb.includes("overhead")) t = loc.overhead;
+   else if (lb === "p/l") t = loc.pl;
+   if (t) {
+    t.daily = [];
+    for (let d = 0; d < 7; d++) {
+     const b = 3 + d * 3;
+     t.daily.push({ day: parseNum(sr[b]), night: parseNum(sr[b+1]), total: parseNum(sr[b+2]) });
+    }
+    t.weekTotal = parseNum(sr[24]);
+    t.mtd = parseNum(sr[27]);
+   }
+   if (sr[0]?.trim() && locNames.some(n => sr[0].trim().toLowerCase().includes(n.toLowerCase()))) break;
+   if (lb === "p/l") break;
+  }
+  locations.push(loc);
+ }
+ return { dates, updatedThru, locations, uploadedAt: new Date().toISOString() };
+}
+
+/* ═══════════════════════════════════════════
+   FORMATTERS
+   ═══════════════════════════════════════════ */
+const fmt = (n) => { if (Math.abs(n) >= 1e6) return `$${(n/1e6).toFixed(1)}M`; if (Math.abs(n) >= 1000) return `$${(n/1000).toFixed(0)}K`; return `$${n.toFixed(0)}`; };
+const fmtF = (n) => { if (n === 0) return "-"; const s = `$${Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0})}`; return n < 0 ? `(${s})` : s; };
+const pct = (n) => `${(n*100).toFixed(1)}%`;
+const fmtV = (n) => n === 0 ? "-" : n.toLocaleString("en-US",{maximumFractionDigits:0});
+function timeAgo(iso) {
+ if (!iso) return "never";
+ const sec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+ if (sec < 60) return "just now";
+ if (sec < 3600) return `${Math.floor(sec/60)} min ago`;
+ if (sec < 86400) return `${Math.floor(sec/3600)} hr ago`;
+ const days = Math.floor(sec / 86400);
+ return days < 30 ? `${days}d ago` : `${Math.floor(days/30)}mo ago`;
+}
+function ageDays(iso) { if (!iso) return null; return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000); }
+
+/* ═══════════════════════════════════════════
+   RED FLAGS ENGINE
+   ═══════════════════════════════════════════ */
+function generateRedFlags(D, W, i) {
+ const flags = [];
+ // TTM EBITDA declining
+ if (D.ttmEbitda.length >= 2) {
+  const cur = D.ttmEbitda[i] || 0;
+  const peak = Math.max(...D.ttmEbitda);
+  if (peak > 0 && cur < peak * 0.85) {
+   const dropPct = ((peak - cur) / peak * 100).toFixed(0);
+   const valueLost = (peak - cur) * 5;
+   flags.push({ severity: "critical", text: `TTM EBITDA down ${dropPct}% from peak (${fmt(peak)} to ${fmt(cur)}). At 5x, that's ${fmt(valueLost)} in enterprise value lost.` });
+  }
+ }
+ // Revenue MoM decline
+ if (i > 0 && D.revenue[i] > 0 && D.revenue[i-1] > 0) {
+  const momDelta = (D.revenue[i] - D.revenue[i-1]) / D.revenue[i-1];
+  if (momDelta < -0.2) flags.push({ severity: "high", text: `Revenue down ${Math.abs(momDelta*100).toFixed(0)}% MoM (${fmt(D.revenue[i-1])} to ${fmt(D.revenue[i])}).` });
+ }
+ // Negative net income streak
+ const niSlice = D.netIncome.slice(Math.max(0,i-2), i+1);
+ const negCount = niSlice.filter(v => v < 0).length;
+ if (negCount >= 2) flags.push({ severity: "high", text: `${negCount} of last ${niSlice.length} months net income negative. Cumulative: ${fmtF(niSlice.reduce((a,b)=>a+b,0))}.` });
+ // Live Oak bleeding
+ if (W) {
+  W.locations.forEach(l => {
+   const pl = l.pl?.weekTotal || 0;
+   const rev = l.totalRevenue?.weekTotal || 0;
+   if (pl < 0 && rev > 0) flags.push({ severity: "high", text: `${l.name}: Lost ${fmtF(Math.abs(pl))} this week on ${fmtF(rev)} revenue. Negative margin operation.` });
+   if (rev === 0 && pl === 0) flags.push({ severity: "watch", text: `${l.name}: Zero revenue and zero P&L this week. Location inactive?` });
+  });
+ }
+ // Labor % breach
+ const curLabPct = D.revenue[i] > 0 ? (D.labor[i]||0) / D.revenue[i] : 0;
+ if (curLabPct > 0.16) flags.push({ severity: "watch", text: `Labor at ${(curLabPct*100).toFixed(1)}% of revenue (target: <14%). Overstaffed or underutilized.` });
+ // Fixed cost coverage
+ const curFC = D.revenue[i] > 0 ? D.revenue[i] / (D.fixedCosts[i]||1) : 0;
+ if (curFC > 0 && curFC < 1.5) flags.push({ severity: "high", text: `Fixed cost coverage at ${curFC.toFixed(1)}x (need 2.0x). Revenue barely covering overhead.` });
+ // Data staleness
+ const mAge = ageDays(D.uploadedAt);
+ if (mAge === null) flags.push({ severity: "watch", text: "Running on sample data. Upload your actual P&L to see real numbers." });
+ else if (mAge > 45) flags.push({ severity: "watch", text: `P&L data is ${mAge} days old. Numbers may not reflect current reality.` });
+ // Goal pacing
+ const jan26 = D.months.findIndex(m => /Jan\s*26/i.test(m));
+ const closedM = jan26 >= 0 ? D.revenue.slice(jan26).filter(v=>v!==0).length : 0;
+ if (closedM >= 2) {
+  const ytdTotal = jan26 >= 0 ? D.revenue.slice(jan26).reduce((a,b)=>a+b,0) : 0;
+  const annPace = (ytdTotal / closedM) * 12;
+  if (annPace < BENCH.total.target * 0.75) flags.push({ severity: "critical", text: `At current pace (${fmt(annPace)}/yr), company will miss even Tier 1 (75%) of the ${fmtF(BENCH.total.target)} target. Need ${fmt(BENCH.total.target/12)}/mo.` });
+  else if (annPace < BENCH.total.target) flags.push({ severity: "high", text: `Annualized pace ${fmt(annPace)} is below the ${fmtF(BENCH.total.target)} target. Need to average ${fmt(BENCH.total.target/12)}/mo to hit 100%.` });
+ }
+
+ return flags.sort((a,b) => {
+  const order = { critical: 0, high: 1, watch: 2 };
+  return (order[a.severity]||3) - (order[b.severity]||3);
+ });
+}
+
+/* ═══════════════════════════════════════════
+   SHARED COMPONENTS
+   ═══════════════════════════════════════════ */
+function Eyebrow({ children, color, style }) {
+ return <div style={{ fontFamily:tj.fontSans, fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase", fontWeight:700, color:color||tj.sky, ...style }}>{children}</div>;
+}
+
+function Card({ children, accent, cream, style, padding=24 }) {
+ const ab = accent ? { borderTop:`3px solid ${accent}` } : {};
+ return <div style={{ background:cream?tj.surfaceCream:tj.surface, border:`1px solid ${tj.border}`, padding, boxShadow:"0 2px 8px rgba(0,32,96,0.08)", ...ab, ...style }}>{children}</div>;
+}
+
+function Spark({ data, color=tj.navy900, height:h=32, width:w=120 }) {
+ if (!data || data.length < 2) return null;
+ const mn = Math.min(...data), mx = Math.max(...data), rng = mx - mn || 1;
+ const pts = data.map((v,i) => `${(i/(data.length-1))*w},${h-((v-mn)/rng)*(h-4)-2}`).join(" ");
+ return (
+  <svg width={w} height={h} style={{ display:"block" }}>
+   <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+   <circle cx={w} cy={parseFloat(pts.split(" ").pop().split(",")[1])} r="2.5" fill={color} />
+  </svg>
+ );
+}
+
+function Bars({ data, labels, height:h=140, colorFn, width:w=300 }) {
+ const [tip, setTip] = useState(null);
+ if (!data || data.length === 0) return null;
+ const mx = Math.max(...data.map(Math.abs), 1);
+ const hasNeg = data.some(d => d < 0);
+ const bw = Math.min(28, (w-20)/data.length - 4);
+ const chartH = hasNeg ? h*0.6 : h-20;
+ const negH = hasNeg ? h*0.35 : 0;
+ const bl = chartH;
+ const fmtTip = v => (v<0?"-":"")+"$"+Math.abs(v).toLocaleString("en-US",{maximumFractionDigits:0});
+ return (
+  <div style={{ position:"relative", display:"inline-block" }}>
+   {tip && <div style={{ position:"absolute", left:tip.px, top:Math.max(tip.py-36,0), transform:"translateX(-50%)", background:tj.navy900, color:tj.white, padding:"4px 10px", fontSize:11, fontFamily:tj.fontMono, fontWeight:700, pointerEvents:"none", whiteSpace:"nowrap", zIndex:100 }}>{tip.label?<span style={{color:tj.sky}}>{tip.label}: </span>:null}{fmtTip(tip.v)}</div>}
+   <svg width={w} height={h+24} style={{ display:"block" }}>
+    {data.map((v,i) => {
+     const x = i*((w-20)/data.length)+10;
+     const barH = (Math.abs(v)/mx)*(v>=0?chartH:negH);
+     const y = v>=0 ? bl-barH : bl;
+     const c = colorFn ? colorFn(v) : v>=0?tj.ok:tj.crimson;
+     return (
+      <g key={i} onMouseEnter={()=>setTip({px:x+bw/2,py:y,v,label:labels?.[i]})} onMouseLeave={()=>setTip(null)} style={{cursor:"crosshair"}}>
+       <rect x={x} y={y} width={bw} height={Math.max(barH,1)} fill={c} opacity={0.85} />
+       {labels && <text x={x+bw/2} y={h+16} textAnchor="middle" fontSize="9" fill={tj.gray700} fontFamily={tj.fontSans}>{labels[i]}</text>}
+      </g>
+     );
+    })}
+    <line x1={8} y1={bl} x2={w-8} y2={bl} stroke={tj.navy900} strokeWidth="1" />
+   </svg>
+  </div>
+ );
+}
+
+function ScoreRow({ label, value, target, status, trend, sparkData, sparkColor, sub }) {
+ const sc = { green:tj.ok, red:tj.crimson, yellow:tj.warn }[status];
+ const arrows = { up:"▲", down:"▼", flat:"-" };
+ const ac = { up:tj.ok, down:tj.crimson, flat:tj.gray500 }[trend];
+ return (
+  <div style={{ display:"flex", alignItems:"center", padding:"12px 0", borderBottom:`1px solid ${tj.border}`, gap:12 }}>
+   <div style={{ width:8, height:8, borderRadius:"50%", background:sc, flexShrink:0 }} />
+   <div style={{ flex:1, minWidth:0 }}>
+    <div style={{ fontFamily:tj.fontSerif, fontSize:14, color:tj.navy900, fontWeight:700 }}>{label}</div>
+    {sub && <div style={{ fontSize:10, color:tj.gray500, marginTop:1, fontStyle:"italic", fontFamily:tj.fontSerif }}>{sub}</div>}
+   </div>
+   <div style={{ textAlign:"right", marginRight:8 }}>
+    <div style={{ fontSize:16, fontWeight:700, color:tj.ink, fontFamily:tj.fontMono }}>{value}</div>
+    <div style={{ fontSize:9, color:tj.gray500, letterSpacing:"0.06em", textTransform:"uppercase" }}>target: {target}</div>
+   </div>
+   <div style={{ fontSize:12, color:ac, width:16, textAlign:"center" }}>{arrows[trend]}</div>
+   {sparkData && <Spark data={sparkData} color={sparkColor||sc} />}
+  </div>
+ );
+}
+
+function CandleChart({ revData, niData, labels, width:w=620, height:h=220, targetLine }) {
+ const [tip, setTip] = useState(null);
+ if (!revData || !revData.some(v=>v!==0)) return null;
+ const candles = revData.map((rev, idx) => {
+  if (rev === 0 && (niData[idx]||0) === 0) return null;
+  const ni = niData[idx] || 0;
+  const open = idx > 0 ? revData[idx-1] : rev;
+  const close = rev;
+  const high = Math.max(open, close, rev);
+  const low = Math.min(ni, Math.min(open, close));
+  return { open, close, high, low, ni, rev, label: labels?.[idx] };
+ });
+ const valid = candles.filter(c=>c);
+ if (!valid.length) return null;
+ const allV = valid.flatMap(c=>[c.high,c.low]);
+ const maxV = Math.max(...allV,0)*1.05, minV = Math.min(...allV,0)*(Math.min(...allV)<0?1.15:0.95);
+ const range = maxV-minV||1;
+ const padT=20,padB=30,padL=56,padR=10;
+ const cW=w-padL-padR, cH=h-padT-padB;
+ const gap=cW/revData.length, bw=Math.min(18,gap*0.5);
+ const yS=(v)=>padT+cH-((v-minV)/range)*cH;
+ const zY=yS(0);
+ const fA=(n)=>{if(Math.abs(n)>=1e6)return`$${(n/1e6).toFixed(1)}M`;if(Math.abs(n)>=1000)return`$${(n/1000).toFixed(0)}K`;return`$${n.toFixed(0)}`;};
+ return (
+  <div style={{position:"relative"}}>
+   {tip&&<div style={{position:"absolute",left:Math.min(tip.px+16,w-140),top:Math.max(tip.py-60,0),background:tj.navy900,color:tj.white,padding:"6px 10px",fontSize:10,fontFamily:tj.fontMono,pointerEvents:"none",whiteSpace:"nowrap",zIndex:100,lineHeight:1.6,border:`1px solid ${tj.sky}40`}}>
+    <div style={{color:tj.sky,fontWeight:700}}>{tip.label}</div>
+    <div>Rev: {fA(tip.rev)} · NI: <span style={{color:tip.ni>=0?"#4CAF50":"#FF5252"}}>{fA(tip.ni)}</span></div>
+   </div>}
+   <svg width={w} height={h} style={{display:"block"}}>
+    <rect x={padL} y={padT} width={cW} height={cH} fill="#FAFAFA"/>
+    {[0,1,2,3,4,5].map(ti=>{const val=minV+(range/5)*ti,y=yS(val);return<g key={ti}><line x1={padL} y1={y} x2={w-padR} y2={y} stroke="#ECECEC" strokeWidth="0.5"/><text x={padL-4} y={y+3} textAnchor="end" fontSize="8" fill={tj.gray500} fontFamily={tj.fontMono}>{fA(val)}</text></g>;})}
+    {minV<0&&<line x1={padL} y1={zY} x2={w-padR} y2={zY} stroke={tj.navy900} strokeWidth="1.5" opacity="0.4"/>}
+    {targetLine>0&&<line x1={padL} y1={yS(targetLine)} x2={w-padR} y2={yS(targetLine)} stroke={tj.sky} strokeWidth="1.5" strokeDasharray="6,3"/>}
+    {candles.map((c,idx)=>{
+     if(!c) return null;
+     const x=padL+idx*gap+gap/2;
+     const bull=c.close>=c.open;
+     const col=bull?"#26A69A":"#EF5350";
+     const bt=yS(Math.max(c.open,c.close)),bb=yS(Math.min(c.open,c.close));
+     const bh=Math.max(bb-bt,3);
+     return<g key={idx} onMouseEnter={()=>setTip({px:x,py:yS(c.high),...c})} onMouseLeave={()=>setTip(null)} style={{cursor:"crosshair"}}>
+      <line x1={x} y1={yS(c.high)} x2={x} y2={bt} stroke={col} strokeWidth="1.5"/>
+      <line x1={x} y1={bb} x2={x} y2={yS(c.low)} stroke={col} strokeWidth="1.5"/>
+      <rect x={x-bw/2} y={bt} width={bw} height={bh} fill={col} stroke={col} strokeWidth="1" rx="1"/>
+      <text x={x} y={h-8} textAnchor="middle" fontSize="8" fill={tj.gray700} fontFamily={tj.fontSans}>{c.label}</text>
+     </g>;
+    })}
+   </svg>
+  </div>
+ );
+}
+
+function NetProfitCandle({ D, monthlyTarget }) {
+ const w = 700, h = 320;
+ const padTop = 24, padBot = 36, padLeft = 62, padRight = 14;
+ const chartW = w - padLeft - padRight;
+ const chartH = h - padTop - padBot;
+ const months = D.shortMo;
+ const [pTip, setPTip] = useState(null);
+
+ const candles = D.netIncome.map((ni, idx) => {
+  const rev = D.revenue[idx] || 0;
+  if (rev === 0 && ni === 0) return null;
+  const open = idx > 0 ? (D.netIncome[idx-1] || 0) : ni;
+  const close = ni;
+  const high = rev;
+  const low = Math.min(open, close, ni);
+  const gp = D.grossProfit[idx] || 0;
+  const eb = D.ebitda[idx] || 0;
+  return { open, close, high, low, ni, rev, gp, eb, label: months[idx] };
+ });
+
+ const validC = candles.filter(c => c !== null);
+ if (validC.length === 0) return null;
+ const allVals = validC.flatMap(c => [c.high, c.low]);
+ const maxV = Math.max(...allVals, 0) * 1.05;
+ const minV = Math.min(...allVals, 0) * 1.15;
+ const range = maxV - minV || 1;
+ const yScale = (v) => padTop + chartH - ((v - minV) / range) * chartH;
+ const zeroY = yScale(0);
+ const gap2 = chartW / months.length;
+ const candleW2 = Math.min(22, gap2 * 0.5);
+ const tickCount = 7;
+ const fmtA = (n) => { if (Math.abs(n)>=1e6) return `$${(n/1e6).toFixed(1)}M`; if (Math.abs(n)>=1000) return `$${(n/1000).toFixed(0)}K`; return `$${n.toFixed(0)}`; };
+
+ return (
+  <div style={{ position:"relative" }}>
+   <Eyebrow style={{ marginBottom:8, fontSize:11 }}>Net Profit Candlestick</Eyebrow>
+   {pTip && (
+    <div style={{ position:"absolute", left:Math.min(pTip.px+20, w-170), top:Math.max(pTip.py-100,0), background:tj.navy900, color:tj.white, padding:"8px 14px", fontSize:10, fontFamily:tj.fontMono, pointerEvents:"none", whiteSpace:"nowrap", zIndex:100, lineHeight:1.7, border:`1px solid ${tj.sky}40` }}>
+     <div style={{ color:tj.sky, fontWeight:700, fontSize:11, marginBottom:2 }}>{pTip.label}</div>
+     <div>Revenue: {fmtA(pTip.rev)}</div>
+     <div>Gross Profit: {fmtA(pTip.gp)} <span style={{ color:tj.gray300 }}>({pTip.rev>0?(pTip.gp/pTip.rev*100).toFixed(1):0}%)</span></div>
+     <div>EBITDA: {fmtA(pTip.eb)} <span style={{ color:tj.gray300 }}>({pTip.rev>0?(pTip.eb/pTip.rev*100).toFixed(1):0}%)</span></div>
+     <div style={{ borderTop:"1px solid #444", paddingTop:3, marginTop:3 }}>
+      Net Profit: <span style={{ color:pTip.ni>=0?"#4CAF50":"#FF5252", fontWeight:700 }}>{fmtA(pTip.ni)}</span>
+      <span style={{ fontSize:9, color:pTip.close>=pTip.open?"#4CAF50":"#FF5252" }}> {pTip.open!==pTip.close?(pTip.close>pTip.open?"▲":"▼")+" "+fmtA(Math.abs(pTip.close-pTip.open))+" MoM":""}</span>
+     </div>
+     <div style={{ fontSize:9, color:tj.gray300 }}>NI Margin: {pTip.rev>0?(pTip.ni/pTip.rev*100).toFixed(1)+"%":"-"}</div>
+    </div>
+   )}
+   <div style={{ display:"flex", gap:16, marginBottom:8, flexWrap:"wrap", alignItems:"center" }}>
+    <div style={{ display:"flex", alignItems:"center", gap:4, fontSize:10 }}>
+     <div style={{ width:10, height:14, background:"#26A69A" }} />
+     <span style={{ color:tj.gray700 }}>Profit improving</span>
+    </div>
+    <div style={{ display:"flex", alignItems:"center", gap:4, fontSize:10 }}>
+     <div style={{ width:10, height:14, background:"#EF5350" }} />
+     <span style={{ color:tj.gray700 }}>Profit declining</span>
+    </div>
+    <span style={{ fontSize:9, color:tj.gray500 }}>Body = Net Profit open/close · Wick up = Revenue · Below zero = loss</span>
+   </div>
+   <svg width={w} height={h} style={{ display:"block" }}>
+    <rect x={padLeft} y={padTop} width={chartW} height={chartH} fill="#FAFAFA" />
+    {Array.from({length:tickCount+1}).map((_,ti) => {
+     const val = minV + (range/tickCount)*ti;
+     const y = yScale(val);
+     return (
+      <g key={ti}>
+       <line x1={padLeft} y1={y} x2={w-padRight} y2={y} stroke="#ECECEC" strokeWidth="0.5" />
+       <text x={padLeft-6} y={y+3} textAnchor="end" fontSize="9" fill={tj.gray500} fontFamily={tj.fontMono}>{fmtA(val)}</text>
+      </g>
+     );
+    })}
+    <line x1={padLeft} y1={zeroY} x2={w-padRight} y2={zeroY} stroke={tj.navy900} strokeWidth="2" opacity="0.6" />
+    <text x={padLeft+4} y={zeroY-4} fontSize="9" fill={tj.navy900} fontFamily={tj.fontMono} fontWeight="700" opacity="0.6">BREAKEVEN</text>
+    <rect x={padLeft} y={padTop} width={chartW} height={zeroY-padTop} fill={tj.ok} opacity="0.03" />
+    <rect x={padLeft} y={zeroY} width={chartW} height={padTop+chartH-zeroY} fill={tj.crimson} opacity="0.03" />
+    {candles.map((c, idx) => {
+     if (!c) return null;
+     const x = padLeft + idx * gap2 + gap2 / 2;
+     const bullish = c.close >= c.open;
+     const bodyColor = bullish ? "#26A69A" : "#EF5350";
+     const bodyTop2 = yScale(Math.max(c.open, c.close));
+     const bodyBot2 = yScale(Math.min(c.open, c.close));
+     const bodyH2 = Math.max(bodyBot2 - bodyTop2, 3);
+     const wickTop2 = yScale(c.high);
+     const wickBot2 = yScale(c.low);
+     return (
+      <g key={idx} onMouseEnter={()=>setPTip({ px:x, py:wickTop2, ...c })} onMouseLeave={()=>setPTip(null)} style={{ cursor:"crosshair" }}>
+       <line x1={x} y1={wickTop2} x2={x} y2={bodyTop2} stroke={bodyColor} strokeWidth="1.5" />
+       <line x1={x} y1={bodyBot2} x2={x} y2={wickBot2} stroke={bodyColor} strokeWidth="1.5" />
+       <rect x={x-candleW2/2} y={bodyTop2} width={candleW2} height={bodyH2} fill={bodyColor} stroke={bodyColor} strokeWidth="1" rx="1" />
+       <text x={x} y={h-10} textAnchor="middle" fontSize="9" fill={tj.gray700} fontFamily={tj.fontSans}>{c.label}</text>
+      </g>
+     );
+    })}
+   </svg>
+  </div>
+ );
+}
+
+function Section({ title, children, defaultOpen=true, eyebrowColor }) {
+ const [open, setOpen] = useState(defaultOpen);
+ return (
+  <div style={{ marginBottom:20 }}>
+   <div onClick={()=>setOpen(!open)} style={{ cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", marginBottom:open?12:0 }}>
+    <Eyebrow color={eyebrowColor} style={{ fontSize:12, letterSpacing:"0.12em" }}>{title}</Eyebrow>
+    <span style={{ fontSize:16, color:tj.gray500, transform:open?"rotate(0)":"rotate(-90deg)", transition:"transform 0.2s" }}>▼</span>
+   </div>
+   {open && children}
+  </div>
+ );
+}
+
+/* ═══════════════════════════════════════════
+   MAIN APP
+   ═══════════════════════════════════════════ */
+function App() {
+ const [view, setView] = useState("goals");
+ const [D, setD] = useState(INIT);
+ const [W, setW] = useState(null);
+ const [msg, setMsg] = useState("");
+ const [, forceTick] = useState(0);
+
+ useEffect(() => {
+  (async () => {
+   try {
+    const s = await window.storage.get("tejas-coo-m");
+    if (s?.value) {
+     const loaded = JSON.parse(s.value);
+     // Merge: if per-location data is all zeros, use INIT
+     for (const key of ['bigLake','gonzalez','liveOak']) {
+      if (!loaded[key] || (loaded[key].rev?.every(v=>v===0) && loaded[key].ni?.every(v=>v===0))) {
+       if (INIT[key]?.rev?.some(v=>v!==0)) loaded[key] = INIT[key];
+      }
+     }
+     setD(loaded);
+    }
+   } catch (e) {}
+   try { const s = await window.storage.get("tejas-coo-w"); if (s?.value) setW(JSON.parse(s.value)); } catch (e) {}
+  })();
+ }, []);
+ useEffect(() => { const id = setInterval(()=>forceTick(n=>n+1), 60000); return ()=>clearInterval(id); }, []);
+
+ const handleFile = useCallback(async (file) => {
+  const name = file.name.toLowerCase();
+  if (name.endsWith(".csv")) {
+   const text = await file.text();
+   const parsed = extractWeekly(text);
+   if (parsed && parsed.locations.length > 0) {
+    setW(parsed); setMsg("Weekly CSV loaded: " + parsed.updatedThru);
+    try { await window.storage.set("tejas-coo-w", JSON.stringify(parsed)); } catch (e) {}
+   } else setMsg("Could not parse CSV file");
+  } else if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
+   const buf = await file.arrayBuffer();
+   const parsed = parseXLSX(buf);
+   if (!parsed || !parsed.revenue?.length) {
+    setMsg("Could not parse XLSX. Needs month columns and labelled rows (Total Income, Gross Profit, EBITDA, Net Income).");
+   } else {
+    const revSum = parsed.revenue.reduce((a,b)=>a+Math.abs(b),0);
+    if (revSum === 0) {
+     setMsg("File parsed but all values are $0. Row labels may not match.");
+    } else {
+     // Preserve per-location data if parse didn't find location sheets
+     for (const key of ['bigLake','gonzalez','liveOak']) {
+      if (!parsed[key] || (parsed[key].rev?.every(v=>v===0) && parsed[key].ni?.every(v=>v===0))) {
+       const existing = D[key] || INIT[key];
+       if (existing?.rev?.some(v=>v!==0)) parsed[key] = existing;
+      }
+     }
+     setD(parsed);
+     setMsg(`P&L loaded: ${parsed.months[parsed.months.length-1]} - ${parsed.months.length} months`);
+     try { await window.storage.set("tejas-coo-m", JSON.stringify(parsed)); } catch (e) {}
+    }
+   }
+  } else setMsg("Upload .csv or .xlsx");
+  setTimeout(()=>setMsg(""), 5000);
+ }, [D]);
+
+ const clearData = useCallback(async () => {
+  if (!window.confirm("Reset all data back to pre-loaded samples?")) return;
+  setD(INIT); setW(null);
+  try { await window.storage.delete("tejas-coo-m"); await window.storage.delete("tejas-coo-w"); } catch (e) {}
+  setMsg("Data reset"); setTimeout(()=>setMsg(""), 3000);
+ }, []);
+
+ const onDrop = useCallback((e) => { e.preventDefault(); const f = e.dataTransfer?.files?.[0]; if (f) handleFile(f); }, [handleFile]);
+ const onInput = useCallback((e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }, [handleFile]);
+
+ // ─── Compute current index ───
+ let i = D.revenue.length - 1;
+ for (let k = D.revenue.length - 1; k >= 0; k--) { if ((D.revenue[k]||0) !== 0) { i = k; break; } }
+
+ const curRev = D.revenue[i] || 0;
+ const curGP = D.grossProfit[i] || 0;
+ const curGM = curRev > 0 ? curGP / curRev : 0;
+ const curEbitda = D.ebitda[i] || 0;
+ const curEM = curRev > 0 ? curEbitda / curRev : 0;
+ const curNI = D.netIncome[i] || 0;
+ const curTTM = D.ttmEbitda?.[i] || 0;
+ const curLab = curRev > 0 ? (D.labor[i]||0) / curRev : 0;
+ const curFC = curRev > 0 ? curRev / (D.fixedCosts[i]||1) : 0;
+ const a3 = (k) => (D[k]||[]).slice(Math.max(0,i-2), i+1).reduce((s,v)=>s+v,0) / Math.min(3, i+1);
+ const a3p = (k) => { const start = Math.max(0,i-5); const end = Math.max(0,i-2); return (D[k]||[]).slice(start,end).reduce((s,v)=>s+v,0) / Math.max(1,end-start); };
+ const tr = (k, inv) => { const d = a3(k) - a3p(k); const t = d > 0 ? "up" : d < 0 ? "down" : "flat"; return inv ? (t==="up"?"down":t==="down"?"up":t) : t; };
+
+ // ─── Weekly totals ───
+ const wR = W?.locations?.reduce((s,l)=>s+(l.totalRevenue?.weekTotal||0),0) || 0;
+ const wP = W?.locations?.reduce((s,l)=>s+(l.pl?.weekTotal||0),0) || 0;
+ const wMR = W?.locations?.reduce((s,l)=>s+(l.totalRevenue?.mtd||0),0) || 0;
+
+ // ─── Red flags ───
+ const flags = useMemo(() => generateRedFlags(D, W, i), [D, W, i]);
+
+ // ─── Staleness ───
+ const monthlyAge = ageDays(D.uploadedAt);
+ const weeklyAge = ageDays(W?.uploadedAt);
+ const isSample = !D.uploadedAt;
+ const isStale = monthlyAge !== null && monthlyAge > 45;
+
+ // ─── YTD ───
+ const jan26Idx = D.months.findIndex(m => /Jan\s*26/i.test(m));
+ const ytdRev = jan26Idx >= 0 ? D.revenue.slice(jan26Idx).reduce((a,b)=>a+b,0) : 0;
+ const ytdNI = jan26Idx >= 0 ? D.netIncome.slice(jan26Idx).reduce((a,b)=>a+b,0) : 0;
+
+ // ─── Daily helpers ───
+ const today = new Date();
+ const daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+ const dayOfMonth = today.getDate();
+ const remainingDays = Math.max(1, daysInMonth - dayOfMonth);
+ const monthName = today.toLocaleString("en-US",{month:"long"});
+
+ const locationsMeta = [
+  { name:"Big Lake", k:"bigLake", c:tj.ok },
+  { name:"Gonzalez", k:"gonzalez", c:tj.warn },
+  { name:"Live Oak", k:"liveOak", c:tj.crimson },
+ ];
+
+ // ─── Target-based calculations ───
+ const monthlyTarget = BENCH.total.target / 12;
+ const monthlyFixedCosts = D.fixedCosts[i] || 330000;
+ const dailyBreakevenCompany = monthlyFixedCosts / 30;
+ const breakevenRatio = monthlyTarget > 0 ? monthlyFixedCosts / monthlyTarget : 0.28;
+
+ // ─── Daily totals from weekly ───
+ const dailyTotals = (W?.dates||[]).map((_,di) => W?.locations?.reduce((s,l)=>s+(l.totalRevenue?.daily?.[di]?.total||0),0)||0);
+ const lastPopDay = (() => { for (let k=dailyTotals.length-1; k>=0; k--) if (dailyTotals[k]>0) return k; return -1; })();
+ const yesterdayRev = lastPopDay >= 0 ? dailyTotals[lastPopDay] : 0;
+
+ // ─── Closed months ───
+ const closedMonths2026 = jan26Idx >= 0 ? D.revenue.slice(jan26Idx).filter(v=>v!==0).length : 0;
+
+ return (
+  <div style={{ background:tj.bg, color:tj.ink, minHeight:"100vh", fontFamily:tj.fontSans }}>
+   {/* ═══ STALENESS BAR ═══ */}
+   {(isSample || isStale) && (
+    <div style={{ background:isSample?tj.crimson:tj.warn, padding:"8px 32px", display:"flex", justifyContent:"center", alignItems:"center", gap:12 }}>
+     <span style={{ color:tj.white, fontSize:12, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>
+      {isSample ? "SAMPLE DATA - Upload your P&L to see real numbers" : `P&L DATA IS ${monthlyAge} DAYS OLD - Upload a fresh export`}
+     </span>
+    </div>
+   )}
+
+   {/* ═══ HEADER ═══ */}
+   <div style={{ background:tj.navy900, padding:"16px 32px" }}>
+    <div style={{ maxWidth:1280, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+     <div>
+      <h1 style={{ fontFamily:tj.fontSerif, fontSize:28, fontWeight:700, color:tj.white, margin:0, letterSpacing:"0.03em" }}>TEJAS ENVIRONMENTAL</h1>
+      <div style={{ color:tj.sky, fontSize:11, marginTop:2, letterSpacing:"0.1em" }}>COO DASHBOARD · {D.months?.[i] || "2026"}</div>
+     </div>
+     <div style={{ display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
+      {SOURCE_LINKS.weekly.url && <a href={SOURCE_LINKS.weekly.url} target="_blank" rel="noopener noreferrer" style={{ color:tj.sky, fontSize:10, fontWeight:700, textDecoration:"none", letterSpacing:"0.08em", textTransform:"uppercase", border:`1px solid ${tj.sky}40`, padding:"5px 10px" }}>Jessica's File ↗</a>}
+      <label onDragOver={e=>e.preventDefault()} onDrop={onDrop} style={{ border:`1px dashed ${tj.sky}60`, padding:"6px 14px", fontSize:10, color:tj.sky, cursor:"pointer", letterSpacing:"0.05em" }}>
+       Drop .xlsx or .csv
+       <input type="file" accept=".csv,.xlsx,.xls" onChange={onInput} style={{ display:"none" }} />
+      </label>
+      <div style={{ fontSize:9, color:tj.gray300 }}>
+       P&L: <span style={{ color:D.uploadedAt?(monthlyAge>35?tj.warn:tj.ok):tj.warn, fontWeight:700 }}>{timeAgo(D.uploadedAt)}</span>
+       {W && <span> · Weekly: <span style={{ color:weeklyAge>10?tj.warn:tj.ok, fontWeight:700 }}>{timeAgo(W.uploadedAt)}</span></span>}
+      </div>
+      <button onClick={clearData} style={{ background:"transparent", color:tj.gray300, border:`1px solid ${tj.gray500}40`, padding:"4px 8px", fontSize:8, fontWeight:700, cursor:"pointer", letterSpacing:"0.1em", textTransform:"uppercase" }}>Reset</button>
+     </div>
+    </div>
+    {msg && <div style={{ maxWidth:1280, margin:"6px auto 0", fontSize:11, color:tj.sky, fontWeight:700 }}>{msg}</div>}
+   </div>
+
+   <div style={{ maxWidth:1280, margin:"0 auto", padding:"20px 32px 48px" }}>
+
+   {/* ═══ TAB BAR ═══ */}
+   <div style={{ display:"flex", borderBottom:`2px solid ${tj.navy900}`, marginBottom:24 }}>
+    {[{id:"goals",label:"Goals"},{id:"ops",label:"Operations"}].map(t => (
+     <button key={t.id} onClick={()=>setView(t.id)} style={{ background:view===t.id?tj.navy900:"transparent", color:view===t.id?tj.white:tj.navy900, border:`1px solid ${tj.navy900}`, borderBottom:"none", padding:"10px 24px", fontFamily:tj.fontSans, fontSize:13, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", marginRight:4, position:"relative", top:2 }}>
+      {t.label}
+     </button>
+    ))}
+   </div>
+
+   {/* ═══════════════════════════════════════════
+       GOALS TAB
+       ═══════════════════════════════════════════ */}
+   {view === "goals" && (() => {
+    const daysLeftYear = Math.ceil((new Date(2026, 11, 31) - today) / 86400000);
+    const monthsLeftYear = Math.max(1, Math.ceil(daysLeftYear / 30.44));
+    const ytdCompany = ytdRev + (W ? wMR : 0);
+    const companyPct = BENCH.total.target > 0 ? ytdCompany / BENCH.total.target : 0;
+    const companyGap = BENCH.total.target - ytdCompany;
+    const companyNeedPerMonth = companyGap > 0 ? companyGap / monthsLeftYear : 0;
+    const companyNeedPerDay = companyGap > 0 ? companyGap / Math.max(1, daysLeftYear) : 0;
+    const companyAnnualized = closedMonths2026 > 0 ? (ytdCompany / closedMonths2026) * 12 : 0;
+    const companyStatus = companyPct >= 1.1 ? "ABOVE STRETCH" : companyPct >= 1.0 ? "TARGET HIT" : companyPct >= 0.75 ? "ON TRACK" : "BEHIND";
+    const companyStatusColor = companyStatus==="ABOVE STRETCH"?tj.sky:companyStatus==="TARGET HIT"?tj.ok:companyStatus==="ON TRACK"?tj.warn:tj.crimson;
+
+    const locData = locationsMeta.map(loc => {
+     const d = D[loc.k] || { rev:[], ni:[] };
+     const ytdClosed = jan26Idx >= 0 ? d.rev.slice(jan26Idx).reduce((s,v)=>s+v,0) : 0;
+     const closedM = jan26Idx >= 0 ? d.rev.slice(jan26Idx).filter(v=>v!==0).length : 0;
+     const wLoc = W?.locations?.find(l=>l.name.toLowerCase().includes(loc.name.split(" ")[0].toLowerCase()));
+     const locMTD = wLoc?.totalRevenue?.mtd || 0;
+     const combined = ytdClosed + locMTD;
+     const bench = BENCH[loc.k];
+     const pct2 = bench.target > 0 ? combined / bench.target : 0;
+     const gap2 = bench.target - combined;
+     const monthsIn = closedM + (locMTD > 0 ? 1 : 0);
+     const annualized2 = monthsIn > 0 ? (combined / monthsIn) * 12 : 0;
+     const needPerMonth2 = gap2 > 0 ? gap2 / monthsLeftYear : 0;
+     const needPerDay2 = gap2 > 0 ? gap2 / Math.max(1, daysLeftYear) : 0;
+     const status = pct2 >= 1.1 ? "ABOVE STRETCH" : pct2 >= 1.0 ? "TARGET HIT" : pct2 >= 0.75 ? "ON TRACK" : "BEHIND";
+     const tc = status==="ABOVE STRETCH"?tj.sky:status==="TARGET HIT"?tj.ok:status==="ON TRACK"?tj.warn:tj.crimson;
+     const nextMilestone = pct2 < 0.75 ? { l:"75% Milestone", v:bench.t75 } : pct2 < 1.0 ? { l:"100% Target", v:bench.target } : pct2 < 1.1 ? { l:"110% Stretch", v:bench.t110 } : null;
+     return { ...loc, d, ytdClosed, closedM, locMTD, combined, bench, pct:pct2, gap:gap2, monthsIn, annualized:annualized2, needPerMonth:needPerMonth2, needPerDay:needPerDay2, status, tc, nextMilestone, wLoc };
+    });
+
+    return (
+     <div>
+      {/* ─── COMPANY TARGET HERO ─── */}
+      <Card padding={0} style={{ marginBottom:24, overflow:"hidden" }}>
+       <div style={{ background:tj.navy900, padding:"24px 28px" }}>
+        <Eyebrow color={tj.sky} style={{ marginBottom:6, fontSize:10 }}>2026 Company Revenue Target</Eyebrow>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", flexWrap:"wrap", gap:16 }}>
+         <div style={{ color:tj.white, fontFamily:tj.fontSerif, fontSize:48, fontWeight:700, letterSpacing:"-0.02em" }}>{fmtF(BENCH.total.target)}</div>
+         <div style={{ textAlign:"right" }}>
+          <div style={{ color:tj.gray300, fontSize:10, marginBottom:2 }}>Best month 2025 per location, annualized x12</div>
+          <div style={{ color:companyStatusColor, fontSize:14, fontWeight:700 }}>{companyStatus}</div>
+         </div>
+        </div>
+       </div>
+       {/* Progress bar with milestone markers */}
+       <div style={{ position:"relative", height:36, background:tj.gray100 }}>
+        <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(companyPct/1.1*100, 100)}%`, background:`linear-gradient(90deg, ${tj.navy900}, ${companyStatusColor})`, opacity:0.85 }} />
+        {[{p:0.75,l:"75%"},{p:1.0,l:"100% TARGET"},{p:1.1,l:"110% STRETCH"}].map(m => (
+         <div key={m.p} style={{ position:"absolute", left:`${m.p/1.1*100}%`, top:0, bottom:0, width:2, background:tj.navy900, opacity:0.5 }}>
+          <span style={{ position:"absolute", top:10, left:6, fontSize:9, color:tj.navy900, fontWeight:700, whiteSpace:"nowrap" }}>{m.l}</span>
+         </div>
+        ))}
+        <div style={{ position:"absolute", right:8, top:8, fontSize:16, fontWeight:700, color:tj.navy900, fontFamily:tj.fontMono }}>{(companyPct*100).toFixed(1)}%</div>
+       </div>
+       {/* Key numbers */}
+       <div style={{ display:"flex", flexWrap:"wrap", borderTop:`1px solid ${tj.border}` }}>
+        {[
+         { label:"YTD Revenue", val:fmtF(ytdCompany), color:tj.navy900 },
+         { label:"Gap to Target", val:companyGap>0?fmtF(companyGap):"TARGET HIT", color:companyGap>0?tj.crimson:tj.ok },
+         { label:"Need / Month", val:fmtF(companyNeedPerMonth), sub:`${monthsLeftYear} months left` },
+         { label:"Need / Day", val:fmtF(companyNeedPerDay), sub:`${daysLeftYear} days left` },
+         { label:"Annualized Pace", val:fmt(companyAnnualized), color:companyAnnualized>=BENCH.total.target?tj.ok:tj.crimson, sub:companyAnnualized>=BENCH.total.target?"Will hit target at this pace":"Will miss at this pace" },
+        ].map((k,idx) => (
+         <div key={idx} style={{ flex:"1 1 150px", padding:"14px 18px", borderRight:idx<4?`1px solid ${tj.border}`:undefined }}>
+          <div style={{ fontSize:8, color:tj.gray500, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>{k.label}</div>
+          <div style={{ fontFamily:tj.fontSerif, fontSize:20, fontWeight:700, color:k.color||tj.navy900 }}>{k.val}</div>
+          {k.sub && <div style={{ fontSize:9, color:tj.gray500, marginTop:1 }}>{k.sub}</div>}
+         </div>
+        ))}
+       </div>
+      </Card>
+
+      {/* ─── RED FLAGS ─── */}
+      {flags.length > 0 && (
+       <Card padding={16} style={{ marginBottom:20, background:flags[0].severity==="critical"?tj.badBg:tj.warnBg, border:`2px solid ${flags[0].severity==="critical"?tj.crimson:tj.warn}` }}>
+        <Eyebrow color={flags[0].severity==="critical"?tj.crimson:tj.warn} style={{ marginBottom:8, fontSize:11 }}>
+         {flags[0].severity==="critical"?"🔴 CRITICAL":"⚠ RED FLAGS"} ({flags.length})
+        </Eyebrow>
+        {flags.map((f,fi) => (
+         <div key={fi} style={{ display:"flex", alignItems:"flex-start", gap:8, padding:"5px 0", borderTop:fi?`1px solid ${tj.border}`:undefined }}>
+          <span style={{ fontSize:9, fontWeight:700, color:f.severity==="critical"?tj.crimson:f.severity==="high"?tj.warn:tj.gray500, flexShrink:0 }}>{f.severity.toUpperCase()}</span>
+          <span style={{ fontSize:11, color:tj.ink, fontFamily:tj.fontSerif }}>{f.text}</span>
+         </div>
+        ))}
+       </Card>
+      )}
+
+      {/* ─── TODAY'S TARGETS + BREAKEVEN ─── */}
+      {W && (() => {
+       const dailyBreakeven = (D.fixedCosts[i] || 330000) / 30;
+       const yesterdayAboveBE = yesterdayRev - dailyBreakeven;
+       const companyMonthGap = Math.max(0, monthlyTarget - wMR);
+       const companyDailyNeed = companyMonthGap / remainingDays;
+       return (
+       <Card padding={0} style={{ marginBottom:20, overflow:"hidden" }}>
+        <div style={{ background:tj.navy900, padding:"12px 18px" }}>
+         <Eyebrow color={tj.sky} style={{ marginBottom:8 }}>Today's Targets - {monthName} {today.getDate()}</Eyebrow>
+         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr", gap:12, alignItems:"center" }}>
+          <div>
+           <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>{monthName} Target</div>
+           <div style={{ color:tj.white, fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(monthlyTarget)}</div>
+          </div>
+          <div>
+           <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>MTD Revenue</div>
+           <div style={{ color:tj.sky, fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(wMR)}</div>
+          </div>
+          <div>
+           <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>Need / Day</div>
+           <div style={{ color:companyDailyNeed<=40000?"#4CAF50":companyDailyNeed<=80000?tj.warn:"#FF6B6B", fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(companyDailyNeed)}</div>
+          </div>
+          <div>
+           <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>Daily Breakeven</div>
+           <div style={{ color:tj.gray300, fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(dailyBreakeven)}</div>
+          </div>
+          <div>
+           <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>Yesterday vs Breakeven</div>
+           <div style={{ color:yesterdayAboveBE>=0?tj.ok:"#FF6B6B", fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>
+            {yesterdayRev > 0 ? (yesterdayAboveBE >= 0 ? "+" : "") + fmtF(yesterdayAboveBE) : "-"}
+           </div>
+          </div>
+         </div>
+        </div>
+        {/* Monthly progress bar */}
+        <div style={{ position:"relative", height:20, background:tj.gray100, borderBottom:`1px solid ${tj.border}` }}>
+         <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(wMR/monthlyTarget*100,100)}%`, background:wMR/monthlyTarget>=(dayOfMonth/daysInMonth)*0.85?tj.ok:wMR>=monthlyFixedCosts*(dayOfMonth/daysInMonth)?tj.warn:tj.crimson, opacity:0.8 }} />
+         <div style={{ position:"absolute", left:`${(dayOfMonth/daysInMonth)*100}%`, top:-2, bottom:-2, width:2, background:tj.navy900, opacity:0.6 }} />
+         <span style={{ position:"absolute", left:8, top:3, fontSize:9, fontWeight:700, color:tj.navy900 }}>{(wMR/monthlyTarget*100).toFixed(0)}% of {monthName}</span>
+         <span style={{ position:"absolute", right:8, top:3, fontSize:9, fontWeight:700, color:tj.crimson }}>{fmtF(companyMonthGap)} to go</span>
+        </div>
+        {/* Per-location daily targets */}
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0 }}>
+         {locationsMeta.map((loc, li) => {
+          const wLoc = W.locations?.find(l=>l.name.toLowerCase().includes(loc.name.split(" ")[0].toLowerCase()));
+          if (!wLoc) return null;
+          const locTarget = BENCH[loc.k].target / 12;
+          const locMTD = wLoc.totalRevenue?.mtd || 0;
+          const locGap = Math.max(0, locTarget - locMTD);
+          const locDailyNeed = locGap / remainingDays;
+          const locBE = dailyBreakeven * BENCH[loc.k].weight;
+          const yLoc = lastPopDay>=0 ? (wLoc.totalRevenue?.daily?.[lastPopDay]?.total||0) : 0;
+          const yAboveBE = yLoc - locBE;
+          const locWeekPL = wLoc.pl?.weekTotal || 0;
+          const paceRatio = (dayOfMonth/daysInMonth) > 0 ? (locMTD/locTarget)/(dayOfMonth/daysInMonth) : 0;
+          const locBEprop = locBE * dayOfMonth;
+          const sc = locMTD>=locTarget?tj.ok:paceRatio>=0.85?tj.ok:locMTD>=locBEprop?tj.warn:tj.crimson;
+          return (
+           <div key={loc.k} style={{ padding:"12px 14px", borderRight:li<2?`1px solid ${tj.border}`:undefined, borderTop:`3px solid ${sc}` }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+             <span style={{ fontWeight:700, fontSize:11, color:tj.navy900, letterSpacing:"0.08em", textTransform:"uppercase" }}>{loc.name}</span>
+             <span style={{ fontSize:8, fontWeight:700, color:sc }}>{locMTD>=locTarget?"HIT":paceRatio>=0.85?"ON PACE":locMTD>=locBEprop?"BREAKEVEN":"BEHIND"}</span>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:4, marginBottom:6, fontSize:9 }}>
+             <div>MTD: <b style={{ color:tj.navy900 }}>{fmtF(locMTD)}</b></div>
+             <div style={{ textAlign:"right" }}>Gap: <b style={{ color:locGap>0?tj.crimson:tj.ok }}>{locGap>0?fmtF(locGap):"HIT"}</b></div>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
+             <div style={{ padding:"6px 8px", background:tj.surfaceCream, border:`1px solid ${tj.border}`, textAlign:"center" }}>
+              <div style={{ fontSize:7, color:tj.gray500, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Need/Day</div>
+              <div style={{ fontFamily:tj.fontSerif, fontSize:16, fontWeight:700, color:tj.navy900 }}>{fmtF(locDailyNeed)}</div>
+             </div>
+             <div style={{ padding:"6px 8px", background:yLoc>0?"#F0FFF4":tj.gray50, border:`1px solid ${yLoc>0?tj.ok:tj.border}40`, textAlign:"center" }}>
+              <div style={{ fontSize:7, color:tj.gray500, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Yesterday</div>
+              <div style={{ fontFamily:tj.fontSerif, fontSize:16, fontWeight:700, color:yLoc>0?tj.ok:tj.gray500 }}>{yLoc>0?fmtF(yLoc):"-"}</div>
+              {yLoc > 0 && <div style={{ fontSize:8, color:yAboveBE>=0?tj.ok:tj.crimson }}>{yAboveBE>=0?"+":""}{fmtF(yAboveBE)} vs BE</div>}
+             </div>
+            </div>
+            <div style={{ fontSize:8, color:tj.gray700, fontFamily:tj.fontMono, marginTop:6 }}>
+             Wk P&L: <b style={{ color:locWeekPL>=0?tj.ok:tj.crimson }}>{fmtF(locWeekPL)}</b> · BE/day: {fmtF(locBE)}
+            </div>
+           </div>
+          );
+         })}
+        </div>
+       </Card>
+       );
+      })()}
+
+      {/* ─── ACTIVE LOCATIONS ─── */}
+      <Eyebrow style={{ marginBottom:16, fontSize:12 }}>Locations</Eyebrow>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24, marginBottom:24 }}>
+       {locData.map(loc => (
+        <Card key={loc.k} padding={0} style={{ overflow:"hidden" }}>
+         <div style={{ background:loc.tc, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <span style={{ color:tj.white, fontWeight:700, fontSize:18, letterSpacing:"0.1em", textTransform:"uppercase" }}>{loc.name}</span>
+          <span style={{ background:tj.white, color:loc.tc, padding:"4px 12px", fontSize:10, fontWeight:700, letterSpacing:"0.08em" }}>{loc.status}</span>
+         </div>
+         <div style={{ padding:"20px 22px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", marginBottom:16 }}>
+           <div>
+            <div style={{ fontSize:9, color:tj.gray500, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:3 }}>Annual Target</div>
+            <div style={{ fontFamily:tj.fontSerif, fontSize:30, fontWeight:700, color:tj.navy900 }}>{fmtF(loc.bench.target)}</div>
+            <div style={{ fontSize:10, color:tj.gray500, marginTop:2 }}>{pct(loc.bench.weight)} of company · {fmtF(loc.bench.target/12)}/mo</div>
+           </div>
+           <div style={{ textAlign:"right" }}>
+            <div style={{ fontSize:9, color:tj.gray500, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:3 }}>YTD Actual</div>
+            <div style={{ fontFamily:tj.fontSerif, fontSize:30, fontWeight:700, color:loc.tc }}>{fmtF(loc.combined)}</div>
+            <div style={{ fontSize:10, color:loc.tc, fontWeight:700, marginTop:2 }}>{(loc.pct*100).toFixed(1)}% of target</div>
+           </div>
+          </div>
+
+          <div style={{ position:"relative", height:22, background:tj.gray100, border:`1px solid ${tj.border}`, marginBottom:16 }}>
+           <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(loc.pct/1.1*100,100)}%`, background:loc.tc, opacity:0.8 }} />
+           {[{p:0.75/1.1},{p:1.0/1.1},{p:1.0}].map((m,mi) => <div key={mi} style={{ position:"absolute", left:`${m.p*100}%`, top:0, bottom:0, width:1, background:tj.navy900, opacity:0.3 }} />)}
+           <span style={{ position:"absolute", right:6, top:3, fontSize:10, fontWeight:700, color:tj.navy900 }}>{(loc.pct*100).toFixed(0)}%</span>
+          </div>
+
+          <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11, marginBottom:16 }}>
+           <tbody>
+            {[
+             { l:"75% Milestone", v:loc.bench.t75, hit:loc.pct>=0.75 },
+             { l:"100% Target", v:loc.bench.target, hit:loc.pct>=1.0 },
+             { l:"110% Stretch", v:loc.bench.t110, hit:loc.pct>=1.1 },
+            ].map((t,ti) => (
+             <tr key={ti} style={{ background:t.hit?tj.okBg:ti%2===0?tj.white:tj.gray50, borderBottom:`1px solid ${tj.border}` }}>
+              <td style={{ padding:"8px 10px", fontWeight:700, color:t.hit?tj.ok:tj.navy900 }}>{t.hit?"✓ ":""}{t.l}</td>
+              <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.navy900 }}>{fmtF(t.v)}</td>
+              <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontSize:10, color:t.hit?tj.ok:tj.crimson }}>{t.hit?"HIT":fmtF(t.v-loc.combined)+" to go"}</td>
+             </tr>
+            ))}
+           </tbody>
+          </table>
+
+          {loc.gap > 0 && (
+           <div style={{ padding:"14px 16px", background:tj.surfaceCream, border:`1px solid ${tj.border}`, marginBottom:16 }}>
+            <div style={{ fontSize:10, fontWeight:700, color:tj.navy900, marginBottom:10, letterSpacing:"0.06em", textTransform:"uppercase" }}>What You Need</div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
+             <div><div style={{ fontSize:8, color:tj.gray500, fontWeight:700, marginBottom:4 }}>GAP</div><div style={{ fontFamily:tj.fontMono, fontSize:16, fontWeight:700, color:tj.crimson }}>{fmtF(loc.gap)}</div></div>
+             <div><div style={{ fontSize:8, color:tj.gray500, fontWeight:700, marginBottom:4 }}>NEED/MO</div><div style={{ fontFamily:tj.fontMono, fontSize:16, fontWeight:700, color:tj.navy900 }}>{fmtF(loc.needPerMonth)}</div></div>
+             <div><div style={{ fontSize:8, color:tj.gray500, fontWeight:700, marginBottom:4 }}>NEED/DAY</div><div style={{ fontFamily:tj.fontMono, fontSize:16, fontWeight:700, color:tj.navy900 }}>{fmtF(loc.needPerDay)}</div></div>
+            </div>
+           </div>
+          )}
+
+          <div style={{ fontSize:11, color:tj.gray700, paddingTop:12, borderTop:`1px solid ${tj.border}` }}>
+           Annualized pace: <b style={{ color:loc.annualized>=loc.bench.target?tj.ok:tj.crimson, fontFamily:tj.fontMono }}>{fmt(loc.annualized)}</b>
+           <span style={{ marginLeft:8, color:loc.annualized>=loc.bench.target?tj.ok:tj.crimson, fontStyle:"italic" }}>{loc.annualized>=loc.bench.target?"Will hit target":"Will miss at this pace"}</span>
+          </div>
+         </div>
+        </Card>
+       ))}
+      </div>
+
+      {/* ─── COMING SOON ─── */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:32, maxWidth:700 }}>
+       {[1,2].map(n => (
+        <div key={n} style={{ border:`2px dashed ${tj.gray300}`, padding:"28px 24px", textAlign:"center", background:tj.gray50 }}>
+         <div style={{ fontFamily:tj.fontSans, fontWeight:700, fontSize:14, color:tj.gray500, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>Location {3+n}</div>
+         <div style={{ background:tj.gray300, color:tj.white, display:"inline-block", padding:"3px 12px", fontSize:9, fontWeight:700, letterSpacing:"0.1em", marginBottom:12 }}>COMING SOON</div>
+         <div style={{ fontSize:11, color:tj.gray500, fontFamily:tj.fontSerif, fontStyle:"italic" }}>Target and tracking will appear once active</div>
+        </div>
+       ))}
+      </div>
+
+      {/* ─── MONTHLY ACTUAL vs TARGET TABLE ─── */}
+      <Card padding={0} style={{ overflowX:"auto" }}>
+       <div style={{ padding:"16px 20px" }}>
+        <Eyebrow>Monthly Revenue vs Target by Location</Eyebrow>
+        <div style={{ fontSize:10, color:tj.gray500, marginTop:4, fontFamily:tj.fontSerif, fontStyle:"italic" }}>Actuals shown in black. Upcoming months show the target needed. Green = hit target. Red = missed.</div>
+       </div>
+       <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11, fontFamily:tj.fontMono }}>
+        <thead><tr style={{ background:tj.navy900 }}>
+         <th style={{ padding:"8px 10px", textAlign:"left", color:tj.white, fontSize:9, fontFamily:tj.fontSans, fontWeight:700 }}>Month</th>
+         <th style={{ padding:"8px 10px", textAlign:"right", color:tj.white, fontSize:9, fontFamily:tj.fontSans }}>Big Lake</th>
+         <th style={{ padding:"8px 10px", textAlign:"right", color:tj.white, fontSize:9, fontFamily:tj.fontSans }}>Gonzalez</th>
+         <th style={{ padding:"8px 10px", textAlign:"right", color:tj.white, fontSize:9, fontFamily:tj.fontSans }}>Live Oak</th>
+         <th style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontSize:9, fontFamily:tj.fontSans, fontWeight:700 }}>Company</th>
+         <th style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontSize:9, fontFamily:tj.fontSans }}>vs Target</th>
+        </tr></thead>
+        <tbody>
+         {/* Actual months */}
+         {D.months.map((mo, j) => {
+          if (jan26Idx >= 0 && j < jan26Idx) return null;
+          const bl = D.bigLake?.rev?.[j] || 0;
+          const gz = D.gonzalez?.rev?.[j] || 0;
+          const lo = D.liveOak?.rev?.[j] || 0;
+          const total = D.revenue[j] || 0;
+          const monthlyTgt = BENCH.total.target / 12;
+          const delta = total > 0 ? total - monthlyTgt : 0;
+          const cur = j === i;
+          if (total === 0) return null;
+          return (
+           <tr key={j} style={{ background:cur?"#EFF3FB":j%2===0?tj.white:tj.gray50, borderBottom:`1px solid ${tj.border}` }}>
+            <td style={{ padding:"8px 10px", fontFamily:tj.fontSans, fontWeight:cur?700:400 }}>{mo}{cur?" ◄":""}</td>
+            <td style={{ padding:"8px 10px", textAlign:"right", color:bl>=BENCH.bigLake.target/12?tj.ok:bl>0?tj.crimson:tj.gray300 }}>{bl>0?fmtF(bl):"-"}</td>
+            <td style={{ padding:"8px 10px", textAlign:"right", color:gz>=BENCH.gonzalez.target/12?tj.ok:gz>0?tj.crimson:tj.gray300 }}>{gz>0?fmtF(gz):"-"}</td>
+            <td style={{ padding:"8px 10px", textAlign:"right", color:lo>=BENCH.liveOak.target/12?tj.ok:lo>0?tj.crimson:tj.gray300 }}>{lo>0?fmtF(lo):"-"}</td>
+            <td style={{ padding:"8px 10px", textAlign:"right", fontWeight:700, color:total>=monthlyTgt?tj.ok:total>0?tj.crimson:tj.gray300 }}>{fmtF(total)}</td>
+            <td style={{ padding:"8px 10px", textAlign:"right", color:delta>=0?tj.ok:tj.crimson, fontWeight:700 }}>{(delta>=0?"+":"")+fmtF(delta)}</td>
+           </tr>
+          );
+         })}
+         {/* Upcoming months - show targets needed */}
+         {(() => {
+          const allMonths2026 = ["Jan 26","Feb 26","Mar 26","Apr 26","May 26","Jun 26","Jul 26","Aug 26","Sep 26","Oct 26","Nov 26","Dec 26"];
+          const closedLabels = D.months.filter((_,j) => j >= (jan26Idx>=0?jan26Idx:0) && (D.revenue[j]||0) !== 0);
+          const futureMonths = allMonths2026.filter(m => !closedLabels.includes(m));
+          if (futureMonths.length === 0) return null;
+          // Calculate what each location needs per remaining month
+          const blYTD = locData.find(l=>l.k==="bigLake")?.combined||0;
+          const gzYTD = locData.find(l=>l.k==="gonzalez")?.combined||0;
+          const loYTD = locData.find(l=>l.k==="liveOak")?.combined||0;
+          const blNeed = Math.max(0,(BENCH.bigLake.target-blYTD)/futureMonths.length);
+          const gzNeed = Math.max(0,(BENCH.gonzalez.target-gzYTD)/futureMonths.length);
+          const loNeed = Math.max(0,(BENCH.liveOak.target-loYTD)/futureMonths.length);
+          const coNeed = blNeed+gzNeed+loNeed;
+          return (
+           <>
+            <tr style={{ borderTop:`3px solid ${tj.sky}` }}>
+             <td colSpan={6} style={{ padding:"6px 10px", fontSize:9, color:tj.sky, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", fontFamily:tj.fontSans, background:"#EBF5FB" }}>
+              UPCOMING - Revenue needed per month to hit 100% target ({futureMonths.length} months remaining)
+             </td>
+            </tr>
+            {futureMonths.map((mo, fi) => {
+             const isNext = fi === 0;
+             return (
+              <tr key={mo} style={{ background:isNext?"#E3F2FD":"#F5FAFF", borderBottom:`1px solid ${tj.border}` }}>
+               <td style={{ padding:"8px 10px", fontFamily:tj.fontSans, fontWeight:isNext?700:400, color:tj.sky }}>{mo}{isNext?" ← NEXT":""}</td>
+               <td style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontWeight:isNext?700:400 }}>{fmtF(blNeed)}</td>
+               <td style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontWeight:isNext?700:400 }}>{fmtF(gzNeed)}</td>
+               <td style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontWeight:isNext?700:400 }}>{fmtF(loNeed)}</td>
+               <td style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontWeight:700 }}>{fmtF(coNeed)}</td>
+               <td style={{ padding:"8px 10px", textAlign:"right", fontSize:9, color:tj.gray500 }}>target</td>
+              </tr>
+             );
+            })}
+           </>
+          );
+         })()}
+         {/* Totals */}
+         <tr style={{ background:tj.navy900 }}>
+          <td style={{ padding:"9px 10px", fontFamily:tj.fontSans, fontWeight:700, color:tj.white, fontSize:10, letterSpacing:"0.06em", textTransform:"uppercase" }}>YTD ACTUAL</td>
+          {locData.map(l => <td key={l.k} style={{ padding:"9px 10px", textAlign:"right", fontWeight:700, color:tj.white }}>{fmtF(l.combined)}</td>)}
+          <td style={{ padding:"9px 10px", textAlign:"right", fontWeight:700, color:tj.sky }}>{fmtF(ytdCompany)}</td>
+          <td style={{ padding:"9px 10px", textAlign:"right", fontWeight:700, color:companyGap>0?tj.crimson:tj.ok }}>{companyGap>0?"("+fmtF(companyGap)+")":"ON TARGET"}</td>
+         </tr>
+         <tr style={{ background:tj.surfaceCream, borderTop:`2px solid ${tj.navy900}` }}>
+          <td style={{ padding:"9px 10px", fontFamily:tj.fontSans, fontWeight:700, color:tj.gray700, fontSize:10, letterSpacing:"0.06em", textTransform:"uppercase" }}>ANNUAL TARGET</td>
+          <td style={{ padding:"9px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.gray500 }}>{fmtF(BENCH.bigLake.target)}</td>
+          <td style={{ padding:"9px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.gray500 }}>{fmtF(BENCH.gonzalez.target)}</td>
+          <td style={{ padding:"9px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.gray500 }}>{fmtF(BENCH.liveOak.target)}</td>
+          <td style={{ padding:"9px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.gray500 }}>{fmtF(BENCH.total.target)}</td>
+          <td style={{ padding:"9px 10px" }} />
+         </tr>
+        </tbody>
+       </table>
+      </Card>
+     </div>
+    );
+   })()}
+
+   {/* ═══════════════════════════════════════════
+       OPERATIONS TAB
+       ═══════════════════════════════════════════ */}
+   {view === "ops" && (<div>
+
+   {/* ═══ 1. GOAL TRACKER HERO ═══ */}
+   {(() => {
+    const ytdCompany = ytdRev + (W ? wMR : 0);
+    const pctDone = BENCH.total.target > 0 ? ytdCompany / BENCH.total.target : 0;
+    const gap = BENCH.total.target - ytdCompany;
+    const daysLeft = Math.ceil((new Date(2026, 11, 31) - today) / 86400000);
+    const monthsLeft = Math.max(1, Math.ceil(daysLeft / 30.44));
+    const needPerMonth = gap > 0 ? gap / monthsLeft : 0;
+    const needPerDay = gap > 0 ? gap / Math.max(1, daysLeft) : 0;
+    const annualizedPace = closedMonths2026 > 0 ? (ytdCompany / closedMonths2026) * 12 : 0;
+    const tier = pctDone >= 1.1 ? "STRETCH" : pctDone >= 1.0 ? "TARGET" : pctDone >= 0.75 ? "TIER 1" : "BELOW";
+    const tierColor = tier==="STRETCH"?tj.sky:tier==="TARGET"?tj.ok:tier==="TIER 1"?tj.warn:tj.crimson;
+    const nextTier = pctDone < 0.75 ? { label:"Tier 1 (75%)", val:BENCH.total.t75 } : pctDone < 1.0 ? { label:"Target (100%)", val:BENCH.total.target } : pctDone < 1.1 ? { label:"Stretch (110%)", val:BENCH.total.t110 } : null;
+    const gapToNext = nextTier ? nextTier.val - ytdCompany : 0;
+    return (
+     <Card padding={0} style={{ marginBottom:20, overflow:"hidden" }}>
+      <div style={{ background:tj.navy900, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+       <div>
+        <div style={{ color:tj.gray300, fontSize:9, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", marginBottom:4 }}>2026 Target</div>
+        <div style={{ color:tj.white, fontFamily:tj.fontSerif, fontSize:32, fontWeight:700 }}>{fmtF(BENCH.total.target)}</div>
+       </div>
+       <div style={{ textAlign:"center" }}>
+        <div style={{ color:tj.gray300, fontSize:9, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", marginBottom:4 }}>YTD Revenue</div>
+        <div style={{ color:tj.sky, fontFamily:tj.fontSerif, fontSize:32, fontWeight:700 }}>{fmtF(ytdCompany)}</div>
+       </div>
+       <div style={{ textAlign:"center" }}>
+        <div style={{ color:tj.gray300, fontSize:9, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", marginBottom:4 }}>Progress</div>
+        <div style={{ color:tierColor, fontFamily:tj.fontSerif, fontSize:32, fontWeight:700 }}>{(pctDone*100).toFixed(1)}%</div>
+       </div>
+       <div style={{ textAlign:"right" }}>
+        <div style={{ color:tj.gray300, fontSize:9, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", marginBottom:4 }}>Gap to Target</div>
+        <div style={{ color:gap>0?tj.crimson:tj.ok, fontFamily:tj.fontSerif, fontSize:32, fontWeight:700 }}>{gap>0?fmtF(gap):"HIT"}</div>
+       </div>
+      </div>
+      {/* Progress bar with tier markers */}
+      <div style={{ position:"relative", height:28, background:tj.gray100, borderBottom:`1px solid ${tj.border}` }}>
+       <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(pctDone*100,110)/1.1}%`, background:`linear-gradient(90deg, ${tj.navy900}, ${tierColor})`, opacity:0.85 }} />
+       {[{p:0.75,l:"75%"},{p:1.0,l:"100%"},{p:1.1,l:"110%"}].map(m => (
+        <div key={m.p} style={{ position:"absolute", left:`${m.p/1.1*100}%`, top:0, bottom:0, width:2, background:tj.navy900, opacity:0.4 }}>
+         <span style={{ position:"absolute", top:6, left:4, fontSize:8, color:tj.navy900, fontWeight:700, whiteSpace:"nowrap" }}>{m.l}</span>
+        </div>
+       ))}
+      </div>
+      {/* What you need strip */}
+      <div className="hero-strip" style={{ display:"flex", flexWrap:"wrap" }}>
+       {[
+        { label:"Need / Month", val:fmtF(needPerMonth), sub:`${monthsLeft} months left`, color:needPerMonth>800000?tj.crimson:tj.navy900 },
+        { label:"Need / Day", val:fmtF(needPerDay), sub:`${daysLeft} days left`, color:needPerDay>40000?tj.crimson:tj.navy900 },
+        { label:"Current Pace", val:fmt(annualizedPace), sub:annualizedPace>=BENCH.total.target?"On track to hit":"Will miss at this pace", color:annualizedPace>=BENCH.total.target?tj.ok:tj.crimson },
+        { label:"Status", val:tier, sub:nextTier?`${fmtF(gapToNext)} to ${nextTier.label}`:"Target exceeded", color:tierColor },
+        ...(W ? [{ label:"This Week", val:fmtF(wP), sub:`rev ${fmtF(wR)}`, color:wP>=0?tj.ok:tj.crimson }] : []),
+       ].map((k,idx) => (
+        <div key={idx} style={{ flex:"1 1 130px", padding:"12px 16px", borderLeft:idx?`1px solid ${tj.border}`:"none" }}>
+         <Eyebrow color={tj.gray700} style={{ marginBottom:3, fontSize:8 }}>{k.label}</Eyebrow>
+         <div style={{ fontFamily:tj.fontSerif, fontSize:22, fontWeight:700, color:k.color, fontVariantNumeric:"tabular-nums" }}>{k.val}</div>
+         <div style={{ fontSize:9, color:tj.gray500, marginTop:1, fontFamily:tj.fontSerif, fontStyle:"italic" }}>{k.sub}</div>
+        </div>
+       ))}
+      </div>
+     </Card>
+    );
+   })()}
+
+   {/* ═══ 2. RED FLAGS ═══ */}
+   {flags.length > 0 && (
+    <Card padding={16} style={{ marginBottom:20, background:flags[0].severity==="critical"?tj.badBg:tj.warnBg, border:`2px solid ${flags[0].severity==="critical"?tj.crimson:tj.warn}` }}>
+     <Eyebrow color={flags[0].severity==="critical"?tj.crimson:tj.warn} style={{ marginBottom:10, fontSize:12 }}>
+      {flags[0].severity==="critical"?"🔴 CRITICAL ALERTS":"⚠ RED FLAGS"} ({flags.length})
+     </Eyebrow>
+     {flags.map((f,fi) => (
+      <div key={fi} style={{ display:"flex", alignItems:"flex-start", gap:8, padding:"6px 0", borderTop:fi?`1px solid ${tj.border}`:undefined }}>
+       <span style={{ fontSize:10, fontWeight:700, color:f.severity==="critical"?tj.crimson:f.severity==="high"?tj.warn:tj.gray500, flexShrink:0, marginTop:1 }}>
+        {f.severity==="critical"?"CRITICAL":f.severity==="high"?"HIGH":"WATCH"}
+       </span>
+       <span style={{ fontSize:12, color:tj.ink, fontFamily:tj.fontSerif }}>{f.text}</span>
+      </div>
+     ))}
+    </Card>
+   )}
+
+   {/* ═══ 3. TODAY'S TARGETS ═══ */}
+   {W && (
+    <Section title={`Today's Targets - ${monthName} ${today.getDate()}`} eyebrowColor={tj.ok}>
+     <div style={{ padding:"10px 14px", background:tj.navy900, marginBottom:14, display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:16, alignItems:"center" }}>
+      <div style={{ color:tj.white, fontSize:11 }}><b>{remainingDays} days left</b> in {monthName}</div>
+      <div style={{ textAlign:"center" }}>
+       <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>{monthName} Target</div>
+       <div style={{ color:tj.white, fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(monthlyTarget)}</div>
+      </div>
+      <div style={{ textAlign:"center" }}>
+       <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>MTD Revenue</div>
+       <div style={{ color:tj.sky, fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(wMR)}</div>
+      </div>
+      <div style={{ textAlign:"right" }}>
+       <div style={{ color:tj.gray300, fontSize:8, letterSpacing:"0.1em", textTransform:"uppercase" }}>Need / Day to Hit {monthName}</div>
+       <div style={{ color:Math.max(0,monthlyTarget-wMR)/remainingDays<=0?tj.ok:Math.max(0,monthlyTarget-wMR)/remainingDays<=40000?"#4CAF50":Math.max(0,monthlyTarget-wMR)/remainingDays<=80000?tj.warn:"#FF6B6B", fontFamily:tj.fontMono, fontSize:16, fontWeight:700 }}>{fmtF(Math.max(0,monthlyTarget-wMR)/remainingDays)}</div>
+      </div>
+     </div>
+     {/* Monthly progress bar */}
+     <div style={{ marginBottom:16 }}>
+      <div style={{ position:"relative", height:22, background:tj.gray100, border:`1px solid ${tj.border}` }}>
+       <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(wMR/monthlyTarget*100,100)}%`, background:wMR/monthlyTarget>=(dayOfMonth/daysInMonth)*0.85?tj.ok:wMR>=monthlyFixedCosts*(dayOfMonth/daysInMonth)?tj.warn:tj.crimson, opacity:0.8 }} />
+       <div style={{ position:"absolute", left:`${(dayOfMonth/daysInMonth)*100}%`, top:-2, bottom:-2, width:2, background:tj.navy900, opacity:0.6 }} />
+       <span style={{ position:"absolute", left:8, top:4, fontSize:9, fontWeight:700, color:tj.navy900 }}>{(wMR/monthlyTarget*100).toFixed(0)}% of {monthName} target</span>
+       <span style={{ position:"absolute", right:8, top:4, fontSize:9, fontWeight:700, color:monthlyTarget-wMR>0?tj.crimson:tj.ok }}>{monthlyTarget-wMR>0?fmtF(monthlyTarget-wMR)+" to go":"HIT"}</span>
+      </div>
+      <div style={{ display:"flex", justifyContent:"space-between", fontSize:8, color:tj.gray500, marginTop:2 }}>
+       <span>▏= where you should be ({(dayOfMonth/daysInMonth*100).toFixed(0)}% through the month)</span>
+       <span>Yesterday: <b style={{ color:yesterdayRev>0?tj.navy900:tj.gray500 }}>{fmtF(yesterdayRev)}</b></span>
+      </div>
+     </div>
+     <div className="grid-3" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
+      {locationsMeta.map(loc => {
+       const wLoc = W.locations?.find(l=>l.name.toLowerCase().includes(loc.name.split(" ")[0].toLowerCase()));
+       if (!wLoc) return null;
+       const bench = BENCH[loc.k];
+       const locMonthlyTarget = bench.target / 12;
+       const locMTD = wLoc.totalRevenue?.mtd || 0;
+       const locMonthGap = Math.max(0, locMonthlyTarget - locMTD);
+       const locMonthPct = locMonthlyTarget > 0 ? locMTD / locMonthlyTarget : 0;
+       const locWeekRev = wLoc.totalRevenue?.weekTotal || 0;
+       const locWeekPL = wLoc.pl?.weekTotal || 0;
+       const locDailyNeeded = locMonthGap / remainingDays;
+       const yLocRev = lastPopDay>=0 ? (wLoc.totalRevenue?.daily?.[lastPopDay]?.total||0) : 0;
+       // Three-tier: where should we be based on day of month?
+       const shouldBeMTD = locMonthlyTarget * (dayOfMonth / daysInMonth);
+       const paceRatio = shouldBeMTD > 0 ? locMTD / shouldBeMTD : 0;
+       const locBEmonthly = monthlyFixedCosts * (bench.target / BENCH.total.target);
+       const locBEproportion = locBEmonthly * (dayOfMonth / daysInMonth);
+       const status = locMTD >= locMonthlyTarget ? "green" : paceRatio >= 0.85 ? "green" : locMTD >= locBEproportion ? "yellow" : "red";
+       const statusColor = status==="green"?tj.ok:status==="yellow"?tj.warn:tj.crimson;
+       const statusBg = status==="green"?"#F0FFF4":status==="yellow"?"#FFFBEB":"#FFF0F0";
+       const statusLabel = status==="green"?"ON PACE":status==="yellow"?"BREAKEVEN":"BEHIND";
+       // Yesterday color
+       const yColor = yLocRev > 0 ? tj.ok : tj.gray500;
+       const yBg = yLocRev > 0 ? "#F0FFF4" : tj.gray50;
+       const yLabel = yLocRev >= locDailyNeeded && yLocRev > 0 ? "Hit daily target" : yLocRev > 0 ? fmtF(locDailyNeeded - yLocRev) + " below target" : "";
+       return (
+        <div key={loc.k} style={{ padding:0, border:`2px solid ${statusColor}`, background:tj.white, overflow:"hidden" }}>
+         <div style={{ padding:"8px 12px", background:statusBg, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <span style={{ fontWeight:700, fontSize:12, color:tj.navy900, letterSpacing:"0.08em", textTransform:"uppercase" }}>{loc.name}</span>
+          <span style={{ fontSize:9, fontWeight:700, color:statusColor, letterSpacing:"0.06em" }}>{statusLabel}</span>
+         </div>
+         <div style={{ padding:"10px 12px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:4 }}>
+           <span style={{ fontSize:9, color:tj.gray500, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>{monthName} Target</span>
+           <span style={{ fontFamily:tj.fontMono, fontSize:14, fontWeight:700, color:tj.navy900 }}>{fmtF(locMonthlyTarget)}</span>
+          </div>
+          <div style={{ position:"relative", height:12, background:tj.gray100, border:`1px solid ${tj.border}`, marginBottom:6 }}>
+           <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(locMonthPct*100,100)}%`, background:statusColor, opacity:0.8 }} />
+           {/* Where you should be marker */}
+           <div style={{ position:"absolute", left:`${(dayOfMonth/daysInMonth)*100}%`, top:-2, bottom:-2, width:2, background:tj.navy900, opacity:0.5 }} />
+           <span style={{ position:"absolute", right:4, top:0, fontSize:8, fontWeight:700, color:tj.navy900 }}>{(locMonthPct*100).toFixed(0)}%</span>
+          </div>
+          <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:tj.gray700, marginBottom:10 }}>
+           <span>MTD: <b style={{ color:tj.navy900 }}>{fmtF(locMTD)}</b></span>
+           <span>Gap: <b style={{ color:locMonthGap>0?tj.crimson:tj.ok }}>{locMonthGap>0?fmtF(locMonthGap):"HIT"}</b></span>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginBottom:8 }}>
+           <div style={{ padding:"10px 10px", background:tj.surfaceCream, border:`1px solid ${tj.border}`, textAlign:"center" }}>
+            <div style={{ fontSize:8, color:tj.gray500, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>Need / Day This Month</div>
+            <div style={{ fontFamily:tj.fontSerif, fontSize:22, fontWeight:700, color:locDailyNeeded>0?tj.navy900:tj.ok }}>{locMonthGap>0?fmtF(locDailyNeeded):"DONE"}</div>
+            <div style={{ fontSize:9, color:tj.gray500, marginTop:2 }}>{remainingDays} days left</div>
+           </div>
+           <div style={{ padding:"10px 10px", background:yBg, border:`1px solid ${yColor}40`, textAlign:"center" }}>
+            <div style={{ fontSize:8, color:tj.gray500, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>Yesterday</div>
+            <div style={{ fontFamily:tj.fontSerif, fontSize:22, fontWeight:700, color:yColor }}>{yLocRev>0?fmtF(yLocRev):"-"}</div>
+            <div style={{ fontSize:9, color:yColor, marginTop:2 }}>{yLabel}</div>
+           </div>
+          </div>
+          <div style={{ fontSize:9, color:tj.gray700, fontFamily:tj.fontMono, borderTop:`1px solid ${tj.border}`, paddingTop:6 }}>
+           Wk Rev: <b>{fmtF(locWeekRev)}</b> · P&L: <b style={{ color:locWeekPL>=0?tj.ok:tj.crimson }}>{fmtF(locWeekPL)}</b>
+          </div>
+         </div>
+        </div>
+       );
+      })}
+     </div>
+    </Section>
+   )}
+
+   {/* ═══ 4. WEEKLY VOLUMES + $/BBL ═══ */}
+   {W && (
+    <Section title={`Weekly Volumes & Unit Economics - ${W.dates?.[0]} to ${W.dates?.[W.dates.length-1]}`} eyebrowColor={tj.ok}>
+     <Card padding={0} style={{ overflowX:"auto" }}>
+      <div className="grid-4" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", borderBottom:`1px solid ${tj.border}` }}>
+       {[
+        {l:"Water (bbls)",v:W.locations.reduce((s,l)=>s+(l.water?.weekTotal||0),0),c:tj.sky},
+        {l:"Solids (bbls)",v:W.locations.reduce((s,l)=>s+(l.solids?.weekTotal||0),0),c:tj.navy900},
+        {l:"Oil Sold (bbls)",v:W.locations.reduce((s,l)=>s+(l.oilSold?.weekTotal||0),0),c:tj.warn},
+        {l:"Washouts",v:W.locations.reduce((s,l)=>s+(l.washouts?.weekTotal||0),0),c:tj.crimson},
+       ].map((x,xi) => (
+        <div key={xi} style={{ padding:"12px 16px", borderRight:xi<3?`1px solid ${tj.border}`:undefined }}>
+         <div style={{ fontSize:8, color:tj.gray500, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>{x.l}</div>
+         <div style={{ fontFamily:tj.fontSerif, fontSize:20, fontWeight:700, color:x.c }}>{x.v?.toLocaleString()||0}</div>
+        </div>
+       ))}
+      </div>
+      <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
+       <thead><tr style={{ background:tj.navy900 }}>
+        {["Location","Water","Solids","Oil","Washouts","Revenue","P&L","$/bbl (blended)","Margin"].map(h => (
+         <th key={h} style={{ padding:"8px 10px", textAlign:h==="Location"?"left":"right", color:tj.white, fontSize:9, letterSpacing:"0.06em", textTransform:"uppercase", fontFamily:tj.fontSans, fontWeight:700 }}>{h}</th>
+        ))}
+       </tr></thead>
+       <tbody>{W.locations.map((l,li) => {
+        const rev = l.totalRevenue?.weekTotal || 0;
+        const pl = l.pl?.weekTotal || 0;
+        const totalBbls = (l.water?.weekTotal||0) + (l.solids?.weekTotal||0) + (l.oilSold?.weekTotal||0);
+        const blendedRate = totalBbls > 0 ? rev / totalBbls : 0;
+        const margin = rev > 0 ? pl / rev : 0;
+        return (
+         <tr key={l.name} style={{ background:li%2===0?tj.white:tj.gray50, borderBottom:`1px solid ${tj.border}` }}>
+          <td style={{ padding:"8px 10px", fontWeight:700, color:tj.navy900 }}>{l.name}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.sky }}>{(l.water?.weekTotal||0).toLocaleString()}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono }}>{(l.solids?.weekTotal||0).toLocaleString()}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.warn }}>{(l.oilSold?.weekTotal||0).toLocaleString()}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, color:tj.crimson }}>{(l.washouts?.weekTotal||0).toLocaleString()}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700 }}>{fmtF(rev)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:pl>=0?tj.ok:tj.crimson }}>{fmtF(pl)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:tj.navy900 }}>{blendedRate>0?`$${blendedRate.toFixed(2)}`:"-"}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:margin>=0.3?tj.ok:margin>=0.15?tj.warn:tj.crimson }}>{rev>0?pct(margin):"-"}</td>
+         </tr>
+        );
+       })}</tbody>
+      </table>
+     </Card>
+    </Section>
+   )}
+
+   {/* ═══ 5. DAILY BREAKDOWN (7-day per location) ═══ */}
+   {W && (
+    <Section title="Daily Revenue & P&L by Location" defaultOpen={false}>
+     <Card padding={0} style={{ overflowX:"auto" }}>
+      <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11, minWidth:680 }}>
+       <thead><tr style={{ background:tj.navy900 }}>
+        <th style={{ padding:"8px 10px", textAlign:"left", color:tj.white, fontSize:9, letterSpacing:"0.06em", textTransform:"uppercase" }}>Location</th>
+        {(W.dates||[]).map((d,di)=><th key={di} style={{ padding:"8px 8px", textAlign:"right", color:di===lastPopDay?tj.sky:tj.white, fontSize:9, whiteSpace:"nowrap" }}>{d}{di===lastPopDay?" ◄":""}</th>)}
+        <th style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontSize:9, letterSpacing:"0.06em", textTransform:"uppercase" }}>Week</th>
+        <th style={{ padding:"8px 10px", textAlign:"right", color:tj.sky, fontSize:9, letterSpacing:"0.06em", textTransform:"uppercase" }}>MTD</th>
+       </tr></thead>
+       <tbody>
+        {locationsMeta.map((loc,li) => {
+         const wLoc = W.locations.find(l=>l.name.toLowerCase().includes(loc.name.split(" ")[0].toLowerCase()));
+         if (!wLoc) return null;
+         return (
+          <React.Fragment key={loc.k}>
+           <tr style={{ background:li%2===0?tj.white:tj.gray50, borderTop:`2px solid ${loc.c}` }}>
+            <td style={{ padding:"8px 10px", fontWeight:700, color:loc.c }}>{loc.name} Rev</td>
+            {(W.dates||[]).map((_,di)=>{ const v=wLoc.totalRevenue?.daily?.[di]?.total||0; return <td key={di} style={{ padding:"7px 8px", textAlign:"right", fontFamily:tj.fontMono, color:v>0?tj.navy900:tj.gray300 }}>{v>0?fmtF(v):"-"}</td>; })}
+            <td style={{ padding:"7px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:tj.navy900, borderLeft:`1px solid ${tj.border}` }}>{fmtF(wLoc.totalRevenue?.weekTotal||0)}</td>
+            <td style={{ padding:"7px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:tj.navy900 }}>{fmtF(wLoc.totalRevenue?.mtd||0)}</td>
+           </tr>
+           <tr style={{ background:li%2===0?tj.white:tj.gray50, borderBottom:`1px solid ${tj.border}` }}>
+            <td style={{ padding:"7px 10px", fontSize:10, color:tj.gray700, paddingLeft:22 }}>P&L</td>
+            {(W.dates||[]).map((_,di)=>{ const v=wLoc.pl?.daily?.[di]?.total||0; return <td key={di} style={{ padding:"7px 8px", textAlign:"right", fontFamily:tj.fontMono, fontSize:10, color:v>0?tj.ok:v<0?tj.crimson:tj.gray300 }}>{v!==0?fmtF(v):"-"}</td>; })}
+            <td style={{ padding:"7px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, fontSize:10, color:(wLoc.pl?.weekTotal||0)>=0?tj.ok:tj.crimson, borderLeft:`1px solid ${tj.border}` }}>{fmtF(wLoc.pl?.weekTotal||0)}</td>
+            <td style={{ padding:"7px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, fontSize:10, color:(wLoc.pl?.mtd||0)>=0?tj.ok:tj.crimson }}>{fmtF(wLoc.pl?.mtd||0)}</td>
+           </tr>
+          </React.Fragment>
+         );
+        })}
+        <tr style={{ background:tj.navy900 }}>
+         <td style={{ padding:"8px 10px", fontWeight:700, color:tj.white, fontSize:10, letterSpacing:"0.06em", textTransform:"uppercase" }}>Company Total</td>
+         {(W.dates||[]).map((_,di)=>{ const v=dailyTotals[di]||0; return <td key={di} style={{ padding:"8px 8px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:v>0?tj.white:tj.gray500 }}>{v>0?fmtF(v):"-"}</td>; })}
+         <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:tj.sky, borderLeft:`1px solid ${tj.gray700}` }}>{fmtF(wR)}</td>
+         <td style={{ padding:"8px 10px", textAlign:"right", fontFamily:tj.fontMono, fontWeight:700, color:tj.sky }}>{fmtF(wMR)}</td>
+        </tr>
+       </tbody>
+      </table>
+     </Card>
+    </Section>
+   )}
+
+   {/* ═══ DIVIDER ═══ */}
+   <div className="section-divider" />
+
+   {/* ═══ 6. SCORECARD ═══ */}
+   <Section title={`Scorecard - ${D.months?.[i] || "-"}`} eyebrowColor={tj.navy900}>
+    <Card padding={20}>
+     <ScoreRow label="Monthly Revenue" sub={`Target: ${fmt(monthlyTarget)}/mo`} value={fmt(curRev)} target={`≥${fmt(monthlyTarget)}`} status={curRev>=monthlyTarget?"green":curRev>=monthlyTarget*0.75?"yellow":"red"} trend={tr("revenue")} sparkData={D.revenue} sparkColor={tj.navy900} />
+     <ScoreRow label="Gross Margin %" sub="Pricing power + COGS" value={pct(curGM)} target="≥30%" status={curGM>=0.3?"green":curGM>=0.2?"yellow":"red"} trend={tr("grossProfit")} sparkData={D.revenue.map((r,j)=>r>0?D.grossProfit[j]/r:0)} />
+     <ScoreRow label="EBITDA" sub="The number buyers multiply" value={fmt(curEbitda)} target="≥$200K/mo" status={curEbitda>=200000?"green":curEbitda>=100000?"yellow":"red"} trend={tr("ebitda")} sparkData={D.ebitda} />
+     <ScoreRow label="Fixed Cost Coverage" sub={`Fixed costs: ${fmt(D.fixedCosts[i]||0)}/mo - revenue must cover this`} value={`${curFC.toFixed(2)}x`} target="≥2.0x" status={curFC>=2.0?"green":curFC>=1.5?"yellow":"red"} trend={tr("revenue")} sparkData={D.revenue.map((r,j)=>r/(D.fixedCosts[j]||1))} sparkColor={tj.sky} />
+     <ScoreRow label="Labor % of Revenue" sub={`${fmt(D.labor[i]||0)}/mo`} value={pct(curLab)} target="≤14%" status={curLab<=0.14?"green":curLab<=0.16?"yellow":"red"} trend={tr("labor",true)} sparkData={D.revenue.map((r,j)=>r>0?(D.labor[j]||0)/r:0)} />
+     <ScoreRow label="TTM Adjusted EBITDA" sub={`Drives valuation. At 5x = ${fmt(curTTM*5)}`} value={fmt(curTTM)} target="≥$4.0M" status={curTTM>=4e6?"green":curTTM>=3e6?"yellow":"red"} trend={i>0&&curTTM>=(D.ttmEbitda?.[i-1]||0)?"up":"down"} sparkData={D.ttmEbitda} />
+    </Card>
+   </Section>
+
+   {/* ═══ 7. ANNUAL TRACKING + BONUS TIERS ═══ */}
+   <Section title="2026 Annual Tracking by Location" eyebrowColor={tj.navy900}>
+    <div className="grid-3" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
+     {locationsMeta.map(loc => {
+      const d = D[loc.k] || { rev:[], ni:[] };
+      const ytdClosed = jan26Idx >= 0 ? d.rev.slice(jan26Idx).reduce((s,v)=>s+v,0) : 0;
+      const ytdMonths = jan26Idx >= 0 ? d.rev.slice(jan26Idx).filter(v=>v!==0).length : 0;
+      const wLoc = W?.locations?.find(l=>l.name.toLowerCase().includes(loc.name.split(" ")[0].toLowerCase()));
+      const locMTD = wLoc?.totalRevenue?.mtd || 0;
+      const combined = ytdClosed + locMTD;
+      const bench = BENCH[loc.k];
+      const pctDone = bench.target > 0 ? combined / bench.target : 0;
+      const monthsIn = ytdMonths + (locMTD > 0 ? 1 : 0);
+      const shouldBe = monthsIn / 12;
+      const gap = bench.target - combined;
+      const daysLeftYear = Math.ceil((new Date(2026, 11, 31) - today) / 86400000);
+      const monthsLeftYear = Math.max(1, 12 - monthsIn);
+      const needPerMonth = gap > 0 ? gap / monthsLeftYear : 0;
+      const annualized = monthsIn > 0 ? (combined / monthsIn) * 12 : 0;
+      // Status
+      const tier = pctDone >= 1.1 ? "ABOVE STRETCH" : pctDone >= 1.0 ? "TARGET HIT" : pctDone >= 0.75 ? "ON TRACK" : "BEHIND";
+      const sc = tier==="ABOVE STRETCH"?tj.sky:tier==="TARGET HIT"?tj.ok:tier==="ON TRACK"?tj.warn:tj.crimson;
+      // Next tier
+      const nextTier = pctDone < 0.75 ? { l:"Tier 1 (75%)", v:bench.t75, gap:bench.t75-combined }
+        : pctDone < 1.0 ? { l:"Target (100%)", v:bench.target, gap:bench.target-combined }
+        : pctDone < 1.1 ? { l:"Stretch (110%)", v:bench.t110, gap:bench.t110-combined }
+        : null;
+      return (
+       <Card key={loc.k} accent={sc} padding={14}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+         <span style={{ fontWeight:700, fontSize:13, color:tj.navy900, letterSpacing:"0.1em", textTransform:"uppercase" }}>{loc.name}</span>
+         <span style={{ background:sc, color:tj.white, padding:"2px 8px", fontSize:8, fontWeight:700, letterSpacing:"0.1em" }}>{tier}</span>
+        </div>
+        {/* Tier progress bar */}
+        <div style={{ position:"relative", height:14, background:tj.gray100, border:`1px solid ${tj.border}`, marginBottom:8 }}>
+         <div style={{ position:"absolute", left:0, top:0, bottom:0, width:`${Math.min(pctDone/1.1*100, 100)}%`, background:sc, opacity:0.8 }} />
+         {[{p:0.75/1.1,l:"75%"},{p:1.0/1.1,l:"100%"},{p:1.0,l:"110%"}].map(m => (
+          <div key={m.p} style={{ position:"absolute", left:`${m.p*100}%`, top:0, bottom:0, width:1, background:tj.navy900, opacity:0.4 }} />
+         ))}
+         <span style={{ position:"absolute", right:4, top:1, fontSize:8, fontWeight:700, color:tj.navy900 }}>{(pctDone*100).toFixed(0)}%</span>
+        </div>
+        <div style={{ fontSize:10, color:tj.gray700, marginBottom:8 }}>
+         <b style={{ color:tj.navy900 }}>{fmtF(combined)}</b> of {fmtF(bench.target)} target
+        </div>
+        {nextTier && (
+         <div style={{ padding:"8px 10px", background:tj.warnBg, border:`1px solid ${tj.warn}40`, marginBottom:8, fontSize:10 }}>
+          <b style={{ color:tj.warn }}>{fmtF(nextTier.gap)}</b> to reach {nextTier.l}
+          <div style={{ color:tj.gray500, marginTop:2, fontSize:9 }}>Need <b>{fmtF(needPerMonth)}/mo</b> for remaining {monthsLeftYear} months</div>
+         </div>
+        )}
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, fontSize:9 }}>
+         <div><div style={{ color:tj.gray500, fontWeight:700, letterSpacing:"0.06em", textTransform:"uppercase" }}>Annualized Pace</div><div style={{ fontSize:12, fontWeight:700, color:annualized>=bench.target?tj.ok:tj.crimson, fontFamily:tj.fontMono }}>{annualized>0?fmt(annualized):"-"}</div></div>
+         <div><div style={{ color:tj.gray500, fontWeight:700, letterSpacing:"0.06em", textTransform:"uppercase" }}>Need/Mo</div><div style={{ fontSize:12, fontWeight:700, color:needPerMonth>0?tj.crimson:tj.ok, fontFamily:tj.fontMono }}>{needPerMonth>0?fmtF(needPerMonth):"On target"}</div></div>
+        </div>
+       </Card>
+      );
+     })}
+    </div>
+   </Section>
+
+   {/* ═══ DIVIDER ═══ */}
+   <div className="section-divider" />
+
+   {/* ═══ 8. TTM EBITDA (THE VALUATION NUMBER) ═══ */}
+   <Section title="TTM Adjusted EBITDA - Valuation Driver" eyebrowColor={curTTM>=4e6?tj.ok:tj.crimson}>
+    <Card padding={20}>
+     <div style={{ display:"flex", gap:24, marginBottom:16, flexWrap:"wrap" }}>
+      <div><span style={{ fontSize:11, color:tj.gray500 }}>Current TTM: </span><b style={{ fontFamily:tj.fontMono, fontSize:20, color:curTTM>=4e6?tj.ok:tj.crimson }}>{fmtF(curTTM)}</b></div>
+      <div><span style={{ fontSize:11, color:tj.gray500 }}>At 5x: </span><b style={{ fontFamily:tj.fontMono, fontSize:16, color:tj.navy900 }}>{fmtF(curTTM*5)}</b></div>
+      <div><span style={{ fontSize:11, color:tj.gray500 }}>At 6x: </span><b style={{ fontFamily:tj.fontMono, fontSize:16, color:tj.navy900 }}>{fmtF(curTTM*6)}</b></div>
+      <div><span style={{ fontSize:11, color:tj.gray500 }}>Gap to $4M: </span><b style={{ fontFamily:tj.fontMono, color:curTTM>=4e6?tj.ok:tj.crimson }}>{curTTM>=4e6?"On target":fmtF(4000000-curTTM)}</b></div>
+     </div>
+     <Bars data={D.ttmEbitda} labels={D.shortMo} colorFn={v=>v>=4000000?tj.ok:v>=3000000?tj.warn:tj.crimson} width={600} height={100} />
+    </Card>
+   </Section>
+
+   {/* ═══ 9. REVENUE TRENDS ═══ */}
+   <Section title="Monthly Revenue - 12 Months" defaultOpen={false}>
+    <Card padding={20}>
+     <Bars data={D.revenue} labels={D.shortMo} colorFn={v=>v>=monthlyTarget?tj.ok:v>=monthlyTarget*0.75?tj.warn:tj.crimson} width={600} height={120} />
+     {/* MoM % aligned to bar positions */}
+     <svg width={600} height={20} style={{ display:"block", marginTop:2 }}>
+      {D.revenue.map((v,j) => {
+       if (j===0) return null;
+       const prev = D.revenue[j-1] || 0;
+       if (prev === 0 || v === 0) return null;
+       const delta = ((v - prev) / prev * 100).toFixed(0);
+       const bw = Math.min(28, (600-20)/D.revenue.length - 4);
+       const x = j * ((600-20)/D.revenue.length) + 10 + bw/2;
+       return <text key={j} x={x} y={14} textAnchor="middle" fontSize="9" fontWeight="700" fontFamily={tj.fontMono} fill={v>=prev?tj.ok:tj.crimson}>{v>=prev?"+":""}{delta}%</text>;
+      })}
+     </svg>
+     <div style={{ display:"flex", gap:20, marginTop:8, paddingTop:10, borderTop:`1px solid ${tj.border}`, flexWrap:"wrap", fontSize:11, color:tj.gray500 }}>
+      <div>12-mo total: <b style={{ fontFamily:tj.fontMono, color:tj.navy900 }}>{fmtF(D.revenue.reduce((a,b)=>a+b,0))}</b></div>
+      <div>Avg: <b style={{ fontFamily:tj.fontMono, color:tj.navy900 }}>{fmt(D.revenue.reduce((a,b)=>a+b,0)/12)}</b></div>
+      <div>Target: <b style={{ fontFamily:tj.fontMono, color:tj.navy900 }}>{fmtF(BENCH.total.target)}</b></div>
+      <div>vs Target: <b style={{ fontFamily:tj.fontMono, color:(D.revenue.reduce((a,b)=>a+b,0)/BENCH.total.target)>=1?tj.ok:tj.crimson }}>{((D.revenue.reduce((a,b)=>a+b,0)/BENCH.total.target)*100).toFixed(1)}%</b></div>
+     </div>
+    </Card>
+   </Section>
+
+   {/* ═══ 10. COST STRUCTURE ═══ */}
+   <Section title="Cost Structure - % of Revenue" defaultOpen={false}>
+    <Card padding={20}>
+     <div className="grid-4" style={{ display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:20 }}>
+      {[
+       { l:"Fixed Costs", d:D.fixedCosts, c:tj.crimson, t:50 },
+       { l:"Variable Costs", d:D.variableCosts, c:tj.warn, t:20 },
+       { l:"Labor", d:D.labor, c:tj.sky, t:14 },
+       { l:"Interest", d:D.interest, c:tj.navy900, t:5 },
+      ].map(x => {
+       const pctData = D.revenue.map((r,j) => r>0?(x.d[j]||0)/r*100:0);
+       const curPct = pctData[i] || 0;
+       return (
+        <div key={x.l}>
+         <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+          <Eyebrow color={x.c} style={{ fontSize:9 }}>{x.l}</Eyebrow>
+          <span style={{ fontSize:9, color:tj.gray500 }}>target ≤{x.t}%</span>
+         </div>
+         <Spark data={pctData} color={x.c} width={140} height={32} />
+         <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+          <span style={{ fontSize:14, fontWeight:700, fontFamily:tj.fontMono, color:curPct<=x.t?tj.ok:tj.crimson }}>{curPct.toFixed(1)}%</span>
+          <span style={{ fontSize:12, fontFamily:tj.fontMono, color:tj.gray700 }}>{fmt(x.d[i]||0)}</span>
+         </div>
+        </div>
+       );
+      })}
+     </div>
+    </Card>
+   </Section>
+
+   {/* ═══ 11. FULL P&L ═══ */}
+   <Section title="Company P&L - 12 Months" defaultOpen={false}>
+    <Card padding={20} style={{ marginBottom:14 }}>
+     <NetProfitCandle D={D} monthlyTarget={monthlyTarget} />
+    </Card>
+    {/* Table below */}
+    <Card padding={0} style={{ overflowX:"auto" }}>
+     <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11, fontFamily:tj.fontMono }}>
+      <thead><tr style={{ background:tj.navy900 }}>
+       {["Month","Revenue","Gross Profit","GP%","EBITDA","EB%","Net Income","Fixed","Variable","Labor"].map(h => (
+        <th key={h} style={{ padding:"9px 10px", textAlign:h==="Month"?"left":"right", color:tj.white, fontSize:9, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap", fontFamily:tj.fontSans, fontWeight:700 }}>{h}</th>
+       ))}
+      </tr></thead>
+      <tbody>
+       {D.months.map((mo,j) => {
+        const rev=D.revenue[j]||0, gp=D.grossProfit[j]||0, eb=D.ebitda[j]||0, ni=D.netIncome[j]||0;
+        const fc=D.fixedCosts[j]||0, vc=D.variableCosts[j]||0, lb=D.labor[j]||0;
+        const cur = j===i;
+        return (
+         <tr key={j} style={{ background:cur?"#EFF3FB":j%2===0?tj.white:tj.gray50, borderBottom:`1px solid ${tj.border}` }}>
+          <td style={{ padding:"8px 10px", fontFamily:tj.fontSans, fontWeight:cur?700:400, color:tj.navy900, whiteSpace:"nowrap" }}>{mo}{cur?" ◄":""}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:rev>=650000?tj.ok:tj.crimson, fontWeight:700 }}>{fmtF(rev)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:gp>=0?tj.ink:tj.crimson }}>{fmtF(gp)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:rev>0&&gp/rev>=0.3?tj.ok:tj.crimson }}>{rev>0?(gp/rev*100).toFixed(1)+"%":"-"}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:eb>=200000?tj.ok:eb>=100000?tj.warn:tj.crimson }}>{fmtF(eb)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:tj.gray700 }}>{rev>0?(eb/rev*100).toFixed(1)+"%":"-"}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:ni>=0?tj.ok:tj.crimson, fontWeight:700 }}>{fmtF(ni)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:tj.gray700 }}>{fmtF(fc)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:tj.gray700 }}>{fmtF(vc)}</td>
+          <td style={{ padding:"8px 10px", textAlign:"right", color:tj.gray700 }}>{fmtF(lb)}</td>
+         </tr>
+        );
+       })}
+       <tr style={{ background:tj.navy900 }}>
+        <td style={{ padding:"9px 10px", fontFamily:tj.fontSans, fontWeight:700, color:tj.white, fontSize:10, letterSpacing:"0.06em", textTransform:"uppercase" }}>TOTAL</td>
+        {[D.revenue,D.grossProfit,null,D.ebitda,null,D.netIncome,D.fixedCosts,D.variableCosts,D.labor].map((arr,ci) =>
+         arr===null ? <td key={ci} style={{ padding:"9px 10px" }} /> :
+         <td key={ci} style={{ padding:"9px 10px", textAlign:"right", fontWeight:700, fontFamily:tj.fontMono, color:tj.white }}>{fmtF(arr.reduce((a,b)=>a+b,0))}</td>
+        )}
+       </tr>
+      </tbody>
+     </table>
+    </Card>
+   </Section>
+
+   {/* ═══ 12. PER-LOCATION P&L (CANDLESTICK) ═══ */}
+   <Section title="Per-Location P&L - Candlestick" defaultOpen={true}>
+    {locationsMeta.map(loc => {
+     const d = D[loc.k] || { rev:[], ni:[] };
+     const revTotal = d.rev.reduce((a,b)=>a+b,0);
+     const niTotal = d.ni.reduce((a,b)=>a+b,0);
+     const niMargin = revTotal > 0 ? niTotal / revTotal : 0;
+     const hasData = d.rev.some(v=>v!==0);
+     const locTarget = BENCH[loc.k].target / 12;
+     return (
+      <Card key={loc.k} accent={loc.c} padding={16} style={{ marginBottom:14 }}>
+       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+        <Eyebrow color={loc.c} style={{ fontSize:12 }}>{loc.name}</Eyebrow>
+        <span style={{ fontSize:10, fontFamily:tj.fontMono, color:tj.gray700 }}>
+         12-mo Rev: <b style={{ color:tj.navy900 }}>{fmtF(revTotal)}</b> · NI: <b style={{ color:niTotal>=0?tj.ok:tj.crimson }}>{fmtF(niTotal)}</b> · Margin: <b style={{ color:niMargin>=0.05?tj.ok:niMargin>=0?tj.warn:tj.crimson }}>{pct(niMargin)}</b>
+         {hasData && <span> · Target: <b style={{ color:tj.sky }}>{fmtF(locTarget)}/mo</b></span>}
+        </span>
+       </div>
+       {!hasData && <div style={{ fontSize:11, color:tj.warn, fontStyle:"italic", marginBottom:8 }}>No per-location P&L data. Upload a QBO P&L exported by class/location.</div>}
+       {hasData && <CandleChart revData={d.rev} niData={d.ni} labels={D.shortMo} targetLine={locTarget} width={620} height={220} />}
+      </Card>
+     );
+    })}
+   </Section>
+
+   {/* ═══ DIVIDER ═══ */}
+   </div>)}
+
+   </div>
+  </div>
+ );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
