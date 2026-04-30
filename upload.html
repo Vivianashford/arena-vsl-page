@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>The Arena Partners | Secure Client Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -626,9 +623,6 @@ body::after {
   .progress-container { padding: 0 16px; }
 }
 </style>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SDMM90P63D"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-SDMM90P63D");</script>
 </head>
 <body>
 
@@ -636,15 +630,13 @@ body::after {
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const WORKER_URL = 'https://arena-api.jean-475.workers.dev';
-const GHL_API = 'https://arena-api.jean-475.workers.dev/api/ghl';
-const GHL_TOKEN = 'proxy'; // Token is server-side on Worker
+const DRIVE_SCRIPT_URL = ''; // Paste your Google Apps Script Web App URL here
+const GHL_API = 'https://services.leadconnectorhq.com';
+const GHL_TOKEN = 'pit-8db4722a-0d8f-41c0-8cc0-1d17de5bff3d';
 const GHL_VERSION = '2021-07-28';
 const LOCATION_ID = 'LSvdgiiT7ManCRx9CCwE';
 const CF_COMPANY_INFO_STATUS = '34Hw5yMzDL7XoXe4z2zK';
 const JEAN_EMAIL = 'jhardy@trekonecapital.com';
-const MAKE_WEBHOOK = 'https://hook.us2.make.com/uyicpl36ebwkc06yn74qslsl0e0iayu6';
-const DRIVE_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxz2Tuv4XNyaq3uMDUqvi9C7HrP5FUa2XqAwZSDMkD5d6ZAX8XxdtByIRRAOP6iP8CSQA/exec';
 </script>
 
 <!-- HEADER -->
@@ -1073,13 +1065,7 @@ const CATEGORIES = {
   if (params.get('name')) document.getElementById('clientName').value = decodeURIComponent(params.get('name'));
   if (params.get('company')) document.getElementById('clientCompany').value = decodeURIComponent(params.get('company'));
   if (params.get('email')) document.getElementById('clientEmail').value = decodeURIComponent(params.get('email'));
-  if (params.get('cid')) {
-    document.getElementById('clientCid').value = decodeURIComponent(params.get('cid'));
-  } else {
-    // Hide CID field in standalone mode
-    var cidField = document.getElementById('clientCid');
-    if (cidField && cidField.parentElement) cidField.parentElement.style.display = 'none';
-  }
+  if (params.get('cid')) document.getElementById('clientCid').value = decodeURIComponent(params.get('cid'));
 })();
 
 // ============================================================
@@ -1270,39 +1256,20 @@ async function submitAll() {
   var email = document.getElementById('clientEmail').value.trim();
   var cid = document.getElementById('clientCid').value.trim();
 
-  // Auto-create contact if no CID (standalone mode - in-person meetings etc.)
-  if (!cid && email) {
-    try {
-      var upsertResp = await fetch(GHL_API + '/contacts/upsert', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + GHL_TOKEN,
-          'Version': '2021-07-28',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          locationId: 'LSvdgiiT7ManCRx9CCwE',
-          email: email,
-          firstName: name.split(' ')[0],
-          lastName: name.split(' ').slice(1).join(' '),
-          companyName: company,
-          tags: ['in-person-meeting', 'documents-uploaded']
-        })
-      });
-      if (upsertResp.ok) {
-        var upsertData = await upsertResp.json();
-        cid = (upsertData.contact && upsertData.contact.id) || '';
-        document.getElementById('clientCid').value = cid;
-      }
-    } catch (e) { console.error('Upsert error:', e); }
-  }
-
   var totalFiles = 0;
   var categorySubmitData = [];
 
-  var allFileLinks = []; // Track uploaded file URLs for contact notes
+  // Helper: read file as base64
+  function toBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() { resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
 
-  // Upload files via Worker - creates folder per contact, uploads into it
+  // Upload files to Google Drive via Apps Script
   for (var cat in uploadedFiles) {
     var files = uploadedFiles[cat];
     if (!files || files.length === 0) continue;
@@ -1314,41 +1281,22 @@ async function submitAll() {
 
     for (var i = 0; i < files.length; i++) {
       try {
-        var fileUrl = '';
-
-        // Upload to Google Drive via Apps Script
-        var fileBase64 = await new Promise(function(resolve) {
-          var reader = new FileReader();
-          reader.onload = function() { resolve(reader.result.split(',')[1]); };
-          reader.readAsDataURL(files[i]);
-        });
-
-        var resp = await fetch(DRIVE_WEBHOOK, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({
-            contactName: name,
-            companyName: company,
-            category: CATEGORIES[cat].name,
-            contactId: cid,
-            contactEmail: email,
-            fileName: files[i].name,
-            fileData: fileBase64,
-            fileType: files[i].type || 'application/octet-stream'
-          }),
-          redirect: 'follow'
-        });
-        if (resp.ok) {
-          try {
-            var respData = await resp.json();
-            fileUrl = respData.fileUrl || respData.webViewLink || respData.url || '';
-          } catch(e) { fileUrl = 'uploaded'; }
+        if (DRIVE_SCRIPT_URL) {
+          var b64 = await toBase64(files[i]);
+          await fetch(DRIVE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+              company: company,
+              category: cat,
+              contactId: cid,
+              fileName: files[i].name,
+              fileType: files[i].type || 'application/octet-stream',
+              fileContent: b64
+            })
+          });
         }
-
-        if (fileUrl) {
-          allFileLinks.push({ category: CATEGORIES[cat].name, name: files[i].name, url: fileUrl });
-        }
-
         totalFiles++;
       } catch (err) {
         console.error('Upload error:', err);
@@ -1356,8 +1304,6 @@ async function submitAll() {
       }
     }
   }
-
-  // Notes are now created by the Worker for each file upload
 
   // Update GHL contact directly (fallback if worker not deployed)
   try {
@@ -1388,9 +1334,6 @@ async function submitAll() {
       var existingTags = (contactData.contact && contactData.contact.tags) || [];
       if (!existingTags.includes('company-info-submitted')) {
         existingTags.push('company-info-submitted');
-      }
-      if (!existingTags.includes('documents-uploaded')) {
-        existingTags.push('documents-uploaded');
         await fetch(GHL_API + '/contacts/' + cid, {
           method: 'PUT',
           headers: {
@@ -1497,6 +1440,5 @@ style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { tr
 document.head.appendChild(style);
 </script>
 
-<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}</script>
 </body>
 </html>
